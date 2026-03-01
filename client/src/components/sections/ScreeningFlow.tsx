@@ -29,6 +29,7 @@ const businessSchema = z.object({
   operatingYears: z.enum(["0", "1", "2", "3+"], {
     required_error: "Please select operating years"
   }),
+  nonprofitGuarantee: z.enum(["yes", "no"]).optional(),
 });
 
 const financialSchema = z.object({
@@ -100,6 +101,10 @@ export function ScreeningFlow() {
     // Evaluate Business Logic
     if (finalData.entityType === "soleprop") {
       reasons.push("We currently only lend to LLCs, Non-profits, and S-Corps. Sole Proprietorships are not eligible.");
+    }
+    
+    if (finalData.entityType === "nonprofit" && finalData.nonprofitGuarantee === "no") {
+      reasons.push("For non-profits, a personal guarantee from a founder, executive director, or board member is required.");
     }
     
     if (finalData.operatingYears === "0" && finalData.loanAmount > 10000) {
@@ -275,7 +280,7 @@ export function ScreeningFlow() {
                     <div className="bg-secondary/5 border border-secondary/20 p-4 rounded-lg space-y-4">
                       <h4 className="font-semibold text-primary flex items-center gap-2">
                         <Building2 className="w-4 h-4" />
-                        Non-Profit Verification
+                        Non-Profit Verification & Requirements
                       </h4>
                       <div className="flex gap-4 items-end">
                         <div className="flex-1">
@@ -306,7 +311,31 @@ export function ScreeningFlow() {
                           Verify EIN
                         </Button>
                       </div>
-                      <p className="text-xs text-muted-foreground">Enter your 9-digit EIN to automatically verify your 501(c)(3) status and populate your legal name.</p>
+                      <p className="text-xs text-muted-foreground mb-4">Enter your 9-digit EIN to automatically verify your 501(c)(3) status and populate your legal name.</p>
+                      
+                      <div className="pt-4 border-t border-secondary/20">
+                        <FormField control={businessForm.control} name="nonprofitGuarantee" render={({ field }) => (
+                          <FormItem className="space-y-3">
+                            <FormLabel className="text-sm font-semibold">Personal Guarantee Requirement</FormLabel>
+                            <FormDescription className="text-xs">
+                              Because 501(c)(3)s do not have owners, our unsecured loans require a Founder, Executive Director, or Board Member to sign a Personal Guarantee to ensure alignment.
+                            </FormDescription>
+                            <FormControl>
+                              <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4">
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl><RadioGroupItem value="yes" /></FormControl>
+                                  <FormLabel className="font-normal text-sm">I understand and agree to provide a PG</FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl><RadioGroupItem value="no" /></FormControl>
+                                  <FormLabel className="font-normal text-sm">We cannot provide a PG</FormLabel>
+                                </FormItem>
+                              </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )} />
+                      </div>
                     </div>
                   )}
 

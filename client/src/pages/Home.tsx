@@ -3,6 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/sections/Hero";
 import { Opportunity } from "@/components/sections/Opportunity";
 import { LoanDetails } from "@/components/sections/LoanDetails";
+import { FAQ } from "@/components/sections/FAQ";
 import { ScreeningFlow } from "@/components/sections/ScreeningFlow";
 
 export default function Home() {
@@ -13,6 +14,7 @@ export default function Home() {
         <Hero />
         <Opportunity />
         <LoanDetails />
+        <FAQ />
         <ScreeningFlow />
       </main>
       <Footer />
