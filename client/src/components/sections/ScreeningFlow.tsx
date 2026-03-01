@@ -98,8 +98,8 @@ export function ScreeningFlow() {
     const reasons: string[] = [];
 
     // Evaluate Business Logic
-    if (finalData.entityType === "scorp" || finalData.entityType === "soleprop") {
-      reasons.push("We currently only lend to LLCs and Non-profits. S-Corps and Sole Proprietorships are not eligible.");
+    if (finalData.entityType === "soleprop") {
+      reasons.push("We currently only lend to LLCs, Non-profits, and S-Corps. Sole Proprietorships are not eligible.");
     }
     
     if (finalData.operatingYears === "0" && finalData.loanAmount > 10000) {
@@ -178,7 +178,7 @@ export function ScreeningFlow() {
               <div className="bg-white p-6 rounded-xl shadow-sm">
                 <Building2 className="w-8 h-8 text-secondary mb-3" />
                 <div className="font-bold text-primary mb-1">Business Type</div>
-                <p className="text-sm text-muted-foreground">LLCs and 501(c)(3) Non-profits only.</p>
+                <p className="text-sm text-muted-foreground">LLCs, S-Corps, and 501(c)(3) Non-profits.</p>
               </div>
               <div className="bg-white p-6 rounded-xl shadow-sm">
                 <Calculator className="w-8 h-8 text-secondary mb-3" />
@@ -270,6 +270,55 @@ export function ScreeningFlow() {
                       <FormMessage />
                     </FormItem>
                   )} />
+
+                  {businessForm.watch("entityType") === "nonprofit" && (
+                    <div className="bg-secondary/5 border border-secondary/20 p-4 rounded-lg space-y-4">
+                      <h4 className="font-semibold text-primary flex items-center gap-2">
+                        <Building2 className="w-4 h-4" />
+                        Non-Profit Verification
+                      </h4>
+                      <div className="flex gap-4 items-end">
+                        <div className="flex-1">
+                          <FormLabel className="text-sm font-medium mb-2 block">Employer Identification Number (EIN)</FormLabel>
+                          <Input 
+                            placeholder="XX-XXXXXXX" 
+                            onChange={(e) => {
+                              // Auto-format EIN with dash
+                              let val = e.target.value.replace(/\D/g, '');
+                              if (val.length > 2) val = val.slice(0, 2) + '-' + val.slice(2, 9);
+                              e.target.value = val;
+                            }}
+                            maxLength={10}
+                          />
+                        </div>
+                        <Button 
+                          type="button" 
+                          variant="secondary"
+                          onClick={() => {
+                            // Mock API lookup for prototype
+                            const nameField = document.querySelector('input[name="schoolName"]') as HTMLInputElement;
+                            if (nameField) {
+                              businessForm.setValue("schoolName", "Verified Foundation for Education");
+                              alert("EIN Verified: IRS database matched 'Verified Foundation for Education'");
+                            }
+                          }}
+                        >
+                          Verify EIN
+                        </Button>
+                      </div>
+                      <p className="text-xs text-muted-foreground">Enter your 9-digit EIN to automatically verify your 501(c)(3) status and populate your legal name.</p>
+                    </div>
+                  )}
+
+                  {businessForm.watch("entityType") === "scorp" && (
+                    <div className="bg-primary/5 border border-primary/20 p-4 rounded-lg flex items-start gap-3">
+                      <AlertCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                      <div className="text-sm text-muted-foreground">
+                        <strong className="text-foreground block mb-1">S-Corp Documentation Required</strong>
+                        For S-Corporations, your full application will require your most recent Business Tax Return (Form 1120-S) and Personal Tax Returns (Form 1040) for all owners with 20%+ equity.
+                      </div>
+                    </div>
+                  )}
 
                   <FormField control={businessForm.control} name="operatingYears" render={({ field }) => (
                     <FormItem className="space-y-3">
