@@ -135,14 +135,14 @@ export function ScreeningFlow() {
     <div className="flex items-center justify-center mb-8">
       {[1, 2, 3, 4].map((num, i) => (
         <div key={num} className="flex items-center">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-            current >= num ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shadow-sm transition-colors duration-300 ${
+            current >= num ? "bg-secondary text-white ring-4 ring-secondary/20" : "bg-muted text-muted-foreground border-2 border-border"
           }`}>
-            {num}
+            {current > num ? <CheckCircle2 className="w-5 h-5" /> : num}
           </div>
           {i < 3 && (
-            <div className={`w-12 h-1 mx-2 rounded ${
-              current > num ? "bg-primary" : "bg-muted"
+            <div className={`w-12 sm:w-16 h-1.5 mx-2 rounded-full transition-colors duration-300 ${
+              current > num ? "bg-secondary" : "bg-muted"
             }`} />
           )}
         </div>
@@ -157,36 +157,42 @@ export function ScreeningFlow() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
         {step === "intro" && (
           <div className="text-center space-y-8">
-            <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-white text-primary mb-2 shadow-sm">
+            <div className="inline-flex items-center rounded-full border border-secondary/30 px-3 py-1 text-xs font-bold uppercase tracking-wider bg-white text-secondary shadow-sm mb-2">
               10-Minute Pre-Qualification
             </div>
-            <h2 className="text-3xl md:text-5xl font-display font-bold text-primary">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-primary max-w-3xl mx-auto leading-tight">
               See what you qualify for without impacting your credit score.
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Our streamlined screening process is inspired by top business lenders. Answer a few key questions to see if your school is ready for The Lending Lab.
+              Our streamlined screening process helps identify if your school is ready for The Lending Lab before you submit a full application.
             </p>
             
-            <div className="pt-4">
-              <Button size="lg" className="h-14 px-8 text-lg" onClick={() => setStep("contact")}>
+            <div className="pt-6">
+              <Button size="lg" className="h-14 px-10 text-lg font-bold rounded-full shadow-lg bg-secondary hover:bg-secondary/90 text-white transition-transform hover:-translate-y-0.5" onClick={() => setStep("contact")}>
                 Start Pre-Qualification
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </div>
             
-            <div className="grid sm:grid-cols-3 gap-6 pt-12 mt-12 border-t text-left">
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <School className="w-8 h-8 text-secondary mb-3" />
+            <div className="grid sm:grid-cols-3 gap-6 pt-12 mt-12 border-t border-border/50 text-left">
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-border/50 transition-all hover:shadow-md">
+                <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-4">
+                  <School className="w-6 h-6 text-secondary" />
+                </div>
                 <div className="font-bold text-primary mb-1">Business Age</div>
                 <p className="text-sm text-muted-foreground">Open to established and Year 0 schools.</p>
               </div>
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <Building2 className="w-8 h-8 text-secondary mb-3" />
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-border/50 transition-all hover:shadow-md">
+                <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-4">
+                  <Building2 className="w-6 h-6 text-secondary" />
+                </div>
                 <div className="font-bold text-primary mb-1">Business Type</div>
                 <p className="text-sm text-muted-foreground">LLCs, S-Corps, and 501(c)(3) Non-profits.</p>
               </div>
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <Calculator className="w-8 h-8 text-secondary mb-3" />
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-border/50 transition-all hover:shadow-md">
+                <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-4">
+                  <Calculator className="w-6 h-6 text-secondary" />
+                </div>
                 <div className="font-bold text-primary mb-1">Loan Size</div>
                 <p className="text-sm text-muted-foreground">$10K to $150K based on revenue capacity.</p>
               </div>
@@ -221,8 +227,8 @@ export function ScreeningFlow() {
                     )} />
                   </div>
                   <div className="flex justify-between pt-4">
-                    <Button type="button" variant="ghost" onClick={() => setStep("intro")}>Cancel</Button>
-                    <Button type="submit">Continue to Business Info</Button>
+                    <Button type="button" variant="outline" className="border-border/80 rounded-full px-6" onClick={() => setStep("intro")}>Cancel</Button>
+                    <Button type="submit" className="bg-primary hover:bg-primary/90 text-white rounded-full px-8 shadow-md transition-transform hover:-translate-y-0.5">Continue to Business Info <ArrowRight className="ml-2 h-4 w-4" /></Button>
                   </div>
                 </form>
               </Form>
@@ -365,8 +371,8 @@ export function ScreeningFlow() {
                   )} />
 
                   <div className="flex justify-between pt-4">
-                    <Button type="button" variant="ghost" onClick={() => setStep("contact")}>Back</Button>
-                    <Button type="submit">Continue to Financials</Button>
+                    <Button type="button" variant="outline" className="border-border/80 rounded-full px-6" onClick={() => setStep("contact")}>Back</Button>
+                    <Button type="submit" className="bg-primary hover:bg-primary/90 text-white rounded-full px-8 shadow-md transition-transform hover:-translate-y-0.5">Continue to Financials <ArrowRight className="ml-2 h-4 w-4" /></Button>
                   </div>
                 </form>
               </Form>
@@ -433,8 +439,8 @@ export function ScreeningFlow() {
                   </div>
 
                   <div className="flex justify-between pt-4">
-                    <Button type="button" variant="ghost" onClick={() => setStep("business")}>Back</Button>
-                    <Button type="submit">Continue to Operations</Button>
+                    <Button type="button" variant="outline" className="border-border/80 rounded-full px-6" onClick={() => setStep("business")}>Back</Button>
+                    <Button type="submit" className="bg-primary hover:bg-primary/90 text-white rounded-full px-8 shadow-md transition-transform hover:-translate-y-0.5">Continue to Operations <ArrowRight className="ml-2 h-4 w-4" /></Button>
                   </div>
                 </form>
               </Form>
@@ -498,8 +504,8 @@ export function ScreeningFlow() {
                   </div>
 
                   <div className="flex justify-between pt-4">
-                    <Button type="button" variant="ghost" onClick={() => setStep("financial")}>Back</Button>
-                    <Button type="submit" size="lg" className="px-8">View Results</Button>
+                    <Button type="button" variant="outline" className="border-border/80 rounded-full px-6" onClick={() => setStep("financial")}>Back</Button>
+                    <Button type="submit" size="lg" className="bg-secondary hover:bg-secondary/90 text-white font-bold rounded-full px-10 shadow-lg transition-transform hover:-translate-y-0.5">View Results <ArrowRight className="ml-2 h-4 w-4" /></Button>
                   </div>
                 </form>
               </Form>
@@ -508,23 +514,23 @@ export function ScreeningFlow() {
         )}
 
         {step === "qualified" && (
-          <Card className="shadow-lg border-0 text-center overflow-hidden">
-            <div className="bg-green-500 h-2 w-full"></div>
-            <CardHeader className="pt-10 pb-4">
-              <div className="mx-auto w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4">
-                <CheckCircle2 className="w-8 h-8" />
+          <Card className="shadow-lg border-0 text-center overflow-hidden rounded-2xl">
+            <div className="bg-secondary h-2 w-full"></div>
+            <CardHeader className="pt-12 pb-4">
+              <div className="mx-auto w-20 h-20 bg-secondary/10 text-secondary rounded-full flex items-center justify-center mb-6 shadow-inner">
+                <CheckCircle2 className="w-10 h-10" />
               </div>
-              <CardTitle className="text-3xl font-display text-primary">Congratulations! You Prequalify.</CardTitle>
+              <CardTitle className="text-3xl md:text-4xl font-display font-bold text-primary">Congratulations! You Prequalify.</CardTitle>
             </CardHeader>
-            <CardContent className="pb-10 px-8">
-              <p className="text-lg text-muted-foreground mb-8">
-                Great news, {formData?.firstName}. Based on your answers, your school aligns with our core underwriting pillars for a microloan.
+            <CardContent className="pb-12 px-8 md:px-12">
+              <p className="text-lg text-muted-foreground mb-10 max-w-lg mx-auto">
+                Great news, <span className="font-bold text-primary">{formData?.firstName}</span>. Based on your answers, your school aligns with our core underwriting pillars for a microloan.
               </p>
               
-              <div className="bg-muted/50 p-6 rounded-xl mb-8 text-left">
-                <h4 className="font-semibold mb-2">Next Steps & Required Documents:</h4>
-                <p className="text-sm text-muted-foreground mb-4">You will need to upload these in the full application.</p>
-                <ul className="space-y-2 text-sm text-muted-foreground list-disc list-inside ml-4">
+              <div className="bg-primary/5 p-8 rounded-2xl mb-10 text-left border border-primary/10 shadow-sm max-w-xl mx-auto">
+                <h4 className="font-bold text-lg text-primary mb-3">Next Steps & Required Documents:</h4>
+                <p className="text-sm text-muted-foreground mb-6">You will need to upload these in the full application.</p>
+                <ul className="space-y-3 text-sm text-foreground font-medium list-disc list-inside ml-2">
                   <li>Articles of Organization/Incorporation</li>
                   <li>Detailed financial model showing monthly breakeven</li>
                   <li>Facility lease agreement (if applicable)</li>
@@ -533,52 +539,56 @@ export function ScreeningFlow() {
                 </ul>
               </div>
 
-              <Button size="lg" className="w-full sm:w-auto h-14 px-8 text-lg" onClick={() => {
+              <Button size="lg" className="w-full sm:w-auto h-14 px-10 text-lg font-bold bg-secondary hover:bg-secondary/90 text-white rounded-full shadow-lg transition-transform hover:-translate-y-0.5" onClick={() => {
                 alert("Redirecting to JotForm application...");
               }}>
                 Continue to Full Application
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </CardContent>
           </Card>
         )}
 
         {step === "unqualified" && (
-          <Card className="shadow-lg border-0 text-center overflow-hidden">
+          <Card className="shadow-lg border-0 text-center overflow-hidden rounded-2xl">
             <div className="bg-secondary h-2 w-full"></div>
-            <CardHeader className="pt-10 pb-4">
-              <div className="mx-auto w-16 h-16 bg-secondary/10 text-secondary rounded-full flex items-center justify-center mb-4">
-                <AlertCircle className="w-8 h-8" />
+            <CardHeader className="pt-12 pb-4">
+              <div className="mx-auto w-20 h-20 bg-secondary/10 text-secondary rounded-full flex items-center justify-center mb-6 shadow-inner">
+                <AlertCircle className="w-10 h-10" />
               </div>
-              <CardTitle className="text-3xl font-display text-primary">No Immediate Offer Available</CardTitle>
+              <CardTitle className="text-3xl md:text-4xl font-display font-bold text-primary">No Immediate Offer Available</CardTitle>
             </CardHeader>
-            <CardContent className="pb-10 px-8">
-              <p className="text-lg text-muted-foreground mb-6">
-                Thank you for your interest, {formData?.firstName}. Based on the information provided, we are unable to provide a loan option at this time.
+            <CardContent className="pb-12 px-8 md:px-12">
+              <p className="text-lg text-muted-foreground mb-8 max-w-lg mx-auto">
+                Thank you for your interest, <span className="font-bold text-primary">{formData?.firstName}</span>. Based on the information provided, we are unable to provide a loan option at this time.
               </p>
               
               {rejectionReasons.length > 0 && (
-                <div className="bg-destructive/10 border border-destructive/20 p-6 rounded-xl mb-8 text-left">
-                  <h4 className="font-semibold text-destructive mb-3 flex items-center gap-2">
-                    <AlertCircle className="w-5 h-5" />
+                <div className="bg-white border border-secondary/30 p-8 rounded-2xl mb-10 text-left shadow-sm max-w-xl mx-auto relative overflow-hidden">
+                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-secondary"></div>
+                  <h4 className="font-bold text-primary mb-4 flex items-center gap-3">
+                    <div className="bg-secondary/10 p-1.5 rounded-full">
+                      <AlertCircle className="w-5 h-5 text-secondary" />
+                    </div>
                     Eligibility Requirements Not Met:
                   </h4>
-                  <ul className="space-y-2 text-sm text-foreground list-disc list-inside ml-2">
+                  <ul className="space-y-3 text-sm text-muted-foreground font-medium list-disc list-inside ml-2">
                     {rejectionReasons.map((reason, index) => (
-                      <li key={index}>{reason}</li>
+                      <li key={index} className="leading-relaxed">{reason}</li>
                     ))}
                   </ul>
                 </div>
               )}
 
-              <p className="mb-8 font-medium text-muted-foreground">
+              <p className="mb-10 text-lg font-medium text-primary max-w-xl mx-auto">
                 We'd love to help you build your operational readiness so you can reapply in the future. Sign up for SchoolStack.ai to build your financial fluency.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="h-12" asChild>
+                <Button size="lg" className="h-14 px-8 font-bold bg-secondary hover:bg-secondary/90 text-white rounded-full shadow-lg transition-transform hover:-translate-y-0.5" asChild>
                   <a href="https://schoolstack.ai" target="_blank" rel="noreferrer">Get SchoolStack.ai</a>
                 </Button>
-                <Button variant="outline" size="lg" className="h-12" onClick={() => {
+                <Button variant="outline" size="lg" className="h-14 px-8 font-bold border-border/80 rounded-full hover:bg-muted/50" onClick={() => {
                   setStep("intro");
                   setFormData({});
                 }}>

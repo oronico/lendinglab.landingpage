@@ -19,8 +19,8 @@ export function Opportunity() {
             <div className="space-y-8">
               <div className="flex gap-4">
                 <div className="flex-shrink-0 mt-1">
-                  <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
-                    <Users className="w-5 h-5" />
+                  <div className="w-12 h-12 rounded-full bg-white shadow-sm border border-border flex items-center justify-center text-secondary">
+                    <Users className="w-6 h-6" />
                   </div>
                 </div>
                 <div>
@@ -33,8 +33,8 @@ export function Opportunity() {
 
               <div className="flex gap-4">
                 <div className="flex-shrink-0 mt-1">
-                  <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center text-destructive">
-                    <Building className="w-5 h-5" />
+                  <div className="w-12 h-12 rounded-full bg-white shadow-sm border border-border flex items-center justify-center text-secondary">
+                    <Building className="w-6 h-6" />
                   </div>
                 </div>
                 <div>
@@ -47,8 +47,8 @@ export function Opportunity() {
 
               <div className="flex gap-4">
                 <div className="flex-shrink-0 mt-1">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                    <ShieldCheck className="w-5 h-5" />
+                  <div className="w-12 h-12 rounded-full bg-white shadow-sm border border-border flex items-center justify-center text-secondary">
+                    <ShieldCheck className="w-6 h-6" />
                   </div>
                 </div>
                 <div>
@@ -79,31 +79,35 @@ export function Opportunity() {
           </div>
         </div>
 
-        <div className="mt-20">
-          <h3 className="text-2xl font-display font-bold text-center text-primary mb-10">Our Four Pillars of School Readiness</h3>
+        <div className="mt-24">
+          <h3 className="text-2xl font-display font-bold text-center text-primary mb-12">Our Four Pillars of School Readiness</h3>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="border-none shadow-md bg-white">
-              <CardContent className="p-6">
-                <h4 className="font-bold text-lg mb-2">1. Affordable Facility</h4>
-                <p className="text-sm text-muted-foreground">Safe, affordable, accessible, well-maintained buildings.</p>
+            <Card className="border border-border/50 shadow-sm hover:shadow-md transition-shadow bg-white rounded-2xl overflow-hidden">
+              <CardContent className="p-8">
+                <div className="w-10 h-10 bg-primary/5 rounded-full flex items-center justify-center mb-6 text-primary font-bold">1</div>
+                <h4 className="font-bold text-xl mb-3 text-primary">Affordable Facility</h4>
+                <p className="text-sm text-muted-foreground leading-relaxed">Safe, affordable, accessible, well-maintained buildings.</p>
               </CardContent>
             </Card>
-            <Card className="border-none shadow-md bg-white">
-              <CardContent className="p-6">
-                <h4 className="font-bold text-lg mb-2">2. Financial Health</h4>
-                <p className="text-sm text-muted-foreground">Sustainable budgets, funding stability, on-time rent, and cash flow management.</p>
+            <Card className="border border-border/50 shadow-sm hover:shadow-md transition-shadow bg-white rounded-2xl overflow-hidden">
+              <CardContent className="p-8">
+                <div className="w-10 h-10 bg-primary/5 rounded-full flex items-center justify-center mb-6 text-primary font-bold">2</div>
+                <h4 className="font-bold text-xl mb-3 text-primary">Financial Health</h4>
+                <p className="text-sm text-muted-foreground leading-relaxed">Sustainable budgets, funding stability, on-time rent, and cash flow management.</p>
               </CardContent>
             </Card>
-            <Card className="border-none shadow-md bg-white">
-              <CardContent className="p-6">
-                <h4 className="font-bold text-lg mb-2">3. Operational Health</h4>
-                <p className="text-sm text-muted-foreground">Clear systems for banking, tuition, payroll, insurance, and compliance.</p>
+            <Card className="border border-border/50 shadow-sm hover:shadow-md transition-shadow bg-white rounded-2xl overflow-hidden">
+              <CardContent className="p-8">
+                <div className="w-10 h-10 bg-primary/5 rounded-full flex items-center justify-center mb-6 text-primary font-bold">3</div>
+                <h4 className="font-bold text-xl mb-3 text-primary">Operational Health</h4>
+                <p className="text-sm text-muted-foreground leading-relaxed">Clear systems for banking, tuition, payroll, insurance, and compliance.</p>
               </CardContent>
             </Card>
-            <Card className="border-none shadow-md bg-white">
-              <CardContent className="p-6">
-                <h4 className="font-bold text-lg mb-2">4. Demand</h4>
-                <p className="text-sm text-muted-foreground">Student recruitment, retention, and capacity utilization driving revenue.</p>
+            <Card className="border border-border/50 shadow-sm hover:shadow-md transition-shadow bg-white rounded-2xl overflow-hidden">
+              <CardContent className="p-8">
+                <div className="w-10 h-10 bg-primary/5 rounded-full flex items-center justify-center mb-6 text-primary font-bold">4</div>
+                <h4 className="font-bold text-xl mb-3 text-primary">Demand</h4>
+                <p className="text-sm text-muted-foreground leading-relaxed">Student recruitment, retention, and capacity utilization driving revenue.</p>
               </CardContent>
             </Card>
           </div>

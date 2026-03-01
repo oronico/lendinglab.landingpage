@@ -8,8 +8,8 @@ export function Hero() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary/10 text-secondary hover:bg-secondary/20 mb-6">
-              Building Hope Impact Fund
+            <div className="inline-flex items-center rounded-full border border-secondary/30 px-3 py-1 text-sm font-semibold transition-colors bg-white text-secondary shadow-sm mb-6">
+              Backed by Building Hope Impact Fund
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight text-primary mb-6 leading-[1.1]">
               Patient microloans for the school founders that banks typically won't serve.
@@ -18,13 +18,13 @@ export function Hero() {
               We provide below-market capital paired with business infrastructure to help microschools and early-stage education entrepreneurs launch, stabilize, and grow.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground h-12 px-8 text-base font-medium" asChild>
+              <Button size="lg" className="bg-secondary hover:bg-secondary/90 text-white h-14 px-8 text-base font-bold rounded-full shadow-lg transition-transform hover:-translate-y-0.5" asChild>
                 <a href="#apply">
-                  Check Eligibility & Apply
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  Check Eligibility
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </a>
               </Button>
-              <Button size="lg" variant="outline" className="h-12 px-8 text-base font-medium border-border hover:bg-muted/50" asChild>
+              <Button size="lg" variant="outline" className="h-14 px-8 text-base font-bold border-border/80 bg-white hover:bg-muted/50 rounded-full" asChild>
                 <a href="#loan-details">
                   View Loan Terms
                 </a>

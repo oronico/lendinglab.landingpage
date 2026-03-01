@@ -14,14 +14,16 @@ export function LoanDetails() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8 mb-16">
-          <Card className="border-border/50 shadow-md">
-            <CardHeader className="bg-muted/30 pb-4 border-b">
-              <CardTitle className="text-2xl text-primary font-display flex items-center gap-2">
-                <DollarSign className="h-6 w-6 text-secondary" />
+          <Card className="border-border/50 shadow-lg rounded-2xl overflow-hidden">
+            <CardHeader className="bg-white pb-6 border-b border-border/50">
+              <CardTitle className="text-2xl text-primary font-display flex items-center gap-3">
+                <div className="p-2 bg-primary/5 rounded-lg">
+                  <DollarSign className="h-6 w-6 text-primary" />
+                </div>
                 Loan Structure
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-6 space-y-6">
+            <CardContent className="pt-8 space-y-8 bg-white/50">
               <div className="flex gap-4">
                 <div className="mt-1 flex-shrink-0 text-secondary">
                   <CheckCircle2 className="h-5 w-5" />
@@ -65,14 +67,16 @@ export function LoanDetails() {
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 shadow-md">
-            <CardHeader className="bg-muted/30 pb-4 border-b">
-              <CardTitle className="text-2xl text-primary font-display flex items-center gap-2">
-                <CheckCircle2 className="h-6 w-6 text-secondary" />
+          <Card className="border-border/50 shadow-lg rounded-2xl overflow-hidden">
+            <CardHeader className="bg-white pb-6 border-b border-border/50">
+              <CardTitle className="text-2xl text-primary font-display flex items-center gap-3">
+                <div className="p-2 bg-primary/5 rounded-lg">
+                  <CheckCircle2 className="h-6 w-6 text-primary" />
+                </div>
                 Clear Underwriting Rubric
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-6 space-y-6">
+            <CardContent className="pt-8 space-y-8 bg-white/50">
               <div className="flex gap-4">
                 <div className="mt-1 flex-shrink-0">
                   <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs font-bold">1</div>
@@ -123,23 +127,26 @@ export function LoanDetails() {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-muted/40 p-8 rounded-2xl border border-border">
-              <h4 className="text-xl font-bold text-primary mb-3">Business Infrastructure</h4>
-              <p className="text-muted-foreground">
-                Every borrower will receive <a href="https://schoolstack.ai" className="text-secondary font-medium hover:underline">SchoolStack.ai</a>. The Lending Lab builds financial fluency alongside capital, helping you manage finances, operations, and enrollment.
+            <div className="bg-white p-10 rounded-3xl border border-border/50 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+              <h4 className="text-xl font-bold text-primary mb-4 relative z-10">Business Infrastructure</h4>
+              <p className="text-muted-foreground leading-relaxed relative z-10">
+                Every borrower will receive <a href="https://schoolstack.ai" className="text-secondary font-bold hover:underline">SchoolStack.ai</a>. The Lending Lab builds financial fluency alongside capital, helping you manage finances, operations, and enrollment.
               </p>
             </div>
             
-            <div className="bg-muted/40 p-8 rounded-2xl border border-border">
-              <h4 className="text-xl font-bold text-primary mb-3">The On-Ramp to Growth</h4>
-              <p className="text-muted-foreground">
+            <div className="bg-white p-10 rounded-3xl border border-border/50 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+              <h4 className="text-xl font-bold text-primary mb-4 relative z-10">The On-Ramp to Growth</h4>
+              <p className="text-muted-foreground leading-relaxed relative z-10">
                 Schools that stabilize through The Lending Lab build the credit history and operational track record to qualify for Evergreen Loan Fund capital ($150K+).
               </p>
             </div>
             
-            <div className="bg-muted/40 p-8 rounded-2xl border border-border">
-              <h4 className="text-xl font-bold text-primary mb-3">Revolving Impact</h4>
-              <p className="text-muted-foreground">
+            <div className="bg-white p-10 rounded-3xl border border-border/50 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+              <h4 className="text-xl font-bold text-primary mb-4 relative z-10">Revolving Impact</h4>
+              <p className="text-muted-foreground leading-relaxed relative z-10">
                 Every dollar repaid is redeployed to the next founder. Philanthropic investment becomes a permanent lending infrastructure that compounds over time.
               </p>
             </div>
