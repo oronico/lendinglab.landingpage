@@ -37,7 +37,7 @@ export function Hero() {
                   <GraduationCap className="h-5 w-5" />
                   <h3 className="font-bold text-2xl font-display">$410K</h3>
                 </div>
-                <p className="text-sm text-muted-foreground">Deployed in Cycle 1</p>
+                <p className="text-sm text-muted-foreground">Deployed in Cycle 1 to 11 schools across 8 states</p>
               </div>
               <div>
                 <div className="flex items-center gap-2 text-primary mb-2">
