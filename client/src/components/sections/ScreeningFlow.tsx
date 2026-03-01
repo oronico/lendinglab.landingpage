@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 import { 
   Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage 
 } from "@/components/ui/form";
@@ -10,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle2, AlertCircle, ArrowRight, Building2, Calculator, School } from "lucide-react";
+import { CheckCircle2, AlertCircle, ArrowRight, Building2, Calculator, School, Loader2 } from "lucide-react";
 
 // Schemas for multi-step form
 const contactSchema = z.object({
@@ -57,6 +59,13 @@ export function ScreeningFlow() {
   const [formData, setFormData] = useState<AllData>({});
   const [rejectionReasons, setRejectionReasons] = useState<string[]>([]);
 
+  const submitLead = useMutation({
+    mutationFn: async (data: Record<string, unknown>) => {
+      const res = await apiRequest("POST", "/api/leads", data);
+      return res.json();
+    },
+  });
+
   const contactForm = useForm<ContactValues>({
     resolver: zodResolver(contactSchema),
     defaultValues: { firstName: "", lastName: "", email: "", phone: "" }
@@ -92,13 +101,12 @@ export function ScreeningFlow() {
     setStep("operations");
   };
 
-  const onOperationsSubmit = (data: OperationsValues) => {
+  const onOperationsSubmit = async (data: OperationsValues) => {
     const finalData = { ...formData, ...data } as Required<AllData>;
     setFormData(finalData);
     
     const reasons: string[] = [];
 
-    // Evaluate Business Logic
     if (finalData.entityType === "soleprop") {
       reasons.push("We currently only lend to LLCs, Non-profits, and S-Corps. Sole Proprietorships are not eligible.");
     }
@@ -123,11 +131,37 @@ export function ScreeningFlow() {
       reasons.push("The requested loan amount exceeds our standard loan-to-revenue ratio thresholds.");
     }
 
-    if (reasons.length > 0) {
+    const isQualified = reasons.length === 0;
+
+    try {
+      await submitLead.mutateAsync({
+        firstName: finalData.firstName,
+        lastName: finalData.lastName,
+        email: finalData.email,
+        phone: finalData.phone,
+        schoolName: finalData.schoolName,
+        state: finalData.state,
+        entityType: finalData.entityType,
+        operatingYears: finalData.operatingYears,
+        nonprofitGuarantee: finalData.nonprofitGuarantee || null,
+        annualRevenue: finalData.annualRevenue,
+        existingDebt: finalData.existingDebt,
+        monthlyBreakevenKnown: finalData.monthlyBreakevenKnown,
+        loanAmount: finalData.loanAmount,
+        hasFacility: finalData.hasFacility,
+        enrollmentSize: finalData.enrollmentSize,
+        loanPurpose: finalData.loanPurpose,
+        qualified: isQualified,
+        rejectionReasons: isQualified ? null : reasons,
+      });
+    } catch {
+    }
+
+    if (isQualified) {
+      setStep("qualified");
+    } else {
       setRejectionReasons(reasons);
       setStep("unqualified");
-    } else {
-      setStep("qualified");
     }
   };
 
@@ -505,7 +539,9 @@ export function ScreeningFlow() {
 
                   <div className="flex justify-between pt-4">
                     <Button type="button" variant="outline" className="border-border/80 rounded-full px-6" onClick={() => setStep("financial")}>Back</Button>
-                    <Button type="submit" size="lg" className="bg-secondary hover:bg-secondary/90 text-white font-bold rounded-full px-10 shadow-lg transition-transform hover:-translate-y-0.5">View Results <ArrowRight className="ml-2 h-4 w-4" /></Button>
+                    <Button type="submit" size="lg" disabled={submitLead.isPending} className="bg-secondary hover:bg-secondary/90 text-white font-bold rounded-full px-10 shadow-lg transition-transform hover:-translate-y-0.5">
+                      {submitLead.isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</> : <>View Results <ArrowRight className="ml-2 h-4 w-4" /></>}
+                    </Button>
                   </div>
                 </form>
               </Form>
