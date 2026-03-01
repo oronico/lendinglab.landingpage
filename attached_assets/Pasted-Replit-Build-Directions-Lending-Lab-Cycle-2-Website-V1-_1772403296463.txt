@@ -1,0 +1,507 @@
+Replit Build Directions. Lending Lab Cycle 2 Website (V1)
+0) Goal and non-negotiables
+
+Build a production-ready website for interested schools that:
+
+Clearly explains Cycle 2 products and requirements.
+
+Stops unqualified borrowers early with hard eligibility gates.
+
+Captures qualified leads cleanly and securely.
+
+Hands off to the correct next step (JotForm application or scheduling link).
+
+Is mobile-first, fast, accessible, and feels polished.
+
+Non-negotiables
+
+No prototype vibes. No placeholder copy. No dead links.
+
+No leaking PII in logs. No public lead endpoints.
+
+Eligibility rules must match Cycle 2. If a rule changes, it should be editable in one place.
+
+1) Information architecture (pages)
+V1 required pages
+
+Homepage (single scrolling landing page)
+
+Eligibility Check (can be a section on homepage, but better as a dedicated route /eligibility)
+
+Pre-Qualification Wizard (/prequal)
+
+Privacy (/privacy)
+
+Terms (/terms)
+
+Not Eligible outcome screen (/outcome/ineligible)
+
+Flagged outcome screen (/outcome/flagged)
+
+Qualified outcome screen (/outcome/qualified)
+
+V2 later
+
+Admin dashboard UI
+
+Document upload
+
+Borrower portal
+
+Full calculators and repayment schedule exports
+
+2) Brand and UI system (make it feel “finished”)
+Visual style
+
+Clean, finance-forward, trustworthy. Not “startup loud.”
+
+Use lots of whitespace. Strong section hierarchy. Clear CTAs.
+
+Typography
+
+Headings: a modern serif or strong sans. Body: clean sans.
+
+Use 3 sizes only for body text: small (labels), base (body), large (callouts).
+
+Color system
+
+Use a restrained palette:
+
+Navy or charcoal for primary text
+
+Teal or blue as the primary accent
+
+Muted green for “Qualified”
+
+Amber for “Flagged”
+
+Red for “Not Eligible”
+
+Soft gray backgrounds for section separation
+
+Components required (consistent everywhere)
+
+Top nav with anchors and a sticky CTA button
+
+“Card” containers for products and rules
+
+Status badges: Qualified, Flagged, Not Eligible
+
+Inline validation and helpful microcopy
+
+Toast success message for submissions
+
+Loading states, error states, empty states
+
+Motion
+
+Subtle only:
+
+Fade and slide-in on section load
+
+Progress animation in wizard
+
+Hover states on cards and buttons
+
+Accessibility
+
+All fields labeled
+
+Keyboard navigation through wizard
+
+Color contrast passes
+
+Error messages are text, not color-only
+
+3) Content and messaging (must match Cycle 2)
+Product summary (show clearly)
+
+Term loans
+
+Amount: $10,000 to $50,000
+
+Term: 4 to 6 years
+
+Rate: Prime minus 1.00% (currently 5.75%)
+
+Origination: 2% added to principal
+
+Security: UCC-1 pledge of revenues and assets
+
+Preference: 12+ months operating history
+
+Credit preference: FICO 650+ (minimum 575 for Year 0)
+
+Year 0 policy
+
+Requires personal guarantee
+
+UCC-1 pledge
+
+Loan size limited by ability-to-repay rule (see section 5)
+
+Line of credit
+
+Up to $100,000
+
+Minimum: 12 months in business
+
+Business checking account
+
+Minimum annual business revenue: $100,000
+
+Credit: 650+
+
+Required: QBO Online, reconciled books, tuition contracts
+
+Requirements you listed (these become hard gates or attestations)
+
+Must use QuickBooks Online
+
+Must have reconciled books
+
+Must use tuition contracts
+
+Only count enrollment supported by signed contracts meeting required enrollment conditions
+
+No commingling
+
+Payroll through payroll provider
+
+Bills paid on time
+
+Majority independent board
+
+Financials for most recent closed quarters, signed by licensed bookkeeper
+
+Licensed business
+
+Business bank account for all activity
+
+Add required disclaimers
+
+“Completing this screening is not a loan approval or commitment.”
+
+“Final underwriting includes documentation review and verification.”
+
+“We do not count philanthropic donations toward repayment capacity.”
+
+4) Homepage structure (sections and order)
+
+Hero
+
+Headline: “Cycle 2 Lending Lab. Capital for schools that run like a business.”
+
+Subhead: one sentence about who it is for
+
+Primary CTA: “Check eligibility”
+
+Secondary CTA: “Pre-qualify in 3 minutes”
+
+Products
+
+Two product cards: Term Loan and Line of Credit
+
+Show at-a-glance terms, requirements, and typical use of funds
+
+Who this is for
+
+3 bullets for “good fit”
+
+3 bullets for “not a fit”
+
+Keep it plain language
+
+Eligibility hard gates
+
+A short list of non-negotiables
+
+Link to full eligibility checker
+
+How it works
+
+Step 1: eligibility screen
+
+Step 2: pre-qualification
+
+Step 3: application (JotForm)
+
+Step 4: underwriting and verification
+
+Step 5: closing and funding
+
+FAQ
+
+“Do you fund Year 0 schools?”
+
+“Do you count donations as revenue?”
+
+“What counts as enrolled?”
+
+“What happens if I am not eligible?”
+
+“How long does underwriting take?” (give ranges only if you are comfortable)
+
+Final CTA
+
+Repeat primary CTA
+
+Contact email and phone
+
+Footer
+
+Privacy, Terms, Contact, address
+
+5) Eligibility logic (this is the core protection layer)
+
+Implement eligibility as a rules engine with three outcomes:
+
+Not Eligible (hard stops)
+
+Flagged for Review (possible but needs human diligence)
+
+Qualified to Apply
+
+A) Hard stop rules (Not Eligible)
+
+Make these immediate disqualifiers:
+
+No business bank account for school operations
+
+Commingling personal and business funds
+
+No QuickBooks Online (for LOC and operating schools). For Year 0, allow “adopt before closing” only if you explicitly choose that policy
+
+No tuition contracts for all currently enrolled students
+
+Payroll via Venmo, cash, or peer-to-peer apps
+
+No legal business registration or cannot prove good standing
+
+Home-based school if your policy is “ineligible” this cycle
+
+Current litigation or unresolved tax liens, if you choose to include these as exclusions
+
+B) Flagged rules (Flagged for Review)
+
+Examples:
+
+FICO is between minimum and preferred
+
+Less than 12 months operating history, but otherwise strong
+
+Revenue below $100k for LOC but they request LOC anyway
+
+Board independence unclear or borderline
+
+Past due bills occurred but now current
+
+Reconciliations exist but not current to last closed month
+
+C) Qualified rules
+
+Must satisfy:
+
+Product-specific minimums
+
+Clear attestations for QBO, reconciled books, tuition contracts, payroll provider, no commingling
+
+Enrollment verification approach acknowledged
+
+D) Make thresholds editable in one config file
+
+Create a rules.ts or config.ts where these values live:
+
+Min months operating
+
+Min revenue for LOC
+
+FICO thresholds
+
+DSR cap percent for Year 0 and Operating
+
+Home-based allowed true/false
+
+QBO hard stop true/false by product
+
+6) The “X% of revenue” rule (implement as ability-to-repay)
+
+Do not use “loan as % of projected revenue” alone. Use an annual debt service cap so term length changes do not break the rule.
+
+Required fields in the wizard for this calculation
+
+Projected Year 1 underwritten revenue (exclude philanthropy). Provide guidance text.
+
+Requested loan amount and term (4–6 years)
+
+Product type selection
+
+Calculation approach (implement in code)
+
+Compute annual payment for requested amount at current rate
+
+Compare annual payment to Underwritten Revenue times DSR cap
+
+Recommended DSR caps (editable):
+
+Year 0: 8% to 10%
+
+Operating: 10% to 14%
+
+If annual debt service exceeds cap:
+
+Outcome is Flagged or Not Eligible depending on how strict you want to be
+
+Show plain-English explanation and suggest a smaller amount
+
+7) Pre-Qualification Wizard UX (must be fast and simple)
+Wizard requirements
+
+6–10 questions max
+
+Progress bar
+
+Save state between steps
+
+Validation per step
+
+Clear outcomes with next action
+
+Data to collect in V1 (minimal but sufficient)
+
+School
+
+School name
+
+State
+
+Years operating (or start date)
+
+Legal entity type (LLC, nonprofit, corporation)
+
+Website (optional)
+
+Product request
+
+Product type (Term Loan, LOC, Year 0)
+
+Amount requested
+
+Term requested (for term loan)
+
+Financial and operations attestations
+
+QBO Online yes/no
+
+Books reconciled through last closed month yes/no
+
+Payroll provider yes/no
+
+Business bank account yes/no
+
+No commingling yes/no
+
+Bills paid on time yes/no
+
+Tuition contracts for every enrolled student yes/no
+
+Enrollment verification readiness yes/no
+
+Capacity signals
+
+Annual business revenue (range buckets is fine)
+
+Credit score range (do not collect SSN)
+
+Contact
+
+Name, role
+
+Email
+
+Phone
+
+Do not collect in V1
+
+Reference PII (emails and phone numbers)
+
+Student names
+
+Bank login credentials
+
+SSNs
+
+Outcomes
+
+Qualified: show “Apply now” button (JotForm link)
+
+Flagged: show “Apply with additional info” or “Book a short diligence call,” depending on your preference
+
+Not eligible: show “Not eligible this cycle” with a brief explanation and what would need to change
+
+8) Data handling and security requirements
+
+Submissions must be stored in a database with timestamps.
+
+Lead viewing endpoints must be protected behind Basic Auth or an admin key.
+
+Never log request bodies or PII.
+
+Add rate limiting and spam protection (honeypot field).
+
+Encrypt secrets via Replit Secrets. Never hardcode credentials.
+
+9) SEO and performance
+
+Proper page titles and meta descriptions
+
+OpenGraph tags for sharing
+
+Lighthouse targets:
+
+Performance 90+
+
+Accessibility 95+
+
+Best Practices 90+
+
+SEO 90+
+
+10) Deployment requirements
+
+Must deploy from Replit Deployments with a stable public URL
+
+All environment variables must be set in deployment environment
+
+Build must be reproducible with one command
+
+11) Acceptance criteria (definition of done)
+
+The website is “done” when:
+
+A user can understand products and requirements in under 2 minutes.
+
+A user can complete pre-qual in under 3 minutes on mobile.
+
+Ineligible users are blocked by hard gates with clear messaging.
+
+Qualified users are routed to the correct application link.
+
+Leads save to DB. Admin can view them securely.
+
+No PII appears in logs.
+
+Privacy and Terms pages exist and are linked in footer.
+
+The site works on mobile, tablet, desktop. No broken layout.
+
+12) Implementation note to keep you in control
+
+Create a single content.ts and rules.ts so you can change:
+
+product terms
+
+thresholds
+
+copy blocks
+without touching the rest of the code.
