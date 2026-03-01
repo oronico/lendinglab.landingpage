@@ -33,35 +33,35 @@
 }
 
 :root {
-  --background: 40 33% 98%; /* Warm off-white (Cream) */
-  --foreground: 20 14% 15%; /* Warm dark brown/gray */
-  
-  --card: 0 0% 100%;
-  --card-foreground: 20 14% 15%;
-  
-  --popover: 0 0% 100%;
-  --popover-foreground: 20 14% 15%;
-  
-  --primary: 215 50% 23%; /* Professional Warm Navy */
-  --primary-foreground: 40 33% 98%;
-  
-  --secondary: 32 90% 55%; /* Warm Golden Orange Accent */
-  --secondary-foreground: 20 14% 15%;
-  
-  --muted: 40 20% 94%; /* Warm muted gray */
-  --muted-foreground: 25 10% 45%;
-  
-  --accent: 35 30% 92%;
-  --accent-foreground: 20 14% 15%;
-  
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 40 33% 98%;
+  --background: 210 20% 98%;
+  --foreground: 220 20% 10%;
 
-  --border: 40 15% 85%;
-  --input: 40 15% 85%;
-  --ring: 32 90% 55%;
-  
-  --radius: 0.75rem;
+  --card: 0 0% 100%;
+  --card-foreground: 220 20% 10%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 220 20% 10%;
+
+  --primary: 220 40% 20%;
+  --primary-foreground: 210 20% 98%;
+
+  --secondary: 185 60% 38%;
+  --secondary-foreground: 0 0% 100%;
+
+  --muted: 210 15% 93%;
+  --muted-foreground: 215 15% 45%;
+
+  --accent: 210 20% 95%;
+  --accent-foreground: 220 20% 10%;
+
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 214 20% 88%;
+  --input: 214 20% 88%;
+  --ring: 185 60% 38%;
+
+  --radius: 0.625rem;
 }
 
 @layer base {

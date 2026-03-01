@@ -6,7 +6,7 @@ export interface IStorage {
   createLead(lead: InsertLead): Promise<Lead>;
   getLeads(): Promise<Lead[]>;
   getLead(id: string): Promise<Lead | undefined>;
-  findDuplicates(ein: string, email: string, schoolName: string): Promise<Lead[]>;
+  findDuplicates(email: string, schoolName: string): Promise<Lead[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -24,12 +24,11 @@ export class DatabaseStorage implements IStorage {
     return result;
   }
 
-  async findDuplicates(ein: string, email: string, schoolName: string): Promise<Lead[]> {
+  async findDuplicates(email: string, schoolName: string): Promise<Lead[]> {
     return db.select().from(leads).where(
       or(
-        eq(leads.ein, ein),
-        eq(leads.email, email),
-        eq(leads.schoolLegalName, schoolName)
+        eq(leads.contactEmail, email),
+        eq(leads.schoolName, schoolName)
       )
     );
   }

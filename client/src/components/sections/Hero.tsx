@@ -1,100 +1,60 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, GraduationCap, DollarSign, TrendingUp, ShieldCheck } from "lucide-react";
-import heroImage from "@/assets/images/hero-classroom.jpg";
+import { ArrowRight } from "lucide-react";
+import { Link } from "wouter";
+import { CONTENT } from "@shared/content";
+import { RULES } from "@shared/rules";
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-background pt-16 md:pt-24 lg:pt-32 pb-16">
+    <section className="relative overflow-hidden bg-background pt-20 md:pt-28 lg:pt-36 pb-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center rounded-full border border-secondary/30 px-3 py-1 text-sm font-semibold transition-colors bg-white text-secondary shadow-sm mb-6" data-testid="badge-fund">
-              Backed by Building Hope Impact Fund
-            </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight text-primary mb-6 leading-[1.1]" data-testid="text-hero-title">
-              Term Loans up to $50K & Revolving Lines of Credit up to $100K for school founders.
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed" data-testid="text-hero-subtitle">
-              Two flexible products — 3–6% interest, 2% origination fee, no prepayment penalty. Below-market capital paired with business infrastructure to help microschools and early-stage education entrepreneurs launch, stabilize, and grow.
-            </p>
-
-            <div className="grid sm:grid-cols-2 gap-4 mb-8">
-              <div className="rounded-xl border bg-white p-4 shadow-sm" data-testid="card-term-loan">
-                <h3 className="font-display font-bold text-primary mb-1">Term Loan</h3>
-                <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>$10K–$50K in $10K increments</li>
-                  <li>3–5 year terms, paid quarterly</li>
-                  <li>3–6% interest · 2% origination fee</li>
-                </ul>
-              </div>
-              <div className="rounded-xl border bg-white p-4 shadow-sm" data-testid="card-revolving-loc">
-                <h3 className="font-display font-bold text-primary mb-1">Revolving Line of Credit</h3>
-                <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>Up to $100K commitment</li>
-                  <li>12-month draw period</li>
-                  <li>Interest only on drawn balance</li>
-                </ul>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-secondary hover:bg-secondary/90 text-white h-14 px-8 text-base font-bold rounded-full shadow-lg transition-transform hover:-translate-y-0.5" asChild data-testid="button-check-eligibility">
-                <a href="#apply">
-                  Check Eligibility
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </a>
-              </Button>
-              <Button size="lg" variant="outline" className="h-14 px-8 text-base font-bold border-border/80 bg-white hover:bg-muted/50 rounded-full" asChild data-testid="button-view-loan-terms">
-                <a href="#loan-details">
-                  View Loan Terms
-                </a>
-              </Button>
-            </div>
-            
-            <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t">
-              <div data-testid="stat-deployed">
-                <div className="flex items-center gap-2 text-primary mb-2">
-                  <DollarSign className="h-5 w-5" />
-                  <h3 className="font-bold text-2xl font-display">$410K</h3>
-                </div>
-                <p className="text-sm text-muted-foreground">Deployed in Cycle 1</p>
-              </div>
-              <div data-testid="stat-schools">
-                <div className="flex items-center gap-2 text-primary mb-2">
-                  <GraduationCap className="h-5 w-5" />
-                  <h3 className="font-bold text-2xl font-display">11</h3>
-                </div>
-                <p className="text-sm text-muted-foreground">Schools across 8 states</p>
-              </div>
-              <div data-testid="stat-repayment">
-                <div className="flex items-center gap-2 text-primary mb-2">
-                  <TrendingUp className="h-5 w-5" />
-                  <h3 className="font-bold text-2xl font-display">100%</h3>
-                </div>
-                <p className="text-sm text-muted-foreground">On-time repayment</p>
-              </div>
-              <div data-testid="stat-terms">
-                <div className="flex items-center gap-2 text-primary mb-2">
-                  <ShieldCheck className="h-5 w-5" />
-                  <h3 className="font-bold text-2xl font-display">3–6%</h3>
-                </div>
-                <p className="text-sm text-muted-foreground">No prepayment penalty</p>
-              </div>
-            </div>
+        <div className="max-w-3xl mx-auto text-center">
+          <div className="inline-flex items-center rounded-full border border-secondary/20 px-4 py-1.5 text-sm font-medium bg-secondary/5 text-secondary mb-8" data-testid="badge-fund">
+            {CONTENT.hero.badge}
           </div>
-          
-          <div className="relative lg:ml-auto w-full max-w-[600px]">
-            <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl relative z-10 border-8 border-white">
-              <img 
-                src={heroImage} 
-                alt="Modern diverse microschool classroom" 
-                className="object-cover w-full h-full"
-              />
+
+          <p className="text-sm font-semibold tracking-widest text-secondary uppercase mb-4" data-testid="text-hero-cycle">
+            Cycle {RULES.CYCLE} Lending Lab
+          </p>
+
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight text-primary mb-6 leading-[1.1]" data-testid="text-hero-title">
+            {CONTENT.hero.headline}
+          </h1>
+
+          <p className="text-lg md:text-xl text-muted-foreground mb-10 leading-relaxed max-w-2xl mx-auto" data-testid="text-hero-subtitle">
+            {CONTENT.hero.subhead}
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+            <Button size="lg" className="bg-secondary hover:bg-secondary/90 text-white h-14 px-8 text-base font-bold rounded-full shadow-lg transition-transform hover:-translate-y-0.5" asChild data-testid="button-check-eligibility">
+              <Link href="/eligibility">
+                {CONTENT.hero.cta1}
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" className="h-14 px-8 text-base font-bold border-border/80 bg-white hover:bg-muted/50 rounded-full" asChild data-testid="button-prequal">
+              <Link href="/prequal">
+                {CONTENT.hero.cta2}
+              </Link>
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 pt-10 border-t border-border/60">
+            <div data-testid="stat-deployed">
+              <p className="text-2xl font-bold font-display text-primary">${(RULES.CYCLE1_DEPLOYED / 1000).toFixed(0)}K</p>
+              <p className="text-sm text-muted-foreground mt-1">Deployed in Cycle 1</p>
             </div>
-            <div className="absolute inset-0 bg-secondary/10 translate-x-4 translate-y-4 rounded-2xl -z-10"></div>
-            <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-xl shadow-xl z-20 max-w-[240px] border border-border/50">
-              <p className="text-sm font-medium text-primary mb-1">Permanent Infrastructure</p>
-              <p className="text-xs text-muted-foreground">This is not a pilot. It is a permanent lending program that scales with the fund.</p>
+            <div data-testid="stat-schools">
+              <p className="text-2xl font-bold font-display text-primary">{RULES.CYCLE1_SCHOOLS}</p>
+              <p className="text-sm text-muted-foreground mt-1">Schools funded</p>
+            </div>
+            <div data-testid="stat-states">
+              <p className="text-2xl font-bold font-display text-primary">{RULES.CYCLE1_STATES}</p>
+              <p className="text-sm text-muted-foreground mt-1">States</p>
+            </div>
+            <div data-testid="stat-repayment">
+              <p className="text-2xl font-bold font-display text-primary">{RULES.CYCLE1_REPAYMENT_RATE}%</p>
+              <p className="text-sm text-muted-foreground mt-1">On-time repayment</p>
             </div>
           </div>
         </div>

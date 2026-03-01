@@ -1,39 +1,34 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 
 export function Header() {
+  const [location] = useLocation();
+  const isHome = location === "/";
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
-        <div className="flex gap-6 md:gap-10">
-          <Link href="/" className="flex items-center space-x-2">
-            <span className="font-display font-bold text-2xl tracking-tight text-primary">The Lending Lab</span>
-          </Link>
-          <nav className="hidden md:flex gap-8 items-center ml-8">
-            <a href="#eligibility" className="text-sm font-semibold text-muted-foreground transition-colors hover:text-primary">
-              Eligibility
-            </a>
-            <a href="#how-it-works" className="text-sm font-semibold text-muted-foreground transition-colors hover:text-primary">
-              How It Works
-            </a>
-            <a href="#loan-details" className="text-sm font-semibold text-muted-foreground transition-colors hover:text-primary">
-              Loan Details
-            </a>
-            <a href="#faq" className="text-sm font-semibold text-muted-foreground transition-colors hover:text-primary">
-              FAQ
-            </a>
-          </nav>
-        </div>
-        <div className="flex items-center gap-4">
-          <Button asChild variant="ghost" className="hidden md:flex font-semibold">
-            <a href="https://www.buildinghope.org/about-building-hope-impact-fund" target="_blank" rel="noreferrer">
-              Building Hope Impact Fund
-            </a>
-          </Button>
-          <Button asChild className="bg-secondary hover:bg-secondary/90 text-white font-bold shadow-md rounded-full px-6 h-11" data-testid="button-get-started">
-            <a href="#apply">Get Started</a>
-          </Button>
-        </div>
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-white/90 backdrop-blur-md">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+        <Link href="/" className="flex flex-col">
+          <span className="font-display font-bold text-xl tracking-tight text-primary" data-testid="text-logo">The Lending Lab</span>
+          <span className="text-[10px] text-muted-foreground font-medium -mt-0.5">by Building Hope Impact Fund</span>
+        </Link>
+        <nav className="hidden md:flex gap-6 items-center">
+          {isHome ? (
+            <>
+              <a href="#products" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Products</a>
+              <a href="#how-it-works" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">How It Works</a>
+              <a href="#faq" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">FAQ</a>
+            </>
+          ) : (
+            <>
+              <Link href="/" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Home</Link>
+              <Link href="/eligibility" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Eligibility</Link>
+            </>
+          )}
+        </nav>
+        <Button asChild className="bg-secondary hover:bg-secondary/90 text-white font-bold shadow-sm rounded-full px-5 h-10 text-sm" data-testid="button-get-started">
+          <Link href="/eligibility">Check Eligibility</Link>
+        </Button>
       </div>
     </header>
   );

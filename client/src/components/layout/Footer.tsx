@@ -1,48 +1,45 @@
+import { Link } from "wouter";
+import { RULES } from "@shared/rules";
+
 export function Footer() {
   return (
-    <footer className="border-t border-border/50 bg-white">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-          <div className="md:col-span-2">
-            <h3 className="font-display font-bold text-2xl mb-4 text-primary">The Lending Lab</h3>
-            <p className="text-muted-foreground mb-6 max-w-sm leading-relaxed">
-              Flexible financing for microschool founders: Term Loans ($10K–$50K) and Revolving Lines of Credit (up to $100K). 3–6% interest, 2% origination fee, no prepayment penalty.
+    <footer className="border-t bg-white">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <h3 className="font-display font-bold text-lg mb-2 text-primary">The Lending Lab</h3>
+            <p className="text-sm text-muted-foreground mb-3">
+              Capital for schools that run like a business. A program of {RULES.PHILANTHROPY.fund}.
             </p>
-            <p className="text-sm text-muted-foreground">
-              Backed by the <a href="https://www.buildinghope.org/about-building-hope-impact-fund" target="_blank" rel="noreferrer" className="text-secondary hover:underline font-medium">Building Hope Impact Fund</a>, a 501(c)(3) organization.
+            <p className="text-xs text-muted-foreground">
+              Powered by {RULES.PHILANTHROPY.partners.join(" & ")}.
             </p>
           </div>
           <div>
-            <h4 className="font-bold mb-6 text-primary tracking-wide uppercase text-sm">Quick Links</h4>
-            <ul className="space-y-4 text-muted-foreground font-medium">
-              <li><a href="#eligibility" className="hover:text-secondary transition-colors">Eligibility Checklist</a></li>
-              <li><a href="#apply" className="hover:text-secondary transition-colors">Pre-Qualify</a></li>
-              <li><a href="#how-it-works" className="hover:text-secondary transition-colors">How It Works</a></li>
-              <li><a href="#loan-details" className="hover:text-secondary transition-colors">Loan Details</a></li>
-              <li><a href="#faq" className="hover:text-secondary transition-colors">FAQ</a></li>
+            <h4 className="font-bold text-sm text-primary mb-3">Links</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li><Link href="/eligibility" className="hover:text-secondary transition-colors">Eligibility</Link></li>
+              <li><Link href="/prequal" className="hover:text-secondary transition-colors">Pre-Qualify</Link></li>
+              <li><Link href="/privacy" className="hover:text-secondary transition-colors">Privacy</Link></li>
+              <li><Link href="/terms" className="hover:text-secondary transition-colors">Terms</Link></li>
               <li><a href="https://schoolstack.ai" target="_blank" rel="noreferrer" className="hover:text-secondary transition-colors">SchoolStack.ai</a></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-bold mb-6 text-primary tracking-wide uppercase text-sm">Contact</h4>
-            <ul className="space-y-4 text-muted-foreground font-medium">
-              <li>
-                <span className="block text-primary font-semibold">Allison Serafin</span>
-                <span className="text-sm">Lending Lab Program Manager</span>
-              </li>
-              <li><a href="mailto:aserafin@bhope.org" className="hover:text-secondary transition-colors" data-testid="link-email-allison">aserafin@bhope.org</a></li>
-              <li><a href="tel:7025399230" className="hover:text-secondary transition-colors" data-testid="link-phone-allison">(702) 539-9230</a></li>
-              <li className="pt-2 border-t border-border/30">
-                <span className="block text-primary font-semibold">Amy Bevilacqua</span>
-                <span className="text-sm">President, Building Hope Impact Fund</span>
-              </li>
-              <li><a href="mailto:abevilacqua@bhope.org" className="hover:text-secondary transition-colors">abevilacqua@bhope.org</a></li>
+            <h4 className="font-bold text-sm text-primary mb-3">Contact</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li className="font-medium text-primary">{RULES.CONTACT.name}</li>
+              <li><a href={`mailto:${RULES.CONTACT.email}`} className="hover:text-secondary transition-colors">{RULES.CONTACT.email}</a></li>
+              <li><a href={`tel:${RULES.CONTACT.phone.replace(/[^\d]/g, '')}`} className="hover:text-secondary transition-colors">{RULES.CONTACT.phone}</a></li>
             </ul>
           </div>
         </div>
-        <div className="mt-16 pt-8 border-t border-border/50 flex flex-col md:flex-row justify-between items-center gap-4 text-sm font-medium text-muted-foreground/70">
-          <p>&copy; {new Date().getFullYear()} Building Hope Impact Fund. A 501(c)(3) organization.</p>
-          <p>Washington, DC</p>
+        <div className="mt-8 pt-6 border-t text-xs text-muted-foreground flex flex-col sm:flex-row justify-between gap-2">
+          <p>&copy; {new Date().getFullYear()} {RULES.PHILANTHROPY.fund}. Washington, DC.</p>
+          <div className="flex gap-4">
+            <Link href="/privacy" className="hover:text-secondary">Privacy</Link>
+            <Link href="/terms" className="hover:text-secondary">Terms</Link>
+          </div>
         </div>
       </div>
     </footer>
