@@ -59,7 +59,7 @@ export function LoanDetails() {
                 </div>
                 <div>
                   <h4 className="font-semibold text-lg mb-1">Cycle 2 Terms</h4>
-                  <p className="text-muted-foreground">Personal guarantee and credit check required. 2% origination fees. No prepayment penalties. Quarterly auto-payments remove friction.</p>
+                  <p className="text-muted-foreground">Personal guarantee and credit check required. 2% origination fees. No prepayment fees. Plaid integration supports autodebit quarterly payments for term loans.</p>
                 </div>
               </div>
             </CardContent>

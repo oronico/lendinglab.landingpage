@@ -23,10 +23,14 @@ const leadSchema = z.object({
 });
 
 const screeningSchema = z.object({
+  entityType: z.enum(["llc", "nonprofit", "scorp", "soleprop"], { 
+    required_error: "Please select your entity type" 
+  }),
   hasFacility: z.enum(["yes", "no"]),
   enrollmentSize: z.string().min(1, "Please select an option"),
   operatingYears: z.enum(["0", "1", "2", "3+"]),
   monthlyBreakevenKnown: z.enum(["yes", "no"]),
+  annualRevenue: z.coerce.number().min(0, "Revenue cannot be negative"),
   loanAmount: z.coerce.number().min(5000).max(150000),
   loanPurpose: z.string().min(10, "Please describe the purpose of the loan"),
 });
@@ -37,6 +41,7 @@ type ScreeningFormValues = z.infer<typeof screeningSchema>;
 export function ScreeningFlow() {
   const [step, setStep] = useState<"intro" | "lead" | "screening" | "qualified" | "unqualified">("intro");
   const [userData, setUserData] = useState<LeadFormValues | null>(null);
+  const [rejectionReasons, setRejectionReasons] = useState<string[]>([]);
 
   const leadForm = useForm<LeadFormValues>({
     resolver: zodResolver(leadSchema),
@@ -53,10 +58,12 @@ export function ScreeningFlow() {
   const screeningForm = useForm<ScreeningFormValues>({
     resolver: zodResolver(screeningSchema),
     defaultValues: {
+      entityType: undefined,
       hasFacility: undefined,
       enrollmentSize: "",
       operatingYears: undefined,
       monthlyBreakevenKnown: undefined,
+      annualRevenue: 0,
       loanAmount: 25000,
       loanPurpose: "",
     }
@@ -68,16 +75,38 @@ export function ScreeningFlow() {
   };
 
   const onScreeningSubmit = (data: ScreeningFormValues) => {
-    // Simple mock qualification logic based on the 4 pillars
-    // Must know breakeven and either have a facility or operating history
-    const isQualified = 
-      data.monthlyBreakevenKnown === "yes" && 
-      (data.hasFacility === "yes" || data.operatingYears !== "0");
-      
-    if (isQualified) {
-      setStep("qualified");
-    } else {
+    const reasons: string[] = [];
+
+    // Entity Type Checks
+    if (data.entityType === "scorp" || data.entityType === "soleprop") {
+      reasons.push("We currently only lend to LLCs and Non-profits. S-Corps and Sole Proprietorships are not eligible.");
+    }
+
+    // Year 0 Loan Limit
+    if (data.operatingYears === "0" && data.loanAmount > 10000) {
+      reasons.push("Year 0 schools (not yet open) are limited to a maximum loan amount of $10,000.");
+    }
+
+    // Four Pillars Basic Check
+    if (data.monthlyBreakevenKnown === "no") {
+      reasons.push("Understanding your exact monthly breakeven is critical. You must know the exact revenue needed to cover all costs.");
+    }
+    
+    if (data.hasFacility === "no" && data.operatingYears === "0") {
+      reasons.push("Securing an affordable facility is usually required before a loan can be approved for new schools.");
+    }
+
+    // Typically lenders look for a Debt Service Coverage Ratio (DSCR) around 1.2x to 1.25x.
+    // As a simple proxy for revenue requirement, we'll flag if the requested loan is significantly larger than their total revenue.
+    if (data.annualRevenue > 0 && data.loanAmount > data.annualRevenue * 0.5) {
+      reasons.push("The requested loan amount exceeds our standard loan-to-revenue ratio thresholds.");
+    }
+
+    if (reasons.length > 0) {
+      setRejectionReasons(reasons);
       setStep("unqualified");
+    } else {
+      setStep("qualified");
     }
   };
 
@@ -223,6 +252,41 @@ export function ScreeningFlow() {
                   
                   <FormField
                     control={screeningForm.control}
+                    name="entityType"
+                    render={({ field }) => (
+                      <FormItem className="space-y-3">
+                        <FormLabel className="text-base">What is your legal entity type?</FormLabel>
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            className="flex flex-col space-y-2"
+                          >
+                            <FormItem className="flex items-center space-x-3 space-y-0">
+                              <FormControl><RadioGroupItem value="llc" /></FormControl>
+                              <FormLabel className="font-normal">LLC (Limited Liability Company)</FormLabel>
+                            </FormItem>
+                            <FormItem className="flex items-center space-x-3 space-y-0">
+                              <FormControl><RadioGroupItem value="nonprofit" /></FormControl>
+                              <FormLabel className="font-normal">Non-Profit (501c3)</FormLabel>
+                            </FormItem>
+                            <FormItem className="flex items-center space-x-3 space-y-0">
+                              <FormControl><RadioGroupItem value="scorp" /></FormControl>
+                              <FormLabel className="font-normal">S Corp</FormLabel>
+                            </FormItem>
+                            <FormItem className="flex items-center space-x-3 space-y-0">
+                              <FormControl><RadioGroupItem value="soleprop" /></FormControl>
+                              <FormLabel className="font-normal">Sole Proprietorship / Sole Practitioner</FormLabel>
+                            </FormItem>
+                          </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={screeningForm.control}
                     name="operatingYears"
                     render={({ field }) => (
                       <FormItem className="space-y-3">
@@ -231,7 +295,7 @@ export function ScreeningFlow() {
                           <RadioGroup
                             onValueChange={field.onChange}
                             defaultValue={field.value}
-                            className="flex flex-col space-y-1"
+                            className="flex flex-col space-y-2"
                           >
                             <FormItem className="flex items-center space-x-3 space-y-0">
                               <FormControl><RadioGroupItem value="0" /></FormControl>
@@ -266,7 +330,7 @@ export function ScreeningFlow() {
                           <RadioGroup
                             onValueChange={field.onChange}
                             defaultValue={field.value}
-                            className="flex flex-col space-y-1"
+                            className="flex flex-col space-y-2"
                           >
                             <FormItem className="flex items-center space-x-3 space-y-0">
                               <FormControl><RadioGroupItem value="yes" /></FormControl>
@@ -283,33 +347,47 @@ export function ScreeningFlow() {
                     )}
                   />
 
-                  <FormField
-                    control={screeningForm.control}
-                    name="monthlyBreakevenKnown"
-                    render={({ field }) => (
-                      <FormItem className="space-y-3">
-                        <FormLabel className="text-base">Do you know your exact monthly breakeven number?</FormLabel>
-                        <FormDescription>The exact revenue needed to cover all operational costs.</FormDescription>
-                        <FormControl>
-                          <RadioGroup
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            className="flex flex-col space-y-1"
-                          >
-                            <FormItem className="flex items-center space-x-3 space-y-0">
-                              <FormControl><RadioGroupItem value="yes" /></FormControl>
-                              <FormLabel className="font-normal">Yes, we have a detailed financial model</FormLabel>
-                            </FormItem>
-                            <FormItem className="flex items-center space-x-3 space-y-0">
-                              <FormControl><RadioGroupItem value="no" /></FormControl>
-                              <FormLabel className="font-normal">No / Not sure yet</FormLabel>
-                            </FormItem>
-                          </RadioGroup>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="grid sm:grid-cols-2 gap-6">
+                    <FormField
+                      control={screeningForm.control}
+                      name="monthlyBreakevenKnown"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel className="text-base">Do you know your exact monthly breakeven number?</FormLabel>
+                          <FormControl>
+                            <RadioGroup
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                              className="flex flex-col space-y-2"
+                            >
+                              <FormItem className="flex items-center space-x-3 space-y-0">
+                                <FormControl><RadioGroupItem value="yes" /></FormControl>
+                                <FormLabel className="font-normal">Yes, we have a financial model</FormLabel>
+                              </FormItem>
+                              <FormItem className="flex items-center space-x-3 space-y-0">
+                                <FormControl><RadioGroupItem value="no" /></FormControl>
+                                <FormLabel className="font-normal">No / Not sure yet</FormLabel>
+                              </FormItem>
+                            </RadioGroup>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={screeningForm.control}
+                      name="annualRevenue"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base">Projected/Current Annual Revenue ($)</FormLabel>
+                          <FormControl><Input type="number" {...field} /></FormControl>
+                          <FormDescription>Gross revenue from tuition and funding</FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
                   <div className="grid sm:grid-cols-2 gap-6">
                     <FormField
@@ -341,7 +419,7 @@ export function ScreeningFlow() {
                         <FormItem>
                           <FormLabel>Requested Loan Amount ($)</FormLabel>
                           <FormControl><Input type="number" {...field} /></FormControl>
-                          <FormDescription>$10K to $150K range</FormDescription>
+                          <FormDescription>$10K max for Year 0</FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -422,25 +500,25 @@ export function ScreeningFlow() {
             </CardHeader>
             <CardContent className="pb-10 px-8">
               <p className="text-lg text-muted-foreground mb-6">
-                Thank you for your interest, {userData?.firstName}. Based on your answers, it looks like your school needs a bit more preparation before applying for a loan.
+                Thank you for your interest, {userData?.firstName}. Based on your answers, your school does not currently meet our minimum underwriting requirements for this program.
               </p>
               
-              <div className="bg-muted/50 p-6 rounded-xl mb-8 text-left">
-                <h4 className="font-semibold mb-3">Our Microloan Pilot learned that readiness is key. We recommend focusing on:</h4>
-                <div className="space-y-4 text-sm text-muted-foreground">
-                  <div className="flex gap-3">
-                    <div className="font-bold text-primary whitespace-nowrap">Facility:</div>
-                    <div>Securing an affordable e-occupancy facility is often the biggest hurdle. Traditional NNN commercial leases are challenging for schools &lt;60 students.</div>
-                  </div>
-                  <div className="flex gap-3">
-                    <div className="font-bold text-primary whitespace-nowrap">Financials:</div>
-                    <div>Understanding your exact monthly breakeven is critical. You must know the exact revenue needed to cover all costs.</div>
-                  </div>
+              {rejectionReasons.length > 0 && (
+                <div className="bg-destructive/10 border border-destructive/20 p-6 rounded-xl mb-8 text-left">
+                  <h4 className="font-semibold text-destructive mb-3 flex items-center gap-2">
+                    <AlertCircle className="w-5 h-5" />
+                    Why you are currently ineligible:
+                  </h4>
+                  <ul className="space-y-2 text-sm text-foreground list-disc list-inside ml-2">
+                    {rejectionReasons.map((reason, index) => (
+                      <li key={index}>{reason}</li>
+                    ))}
+                  </ul>
                 </div>
-              </div>
+              )}
 
-              <p className="mb-8 font-medium">
-                We'd love to help you get ready. Sign up for SchoolStack.ai to build your financial fluency.
+              <p className="mb-8 font-medium text-muted-foreground">
+                We'd love to help you get ready for the future. Sign up for SchoolStack.ai to build your financial fluency and operational readiness.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
