@@ -290,7 +290,7 @@ export function ScreeningFlow() {
                       </h4>
                       <div className="flex gap-4 items-end">
                         <div className="flex-1">
-                          <FormLabel className="text-sm font-medium mb-2 block">Employer Identification Number (EIN)</FormLabel>
+                          <label className="text-sm font-medium mb-2 block">Employer Identification Number (EIN)</label>
                           <Input 
                             placeholder="XX-XXXXXXX" 
                             onChange={(e) => {
