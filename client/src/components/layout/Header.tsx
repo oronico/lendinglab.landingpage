@@ -10,15 +10,18 @@ export function Header() {
             <span className="font-display font-bold text-2xl tracking-tight text-primary">The Lending Lab</span>
           </Link>
           <nav className="hidden md:flex gap-8 items-center ml-8">
-            <Link href="#opportunity" className="text-sm font-semibold text-muted-foreground transition-colors hover:text-primary">
-              The Opportunity
-            </Link>
-            <Link href="#loan-details" className="text-sm font-semibold text-muted-foreground transition-colors hover:text-primary">
+            <a href="#eligibility" className="text-sm font-semibold text-muted-foreground transition-colors hover:text-primary">
+              Eligibility
+            </a>
+            <a href="#how-it-works" className="text-sm font-semibold text-muted-foreground transition-colors hover:text-primary">
+              How It Works
+            </a>
+            <a href="#loan-details" className="text-sm font-semibold text-muted-foreground transition-colors hover:text-primary">
               Loan Details
-            </Link>
-            <Link href="#faq" className="text-sm font-semibold text-muted-foreground transition-colors hover:text-primary">
+            </a>
+            <a href="#faq" className="text-sm font-semibold text-muted-foreground transition-colors hover:text-primary">
               FAQ
-            </Link>
+            </a>
           </nav>
         </div>
         <div className="flex items-center gap-4">
@@ -27,8 +30,8 @@ export function Header() {
               Building Hope Impact Fund
             </a>
           </Button>
-          <Button asChild className="bg-secondary hover:bg-secondary/90 text-white font-bold shadow-md rounded-full px-6 h-11">
-            <Link href="#apply">Get Started</Link>
+          <Button asChild className="bg-secondary hover:bg-secondary/90 text-white font-bold shadow-md rounded-full px-6 h-11" data-testid="button-get-started">
+            <a href="#apply">Get Started</a>
           </Button>
         </div>
       </div>

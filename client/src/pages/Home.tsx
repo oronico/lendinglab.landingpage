@@ -1,10 +1,11 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/sections/Hero";
-import { Opportunity } from "@/components/sections/Opportunity";
+import { EligibilityChecklist } from "@/components/sections/EligibilityChecklist";
 import { LoanDetails } from "@/components/sections/LoanDetails";
 import { FAQ } from "@/components/sections/FAQ";
 import { ScreeningFlow } from "@/components/sections/ScreeningFlow";
+import { HowItWorks } from "@/components/sections/HowItWorks";
 
 export default function Home() {
   return (
@@ -12,10 +13,11 @@ export default function Home() {
       <Header />
       <main className="flex-1">
         <Hero />
-        <Opportunity />
+        <EligibilityChecklist />
+        <ScreeningFlow />
+        <HowItWorks />
         <LoanDetails />
         <FAQ />
-        <ScreeningFlow />
       </main>
       <Footer />
     </div>

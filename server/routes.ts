@@ -12,7 +12,25 @@ export async function registerRoutes(
     if (!parsed.success) {
       return res.status(400).json({ message: "Invalid lead data", errors: parsed.error.flatten() });
     }
-    const lead = await storage.createLead(parsed.data);
+
+    const data = parsed.data;
+
+    const duplicates = await storage.findDuplicates(
+      data.ein,
+      data.email,
+      data.schoolLegalName
+    );
+
+    if (duplicates.length > 0) {
+      const existingFlags = Array.isArray(data.flags) ? data.flags : [];
+      existingFlags.push("WARNING: Duplicate detected — same EIN, email, or school name already exists in database");
+      data.flags = existingFlags;
+      if (data.status === "qualified") {
+        data.status = "flagged";
+      }
+    }
+
+    const lead = await storage.createLead(data);
     return res.status(201).json(lead);
   });
 
