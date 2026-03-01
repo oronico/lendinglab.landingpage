@@ -20,7 +20,7 @@ const steps = [
     subtitle: "Screening Wizard",
     duration: "~10–15 min",
     icon: Search,
-    description: "Walk through our guided screening wizard that collects key details about your school, enrollment, facility, and finances — including an inline revenue calculator.",
+    description: "Walk through our guided screening wizard to select your product (Term Loan or Revolving Line of Credit), provide school details, enrollment, facility, and financial information — including an inline revenue calculator.",
     details: [
       "School info & enrollment data",
       "Revenue calculator & projections",
@@ -51,7 +51,7 @@ const steps = [
     details: [
       "Upload financials & contracts",
       "Provide reference contact info",
-      "Select loan amount & use of funds",
+      "Select product type & loan amount",
       "Connect Plaid & QuickBooks Online",
     ],
   },

@@ -16,7 +16,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 
-type SchoolStage = "year0" | "year1plus" | null;
+type SchoolStage = "year0" | "year1" | "year2plus" | null;
 type EntityType = "llc" | "corporation" | "nonprofit" | null;
 
 interface ChecklistItem {
@@ -67,14 +67,13 @@ const checklistItems: ChecklistItem[] = [
   },
   {
     id: "tuition-contracts",
-    label: "Has signed tuition contracts from enrolled families",
+    label: "Has signed tuition contracts from enrolled families specifying the required enrollment deposit (not handbooks)",
     category: "Students & Program",
   },
   {
     id: "enrollment-deposits",
-    label: "Has collected $25+ enrollment deposits from at least 10 families",
+    label: "All enrolled families have paid the enrollment deposit specified in their signed tuition contract",
     category: "Students & Program",
-    conditions: { stage: ["year0"] },
   },
   {
     id: "parent-reference",
@@ -87,8 +86,8 @@ const checklistItems: ChecklistItem[] = [
     category: "Facility",
   },
   {
-    id: "not-residential",
-    label: "Does NOT operate in a residential dwelling",
+    id: "residential-dwelling",
+    label: "If operating from a residential dwelling, you own the home and can provide the deed",
     category: "Facility",
   },
   {
@@ -103,27 +102,25 @@ const checklistItems: ChecklistItem[] = [
   },
   {
     id: "rent-utilities-current",
-    label: "All rent and utilities paid on time",
+    label: "All rent and utilities paid on time (applies to all applicants with a lease)",
     category: "Financial Discipline",
-    conditions: { stage: ["year1plus"] },
   },
   {
     id: "formal-payroll",
     label: "All staff paid through formal payroll (e.g., Gusto) — not Venmo/Zelle/Cash App/cash",
     category: "Financial Discipline",
-    conditions: { stage: ["year1plus"] },
   },
   {
     id: "financial-docs",
-    label: "Can provide: Balance sheet, P&L, Cash forecast, YTD financials",
+    label: "Can provide: Tax filings, EOY balance sheet, P&L, and Cash flow statement",
     category: "Financial Discipline",
-    conditions: { stage: ["year1plus"] },
+    conditions: { stage: ["year2plus"] },
   },
   {
     id: "tax-return",
     label: "Can provide most recent tax return",
     category: "Financial Discipline",
-    conditions: { stage: ["year1plus"] },
+    conditions: { stage: ["year2plus"] },
   },
   {
     id: "personal-financial-stmt",
@@ -150,13 +147,13 @@ const checklistItems: ChecklistItem[] = [
   },
   {
     id: "board-coapplicant",
-    label: "A board member will serve as co-applicant",
+    label: "An independent board member will serve as co-applicant (cannot be an employee, contractor, or related to the school leader)",
     category: "Governance",
     conditions: { entity: ["nonprofit"] },
   },
   {
     id: "liability-insurance",
-    label: "Has or is pursuing general liability insurance",
+    label: "Has or will obtain at least $2M/$1M general liability insurance",
     category: "Compliance & Verification",
   },
   {
@@ -167,6 +164,11 @@ const checklistItems: ChecklistItem[] = [
   {
     id: "background-check",
     label: "Willing to consent to a criminal background check",
+    category: "Compliance & Verification",
+  },
+  {
+    id: "credit-check",
+    label: "Willing to consent to a credit check",
     category: "Compliance & Verification",
   },
 ];
@@ -241,7 +243,7 @@ export function EligibilityChecklist() {
           <CardContent className="space-y-6">
             <div>
               <Label className="text-sm font-semibold mb-3 block" data-testid="label-school-stage">
-                Is your school currently operating or pre-launch (Year 0)?
+                How long has your school been operating?
               </Label>
               <RadioGroup
                 value={stage ?? ""}
@@ -264,13 +266,23 @@ export function EligibilityChecklist() {
                   </div>
                 </Label>
                 <Label
-                  className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${stage === "year1plus" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`}
-                  htmlFor="stage-year1plus"
+                  className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${stage === "year1" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`}
+                  htmlFor="stage-year1"
                 >
-                  <RadioGroupItem value="year1plus" id="stage-year1plus" data-testid="radio-stage-year1plus" />
+                  <RadioGroupItem value="year1" id="stage-year1" data-testid="radio-stage-year1" />
                   <div>
-                    <span className="font-medium">Year 1+</span>
-                    <p className="text-xs text-muted-foreground">Currently serving students</p>
+                    <span className="font-medium">Year 1</span>
+                    <p className="text-xs text-muted-foreground">First year serving students</p>
+                  </div>
+                </Label>
+                <Label
+                  className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${stage === "year2plus" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`}
+                  htmlFor="stage-year2plus"
+                >
+                  <RadioGroupItem value="year2plus" id="stage-year2plus" data-testid="radio-stage-year2plus" />
+                  <div>
+                    <span className="font-medium">Year 2+</span>
+                    <p className="text-xs text-muted-foreground">Operating for 2 or more years</p>
                   </div>
                 </Label>
               </RadioGroup>
@@ -350,8 +362,8 @@ export function EligibilityChecklist() {
                             {item.conditions?.stage?.[0] === "year0" && (
                               <span className="ml-2 text-xs font-medium text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">Year 0 only</span>
                             )}
-                            {item.conditions?.stage?.[0] === "year1plus" && (
-                              <span className="ml-2 text-xs font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">Year 1+ only</span>
+                            {item.conditions?.stage?.[0] === "year2plus" && (
+                              <span className="ml-2 text-xs font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">Year 2+ only</span>
                             )}
                             {item.conditions?.entity?.[0] === "nonprofit" && (
                               <span className="ml-2 text-xs font-medium text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded">Nonprofit only</span>

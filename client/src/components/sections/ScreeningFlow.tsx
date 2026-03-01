@@ -15,7 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   CheckCircle2, AlertCircle, ArrowRight, ArrowLeft, Building2, School, Loader2,
-  AlertTriangle, XCircle, FileText, ExternalLink, Calculator, Users, Home, DollarSign
+  AlertTriangle, XCircle, FileText, ExternalLink, Calculator, Users, Home, DollarSign, CreditCard
 } from "lucide-react";
 
 const US_STATES = [
@@ -43,22 +43,11 @@ const USE_OF_FUNDS_OPTIONS = [
   "Training & Professional Development","Other"
 ];
 
-const LOAN_AMOUNTS = [5000,10000,15000,20000,25000,30000,35000,40000,45000,50000];
-
-const PAYMENT_SCHEDULE: Record<number, { term: string; y1: string; y2: string; y3: string }> = {
-  5000:  { term: "3 years", y1: "$37.50/qtr",  y2: "$341.89/qtr",   y3: "$959.90/qtr" },
-  10000: { term: "3 years", y1: "$75.00/qtr",  y2: "$683.78/qtr",   y3: "$1,919.80/qtr" },
-  15000: { term: "4 years", y1: "$112.50/qtr", y2: "$712.14/qtr",   y3: "$1,625.30/qtr" },
-  20000: { term: "4 years", y1: "$150.00/qtr", y2: "$949.51/qtr",   y3: "$2,167.07/qtr" },
-  25000: { term: "4 years", y1: "$187.50/qtr", y2: "$1,186.89/qtr", y3: "$2,708.84/qtr" },
-  30000: { term: "5 years", y1: "$225.00/qtr", y2: "$1,110.88/qtr", y3: "$2,310.15/qtr" },
-  35000: { term: "5 years", y1: "$262.50/qtr", y2: "$1,296.03/qtr", y3: "$2,695.18/qtr" },
-  40000: { term: "5 years", y1: "$300.00/qtr", y2: "$1,481.18/qtr", y3: "$3,080.21/qtr" },
-  45000: { term: "5 years", y1: "$337.50/qtr", y2: "$1,666.32/qtr", y3: "$3,465.23/qtr" },
-  50000: { term: "5 years", y1: "$375.00/qtr", y2: "$1,851.47/qtr", y3: "$3,850.26/qtr" },
-};
+const TERM_LOAN_AMOUNTS = [10000, 20000, 30000, 40000, 50000];
+const LOC_AMOUNTS = [10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000];
 
 const step1Schema = z.object({
+  productType: z.enum(["term_loan", "line_of_credit"], { required_error: "Please select a product" }),
   firstName: z.string().min(2, "First name is required"),
   lastName: z.string().min(2, "Last name is required"),
   email: z.string().email("Valid email is required"),
@@ -83,11 +72,12 @@ const step1Schema = z.object({
 const step2Schema = z.object({
   projectedEnrollment: z.coerce.number().min(10, "Minimum 10 students").max(100, "Maximum 100 students"),
   tuitionContracts: z.coerce.number().min(0, "Cannot be negative"),
-  enrollmentDeposits: z.coerce.number().min(0).optional(),
+  enrollmentDeposits: z.coerce.number().min(0, "Cannot be negative"),
   tuitionPerStudent: z.coerce.number().min(1, "Tuition amount is required"),
   revenueSources: z.string().optional(),
   waitlistCount: z.coerce.number().min(0).optional(),
   retentionRate: z.coerce.number().min(0).max(100).optional(),
+  attritionRate: z.coerce.number().min(0).max(100).optional(),
   priorYearEnrollment: z.coerce.number().min(0).optional(),
   parentRefName: z.string().min(2, "Parent reference name is required"),
   parentRefEmail: z.string().email("Valid email required for parent reference"),
@@ -103,8 +93,11 @@ const step3Schema = z.object({
   fireInspection: z.enum(["yes", "no"], { required_error: "Please select" }),
   fireInspectionDate: z.string().optional(),
   certificateOfOccupancy: z.enum(["yes", "no"], { required_error: "Please select" }),
-  insuranceStatus: z.enum(["yes", "pursuing", "no"], { required_error: "Please select" }),
+  insuranceStatus: z.enum(["yes_2m_1m", "will_obtain", "no"], { required_error: "Please select" }),
   residentialDwelling: z.enum(["yes", "no"], { required_error: "Please select" }),
+  ownsHome: z.string().optional(),
+  canSubmitDeed: z.string().optional(),
+  rentUtilitiesCurrent: z.string().optional(),
   stateRegistration: z.string().optional(),
   boardRefName: z.string().min(2, "Board member reference name is required"),
   boardRefEmail: z.string().email("Valid email required"),
@@ -132,9 +125,12 @@ const step4Schema = z.object({
 });
 
 const step5Schema = z.object({
-  loanAmount: z.coerce.number().min(5000).max(50000),
+  loanAmount: z.coerce.number().min(10000),
   projectedRevenue: z.coerce.number().min(1, "Projected revenue is required"),
   useOfFunds: z.string().default(""),
+  locIntendedUse: z.string().optional(),
+  locCleanupAcknowledged: z.string().optional(),
+  locNoAdditionalDebt: z.string().optional(),
 });
 
 type Step = "intro" | "step1" | "step2" | "step3" | "step4" | "step5" | "earlyStop" | "qualified" | "flagged" | "disqualified";
@@ -162,7 +158,7 @@ export function ScreeningFlow() {
   const step1Form = useForm<z.infer<typeof step1Schema>>({
     resolver: zodResolver(step1Schema),
     defaultValues: {
-      firstName: "", lastName: "", email: "", phone: "",
+      productType: undefined, firstName: "", lastName: "", email: "", phone: "",
       schoolLegalName: "", dba: "", schoolWebsite: "", state: "",
       entityType: undefined, ein: "", schoolYear: undefined, schoolType: "",
       networkAffiliation: "", boardCoApplicantName: "", boardCoApplicantEmail: "",
@@ -175,7 +171,8 @@ export function ScreeningFlow() {
     defaultValues: {
       projectedEnrollment: undefined, tuitionContracts: undefined, enrollmentDeposits: undefined,
       tuitionPerStudent: undefined, waitlistCount: undefined, retentionRate: undefined,
-      priorYearEnrollment: undefined, parentRefName: "", parentRefEmail: "", parentRefPhone: "",
+      attritionRate: undefined, priorYearEnrollment: undefined,
+      parentRefName: "", parentRefEmail: "", parentRefPhone: "",
     }
   });
 
@@ -184,7 +181,8 @@ export function ScreeningFlow() {
     defaultValues: {
       facilityType: "", facilityStatus: "", leaseExpiry: "", monthlyFacilityPayment: undefined,
       maxCapacity: undefined, fireInspection: undefined, certificateOfOccupancy: undefined,
-      insuranceStatus: undefined, residentialDwelling: undefined, stateRegistration: "",
+      insuranceStatus: undefined, residentialDwelling: undefined, ownsHome: undefined,
+      canSubmitDeed: undefined, rentUtilitiesCurrent: undefined, stateRegistration: "",
       boardRefName: "", boardRefEmail: "", boardRefPhone: "",
     }
   });
@@ -205,9 +203,12 @@ export function ScreeningFlow() {
 
   const watchedEntityType = step1Form.watch("entityType");
   const watchedSchoolYear = step1Form.watch("schoolYear");
-  const isYear0or1 = watchedSchoolYear === "0" || watchedSchoolYear === "1";
+  const watchedProductType = step1Form.watch("productType");
+  const isYear2Plus = watchedSchoolYear === "2" || watchedSchoolYear === "3+";
   const isYear1Plus = watchedSchoolYear === "1" || watchedSchoolYear === "2" || watchedSchoolYear === "3+";
   const isNonprofit = watchedEntityType === "nonprofit";
+  const isTermLoan = watchedProductType === "term_loan";
+  const isLOC = watchedProductType === "line_of_credit";
 
   const watchedContracts = step2Form.watch("tuitionContracts");
   const watchedTuition = step2Form.watch("tuitionPerStudent");
@@ -218,18 +219,24 @@ export function ScreeningFlow() {
   }, [watchedContracts, watchedTuition]);
 
   const watchedLoanAmount = step5Form.watch("loanAmount");
-  const paymentInfo = watchedLoanAmount ? PAYMENT_SCHEDULE[watchedLoanAmount] : null;
+  const watchedFacilityStatus = step3Form.watch("facilityStatus");
+  const watchedResidential = step3Form.watch("residentialDwelling");
+  const hasLease = watchedFacilityStatus === "signed_lease" || watchedFacilityStatus === "own";
 
-  const maxLoanForYear = watchedSchoolYear === "0" ? 25000 : 50000;
-  const availableLoanAmounts = LOAN_AMOUNTS.filter(a => a <= maxLoanForYear);
+  const maxLoanForYear = watchedSchoolYear === "0" ? 25000 : (isLOC ? 100000 : 50000);
+  const availableLoanAmounts = (isLOC ? LOC_AMOUNTS : TERM_LOAN_AMOUNTS).filter(a => a <= maxLoanForYear);
 
   function runAutomatedChecks(data: Record<string, unknown>): { flags: string[]; status: "qualified" | "flagged" | "disqualified" } {
     const flags: string[] = [];
     let disqualified = false;
 
     if (data.residentialDwelling === "yes") {
-      flags.push("CRITICAL: Program operates in a residential dwelling — ineligible");
-      disqualified = true;
+      if (data.ownsHome !== "yes" || data.canSubmitDeed !== "yes") {
+        flags.push("CRITICAL: Operates in a residential dwelling but does not own the home or cannot provide deed");
+        disqualified = true;
+      } else {
+        flags.push("INFO: Operates in a residential dwelling — homeowner, deed required at application");
+      }
     }
 
     if (data.fundsCommingled === "yes") {
@@ -251,8 +258,8 @@ export function ScreeningFlow() {
 
     const deposits = Number(data.enrollmentDeposits) || 0;
     const contracts = Number(data.tuitionContracts) || 0;
-    if (contracts > 0 && deposits < contracts * 0.5) {
-      flags.push(`WARNING: Deposit gap — ${deposits} deposits for ${contracts} contracts (${Math.round(deposits / contracts * 100)}% coverage)`);
+    if (contracts > 0 && deposits < contracts) {
+      flags.push(`WARNING: Deposit gap — ${deposits} deposits collected for ${contracts} contracted students (${Math.round(deposits / contracts * 100)}% coverage)`);
     }
 
     const loanAmt = Number(data.loanAmount) || 0;
@@ -291,6 +298,10 @@ export function ScreeningFlow() {
 
     if (data.bookkeepingTool !== "quickbooks_online") {
       flags.push("INFO: Not currently using QuickBooks Online — must adopt before loan closing");
+    }
+
+    if (data.insuranceStatus === "no") {
+      flags.push("WARNING: Does not have and is not planning to obtain $2M/$1M general liability insurance");
     }
 
     if (isNonprofit) {
@@ -335,16 +346,6 @@ export function ScreeningFlow() {
   };
 
   const onStep2Submit = (data: z.infer<typeof step2Schema>) => {
-    const schoolYear = allData.schoolYear || step1Form.getValues("schoolYear");
-    if ((schoolYear === "0" || schoolYear === "1") && (data.enrollmentDeposits ?? 0) < 10) {
-      setEarlyStop({
-        title: "Enrollment Deposits Required",
-        message: "Year 0 and Year 1 schools must collect at least $25 deposits from a minimum of 10 families before applying. This demonstrates real family commitment and is verified through Plaid during underwriting.",
-        canRetry: true,
-      });
-      setStep("earlyStop");
-      return;
-    }
     setAllData(prev => ({ ...prev, ...data, calculatedRevenue }));
     setStep("step3");
   };
@@ -359,11 +360,11 @@ export function ScreeningFlow() {
       setStep("earlyStop");
       return;
     }
-    if (data.residentialDwelling === "yes") {
+    if (data.residentialDwelling === "yes" && (data.ownsHome !== "yes" || data.canSubmitDeed !== "yes")) {
       setEarlyStop({
-        title: "Home-Based Programs Are Not Eligible",
-        message: "The Lending Lab does not fund programs operating in residential dwellings. Your school must operate in a dedicated commercial, institutional, or community facility.",
-        canRetry: false,
+        title: "Residential Dwelling — Ownership Required",
+        message: "Schools operating in a residential dwelling must be owned by the applicant, and you must be prepared to submit the deed. If you rent or cannot provide the deed, this facility does not meet our requirements.",
+        canRetry: true,
       });
       setStep("earlyStop");
       return;
@@ -442,10 +443,10 @@ export function ScreeningFlow() {
               Pre-Qualification Screening
             </div>
             <h2 className="text-4xl md:text-5xl font-display font-bold text-primary max-w-3xl mx-auto leading-tight">
-              Pre-qualify for a Lending Lab microloan in 10-15 minutes.
+              Pre-qualify for a Lending Lab business loan in 10-15 minutes.
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              This screening collects verifiable details about your school to determine if you're ready for a full application. No credit check. No personal guarantee required.
+              This screening collects verifiable details about your school to determine if you're ready for a full application. We offer term loans and revolving lines of credit for microschool founders.
             </p>
 
             <div className="pt-6">
@@ -470,17 +471,17 @@ export function ScreeningFlow() {
               </div>
               <div className="bg-white p-6 rounded-2xl shadow-sm border border-border/50 transition-all hover:shadow-md">
                 <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-4">
-                  <Building2 className="w-6 h-6 text-secondary" />
+                  <DollarSign className="w-6 h-6 text-secondary" />
                 </div>
-                <div className="font-bold text-primary mb-1">LLCs, Corps & Nonprofits</div>
-                <p className="text-sm text-muted-foreground">Formal business entities only. No sole proprietorships.</p>
+                <div className="font-bold text-primary mb-1">Term Loans</div>
+                <p className="text-sm text-muted-foreground">$10K-$50K. 3-5 year terms. Quarterly payments. 3-6% interest.</p>
               </div>
               <div className="bg-white p-6 rounded-2xl shadow-sm border border-border/50 transition-all hover:shadow-md">
                 <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-4">
-                  <DollarSign className="w-6 h-6 text-secondary" />
+                  <CreditCard className="w-6 h-6 text-secondary" />
                 </div>
-                <div className="font-bold text-primary mb-1">$5K - $50K Loans</div>
-                <p className="text-sm text-muted-foreground">3% fixed. No fees. No personal guarantee. No credit check.</p>
+                <div className="font-bold text-primary mb-1">Lines of Credit</div>
+                <p className="text-sm text-muted-foreground">Up to $100K revolving. Interest only on drawn balance.</p>
               </div>
             </div>
           </div>
@@ -496,6 +497,31 @@ export function ScreeningFlow() {
             <CardContent className="pt-8 bg-white">
               <Form {...step1Form}>
                 <form onSubmit={step1Form.handleSubmit(onStep1Submit)} className="space-y-6">
+                  <FormField control={step1Form.control} name="productType" render={({ field }) => (
+                    <FormItem className="space-y-3">
+                      <FormLabel className="text-base font-bold">Which product are you interested in?</FormLabel>
+                      <FormControl>
+                        <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid sm:grid-cols-2 gap-4">
+                          <div className={`flex items-start space-x-3 border rounded-lg p-4 cursor-pointer transition-colors ${field.value === "term_loan" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`}>
+                            <RadioGroupItem value="term_loan" id="prod-term" className="mt-1" />
+                            <label htmlFor="prod-term" className="flex-1 cursor-pointer">
+                              <span className="font-semibold block">Term Loan</span>
+                              <span className="text-xs text-muted-foreground">$10K-$50K in $10K increments. 3-5 year terms. Quarterly payments.</span>
+                            </label>
+                          </div>
+                          <div className={`flex items-start space-x-3 border rounded-lg p-4 cursor-pointer transition-colors ${field.value === "line_of_credit" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`}>
+                            <RadioGroupItem value="line_of_credit" id="prod-loc" className="mt-1" />
+                            <label htmlFor="prod-loc" className="flex-1 cursor-pointer">
+                              <span className="font-semibold block">Revolving Line of Credit</span>
+                              <span className="text-xs text-muted-foreground">Up to $100K. 12-month draw period. Monthly interest-only on drawn balance.</span>
+                            </label>
+                          </div>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+
                   <div className="grid sm:grid-cols-2 gap-4">
                     <FormField control={step1Form.control} name="firstName" render={({ field }) => (
                       <FormItem><FormLabel>First Name</FormLabel><FormControl><Input data-testid="input-first-name" {...field} /></FormControl><FormMessage /></FormItem>
@@ -506,31 +532,22 @@ export function ScreeningFlow() {
                   </div>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <FormField control={step1Form.control} name="email" render={({ field }) => (
-                      <FormItem><FormLabel>Email Address</FormLabel><FormControl><Input type="email" data-testid="input-email" {...field} /></FormControl><FormMessage /></FormItem>
+                      <FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" data-testid="input-email" {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
                     <FormField control={step1Form.control} name="phone" render={({ field }) => (
-                      <FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input type="tel" data-testid="input-phone" {...field} /></FormControl><FormMessage /></FormItem>
+                      <FormItem><FormLabel>Phone</FormLabel><FormControl><Input type="tel" data-testid="input-phone" {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
-                  </div>
-
-                  <div className="border-t pt-6 mt-6">
-                    <h3 className="text-lg font-bold text-primary mb-4 flex items-center gap-2">
-                      <School className="w-5 h-5" /> School Details
-                    </h3>
                   </div>
 
                   <FormField control={step1Form.control} name="schoolLegalName" render={({ field }) => (
                     <FormItem><FormLabel>School Legal Name (as registered with the state)</FormLabel><FormControl><Input data-testid="input-school-name" {...field} /></FormControl><FormMessage /></FormItem>
                   )} />
-
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <FormField control={step1Form.control} name="dba" render={({ field }) => (
-                      <FormItem><FormLabel>DBA (if applicable)</FormLabel><FormControl><Input data-testid="input-dba" placeholder="Doing business as..." {...field} /></FormControl><FormMessage /></FormItem>
-                    )} />
-                    <FormField control={step1Form.control} name="schoolWebsite" render={({ field }) => (
-                      <FormItem><FormLabel>School Website URL</FormLabel><FormControl><Input data-testid="input-website" placeholder="https://..." {...field} /></FormControl><FormMessage /></FormItem>
-                    )} />
-                  </div>
+                  <FormField control={step1Form.control} name="dba" render={({ field }) => (
+                    <FormItem><FormLabel>DBA / Trade Name (if different)</FormLabel><FormControl><Input data-testid="input-dba" {...field} /></FormControl></FormItem>
+                  )} />
+                  <FormField control={step1Form.control} name="schoolWebsite" render={({ field }) => (
+                    <FormItem><FormLabel>School Website URL</FormLabel><FormControl><Input placeholder="https://" data-testid="input-website" {...field} /></FormControl><FormMessage /></FormItem>
+                  )} />
 
                   <div className="grid sm:grid-cols-2 gap-4">
                     <FormField control={step1Form.control} name="state" render={({ field }) => (
@@ -543,54 +560,51 @@ export function ScreeningFlow() {
                         <FormMessage />
                       </FormItem>
                     )} />
-                    <FormField control={step1Form.control} name="ein" render={({ field }) => (
+                    <FormField control={step1Form.control} name="entityType" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>EIN</FormLabel>
-                        <FormControl>
-                          <Input
-                            data-testid="input-ein"
-                            placeholder="XX-XXXXXXX"
-                            maxLength={10}
-                            {...field}
-                            onChange={(e) => {
-                              let val = e.target.value.replace(/\D/g, '');
-                              if (val.length > 2) val = val.slice(0, 2) + '-' + val.slice(2, 9);
-                              field.onChange(val);
-                            }}
-                          />
-                        </FormControl>
+                        <FormLabel>Entity Type</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl><SelectTrigger data-testid="select-entity"><SelectValue placeholder="Select type" /></SelectTrigger></FormControl>
+                          <SelectContent>
+                            <SelectItem value="llc">LLC</SelectItem>
+                            <SelectItem value="corporation">Corporation</SelectItem>
+                            <SelectItem value="nonprofit">501(c)(3) Nonprofit</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )} />
                   </div>
 
-                  <FormField control={step1Form.control} name="entityType" render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel className="text-base">Entity Type</FormLabel>
-                      <FormControl>
-                        <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid sm:grid-cols-3 gap-4">
-                          {[
-                            { value: "llc", label: "LLC" },
-                            { value: "corporation", label: "Corporation" },
-                            { value: "nonprofit", label: "Nonprofit (501c3)" },
-                          ].map(opt => (
-                            <div key={opt.value} className="flex items-center space-x-2 border rounded-lg p-4 cursor-pointer hover:bg-muted/50">
-                              <RadioGroupItem value={opt.value} id={`entity-${opt.value}`} />
-                              <label htmlFor={`entity-${opt.value}`} className="flex-1 cursor-pointer">{opt.label}</label>
-                            </div>
-                          ))}
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )} />
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <FormField control={step1Form.control} name="taxClassification" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tax Classification</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl><SelectTrigger data-testid="select-tax"><SelectValue placeholder="Select" /></SelectTrigger></FormControl>
+                          <SelectContent>
+                            <SelectItem value="c_corp">C Corporation</SelectItem>
+                            <SelectItem value="s_corp">S Corporation</SelectItem>
+                            <SelectItem value="disregarded">Disregarded Entity</SelectItem>
+                            <SelectItem value="501c3_approved">501(c)(3) Approved</SelectItem>
+                            <SelectItem value="501c3_pending">501(c)(3) Pending</SelectItem>
+                            <SelectItem value="fiscal_sponsor">Fiscal Sponsor</SelectItem>
+                            <SelectItem value="partnership">Partnership</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormItem>
+                    )} />
+                    <FormField control={step1Form.control} name="ein" render={({ field }) => (
+                      <FormItem><FormLabel>EIN</FormLabel><FormControl><Input placeholder="XX-XXXXXXX" data-testid="input-ein" {...field} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                  </div>
 
                   <div className="grid sm:grid-cols-2 gap-4">
                     <FormField control={step1Form.control} name="schoolYear" render={({ field }) => (
                       <FormItem>
                         <FormLabel>School Year</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl><SelectTrigger data-testid="select-school-year"><SelectValue placeholder="Select school year" /></SelectTrigger></FormControl>
+                          <FormControl><SelectTrigger data-testid="select-school-year"><SelectValue placeholder="Select" /></SelectTrigger></FormControl>
                           <SelectContent>
                             <SelectItem value="0">Year 0 (Pre-Launch)</SelectItem>
                             <SelectItem value="1">Year 1</SelectItem>
@@ -605,85 +619,60 @@ export function ScreeningFlow() {
                       <FormItem>
                         <FormLabel>School Type</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl><SelectTrigger data-testid="select-school-type"><SelectValue placeholder="Select type" /></SelectTrigger></FormControl>
+                          <FormControl><SelectTrigger data-testid="select-school-type"><SelectValue placeholder="Select" /></SelectTrigger></FormControl>
                           <SelectContent>
                             <SelectItem value="private_school">Private School</SelectItem>
-                            <SelectItem value="charter">Charter School</SelectItem>
+                            <SelectItem value="charter">Charter</SelectItem>
                             <SelectItem value="homeschool_enrichment">Homeschool Enrichment</SelectItem>
                             <SelectItem value="learning_pod">Learning Pod</SelectItem>
                             <SelectItem value="tutoring_center">Tutoring Center</SelectItem>
-                            <SelectItem value="supplemental">Supplemental Program</SelectItem>
+                            <SelectItem value="supplemental">Supplemental</SelectItem>
                             <SelectItem value="other">Other</SelectItem>
                           </SelectContent>
                         </Select>
-                        <FormMessage />
                       </FormItem>
                     )} />
                   </div>
 
                   <FormField control={step1Form.control} name="networkAffiliation" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Network Affiliation (optional)</FormLabel>
+                      <FormLabel>Network Affiliation</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger data-testid="select-network"><SelectValue placeholder="Select affiliation" /></SelectTrigger></FormControl>
                         <SelectContent>{NETWORK_AFFILIATIONS.map(n => <SelectItem key={n} value={n}>{n}</SelectItem>)}</SelectContent>
                       </Select>
-                      <FormMessage />
                     </FormItem>
                   )} />
 
                   {isNonprofit && (
-                    <div className="bg-secondary/5 border border-secondary/20 p-6 rounded-lg space-y-4">
-                      <h4 className="font-semibold text-primary flex items-center gap-2">
-                        <Building2 className="w-4 h-4" /> Nonprofit Requirements
-                      </h4>
-                      <p className="text-sm text-muted-foreground">Nonprofits require a board member co-applicant and must demonstrate board independence.</p>
-
-                      <FormField control={step1Form.control} name="taxClassification" render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Tax Classification</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl><SelectTrigger><SelectValue placeholder="Select classification" /></SelectTrigger></FormControl>
-                            <SelectContent>
-                              <SelectItem value="501c3_approved">501(c)(3) Approved</SelectItem>
-                              <SelectItem value="501c3_pending">501(c)(3) Pending</SelectItem>
-                              <SelectItem value="fiscal_sponsor">Through a Fiscal Sponsor</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )} />
-
-                      <div className="grid sm:grid-cols-3 gap-4">
+                    <div className="bg-purple-50 border border-purple-200 p-4 rounded-lg space-y-4">
+                      <p className="font-semibold text-purple-800 text-sm flex items-center gap-2">
+                        <Users className="w-4 h-4" /> Independent Board Member Co-Applicant
+                      </p>
+                      <p className="text-xs text-purple-700">Must be an independent board member — cannot be an employee, contractor, or related to the school leader.</p>
+                      <div className="grid sm:grid-cols-3 gap-3">
                         <FormField control={step1Form.control} name="boardCoApplicantName" render={({ field }) => (
-                          <FormItem><FormLabel>Board Co-Applicant Name</FormLabel><FormControl><Input data-testid="input-board-co-name" {...field} /></FormControl><FormMessage /></FormItem>
+                          <FormItem><FormLabel className="text-xs">Name</FormLabel><FormControl><Input data-testid="input-coapplicant-name" {...field} /></FormControl></FormItem>
                         )} />
                         <FormField control={step1Form.control} name="boardCoApplicantEmail" render={({ field }) => (
-                          <FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" data-testid="input-board-co-email" {...field} /></FormControl><FormMessage /></FormItem>
+                          <FormItem><FormLabel className="text-xs">Email</FormLabel><FormControl><Input type="email" data-testid="input-coapplicant-email" {...field} /></FormControl></FormItem>
                         )} />
                         <FormField control={step1Form.control} name="boardCoApplicantPhone" render={({ field }) => (
-                          <FormItem><FormLabel>Phone</FormLabel><FormControl><Input type="tel" data-testid="input-board-co-phone" {...field} /></FormControl><FormMessage /></FormItem>
+                          <FormItem><FormLabel className="text-xs">Phone</FormLabel><FormControl><Input type="tel" data-testid="input-coapplicant-phone" {...field} /></FormControl></FormItem>
                         )} />
                       </div>
-
-                      <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="grid sm:grid-cols-2 gap-3">
                         <FormField control={step1Form.control} name="totalBoardMembers" render={({ field }) => (
-                          <FormItem><FormLabel>Total Board Members</FormLabel><FormControl><Input type="number" data-testid="input-total-board" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} /></FormControl><FormMessage /></FormItem>
+                          <FormItem><FormLabel className="text-xs">Total Board Members</FormLabel><FormControl><Input type="number" min={1} data-testid="input-total-board" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} /></FormControl></FormItem>
                         )} />
                         <FormField control={step1Form.control} name="independentBoardMembers" render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Independent Board Members</FormLabel>
-                            <FormControl><Input type="number" data-testid="input-independent-board" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} /></FormControl>
-                            <FormDescription>Not spouses, employees, or vendors of the school leader</FormDescription>
-                            <FormMessage />
-                          </FormItem>
+                          <FormItem><FormLabel className="text-xs">Independent Board Members</FormLabel><FormControl><Input type="number" min={0} data-testid="input-independent-board" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} /></FormControl><FormDescription className="text-xs">Not employees, contractors, or related to school leader</FormDescription></FormItem>
                         )} />
                       </div>
                     </div>
                   )}
 
-                  <div className="flex justify-between pt-4">
-                    <Button type="button" variant="outline" className="border-border/80 rounded-full px-6" onClick={() => setStep("intro")}>Cancel</Button>
+                  <div className="flex justify-end pt-4">
                     <Button type="submit" className="bg-primary hover:bg-primary/90 text-white rounded-full px-8 shadow-md transition-transform hover:-translate-y-0.5" data-testid="button-step1-next">
                       Continue <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
@@ -699,60 +688,57 @@ export function ScreeningFlow() {
             <CardHeader className="bg-white pb-6 border-b">
               <StepIndicator current={2} />
               <CardTitle className="text-2xl font-display text-primary text-center">Enrollment & Demand</CardTitle>
-              <CardDescription className="text-center">Demonstrate real family commitment and enrollment strength.</CardDescription>
+              <CardDescription className="text-center">Tell us about your students and enrollment.</CardDescription>
             </CardHeader>
             <CardContent className="pt-8 bg-white">
               <Form {...step2Form}>
                 <form onSubmit={step2Form.handleSubmit(onStep2Submit)} className="space-y-6">
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <FormField control={step2Form.control} name="projectedEnrollment" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Projected Enrollment (Fall 2025)</FormLabel>
-                        <FormControl><Input type="number" min={10} max={100} data-testid="input-projected-enrollment" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} /></FormControl>
-                        <FormDescription>10-100 students</FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-                    <FormField control={step2Form.control} name="tuitionContracts" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Signed Tuition Contracts</FormLabel>
-                        <FormControl><Input type="number" min={0} data-testid="input-tuition-contracts" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} /></FormControl>
-                        <FormDescription>How many families have signed contracts?</FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-                  </div>
+                  <FormField control={step2Form.control} name="projectedEnrollment" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>How many students are projected for Fall 2025?</FormLabel>
+                      <FormControl><Input type="number" min={10} max={100} data-testid="input-projected-enrollment" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} /></FormControl>
+                      <FormDescription>Must be between 10 and 100 K-12 students</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
 
-                  {isYear0or1 && (
-                    <FormField control={step2Form.control} name="enrollmentDeposits" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>$25+ Enrollment Deposits Collected</FormLabel>
-                        <FormControl><Input type="number" min={0} data-testid="input-deposits" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} /></FormControl>
-                        <FormDescription>Minimum 10 deposits required for Year 0/1 schools. Verified through Plaid.</FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-                  )}
+                  <FormField control={step2Form.control} name="tuitionContracts" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>How many students have signed tuition contracts?</FormLabel>
+                      <FormControl><Input type="number" min={0} data-testid="input-tuition-contracts" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} /></FormControl>
+                      <FormDescription>Signed tuition contracts (not handbooks) specifying enrollment deposit</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+
+                  <FormField control={step2Form.control} name="enrollmentDeposits" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>How many families have paid the enrollment deposit required by their signed tuition contract?</FormLabel>
+                      <FormControl><Input type="number" min={0} data-testid="input-enrollment-deposits" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} /></FormControl>
+                      <FormDescription>Deposit amount must match what is specified in the tuition contract</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
 
                   <FormField control={step2Form.control} name="tuitionPerStudent" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Average Annual Tuition Per Student ($)</FormLabel>
+                      <FormLabel>Average Annual Tuition per Student ($)</FormLabel>
                       <FormControl><Input type="number" min={0} data-testid="input-tuition" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
 
                   {calculatedRevenue > 0 && (
-                    <div className="bg-secondary/5 border border-secondary/20 p-4 rounded-lg flex items-start gap-3" data-testid="revenue-calculator">
-                      <Calculator className="w-5 h-5 text-secondary shrink-0 mt-0.5" />
-                      <div>
-                        <p className="font-semibold text-primary text-lg">
-                          Projected Enrollment Revenue: ${calculatedRevenue.toLocaleString()}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {watchedContracts || 0} contracted students x ${(watchedTuition || 0).toLocaleString()} tuition
-                        </p>
+                    <div className="bg-secondary/10 border border-secondary/30 p-4 rounded-lg" data-testid="revenue-calculator">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Calculator className="w-5 h-5 text-secondary" />
+                        <span className="font-bold text-primary">Enrollment Revenue Calculator</span>
                       </div>
+                      <p className="text-sm text-muted-foreground">
+                        <span className="font-semibold">{watchedContracts}</span> contracted students x{" "}
+                        <span className="font-semibold">${Number(watchedTuition).toLocaleString()}</span> tuition ={" "}
+                        <span className="font-bold text-secondary text-lg">${calculatedRevenue.toLocaleString()}</span> projected enrollment revenue
+                      </p>
                     </div>
                   )}
 
@@ -762,59 +748,64 @@ export function ScreeningFlow() {
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger data-testid="select-revenue-sources"><SelectValue placeholder="Select primary source" /></SelectTrigger></FormControl>
                         <SelectContent>
-                          <SelectItem value="tuition_families">Tuition paid directly by families</SelectItem>
-                          <SelectItem value="public_funding">Public funding (ESA, vouchers, charter per-pupil)</SelectItem>
-                          <SelectItem value="grants_donations">Grants or donations</SelectItem>
-                          <SelectItem value="mixed">Mixed sources</SelectItem>
+                          <SelectItem value="tuition">Tuition from families</SelectItem>
+                          <SelectItem value="esa_voucher">ESA / Voucher / Public funding</SelectItem>
+                          <SelectItem value="grants_donations">Grants / Donations</SelectItem>
+                          <SelectItem value="scholarships">Private scholarships</SelectItem>
+                          <SelectItem value="mixed">Multiple sources</SelectItem>
                         </SelectContent>
                       </Select>
-                      <FormMessage />
                     </FormItem>
                   )} />
 
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <FormField control={step2Form.control} name="waitlistCount" render={({ field }) => (
-                      <FormItem><FormLabel>Students on Waitlist</FormLabel><FormControl><Input type="number" min={0} data-testid="input-waitlist" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} /></FormControl><FormMessage /></FormItem>
-                    )} />
-                    {isYear1Plus && (
+                  <FormField control={step2Form.control} name="waitlistCount" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Students on Waitlist</FormLabel>
+                      <FormControl><Input type="number" min={0} data-testid="input-waitlist" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} /></FormControl>
+                    </FormItem>
+                  )} />
+
+                  {isYear1Plus && (
+                    <div className="grid sm:grid-cols-2 gap-4">
                       <FormField control={step2Form.control} name="retentionRate" render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Retention Rate (%)</FormLabel>
+                          <FormLabel>2024-25 Retention Rate (%)</FormLabel>
                           <FormControl><Input type="number" min={0} max={100} data-testid="input-retention" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} /></FormControl>
-                          <FormDescription>% of students returning from prior year</FormDescription>
-                          <FormMessage />
+                          <FormDescription>% of students who returned from prior year</FormDescription>
                         </FormItem>
                       )} />
-                    )}
-                  </div>
+                      <FormField control={step2Form.control} name="attritionRate" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>2025-26 Projected Attrition (%)</FormLabel>
+                          <FormControl><Input type="number" min={0} max={100} data-testid="input-attrition" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} /></FormControl>
+                          <FormDescription>% of students expected to leave</FormDescription>
+                        </FormItem>
+                      )} />
+                    </div>
+                  )}
 
                   {isYear1Plus && (
                     <FormField control={step2Form.control} name="priorYearEnrollment" render={({ field }) => (
                       <FormItem>
                         <FormLabel>2024-25 Actual Enrollment</FormLabel>
                         <FormControl><Input type="number" min={0} data-testid="input-prior-enrollment" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} /></FormControl>
-                        <FormMessage />
                       </FormItem>
                     )} />
                   )}
 
-                  <div className="border-t pt-6 mt-6">
-                    <h3 className="text-lg font-bold text-primary mb-4 flex items-center gap-2">
-                      <Users className="w-5 h-5" /> Parent Reference
-                    </h3>
-                    <p className="text-sm text-muted-foreground mb-4">Provide a reference from a currently enrolled parent who can speak to your school.</p>
-                  </div>
-
-                  <div className="grid sm:grid-cols-3 gap-4">
-                    <FormField control={step2Form.control} name="parentRefName" render={({ field }) => (
-                      <FormItem><FormLabel>Name</FormLabel><FormControl><Input data-testid="input-parent-ref-name" {...field} /></FormControl><FormMessage /></FormItem>
-                    )} />
-                    <FormField control={step2Form.control} name="parentRefEmail" render={({ field }) => (
-                      <FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" data-testid="input-parent-ref-email" {...field} /></FormControl><FormMessage /></FormItem>
-                    )} />
-                    <FormField control={step2Form.control} name="parentRefPhone" render={({ field }) => (
-                      <FormItem><FormLabel>Phone</FormLabel><FormControl><Input type="tel" data-testid="input-parent-ref-phone" {...field} /></FormControl><FormMessage /></FormItem>
-                    )} />
+                  <div className="bg-muted/30 p-4 rounded-lg space-y-4">
+                    <p className="font-semibold text-primary text-sm flex items-center gap-2"><Users className="w-4 h-4" /> Parent Reference (Currently Enrolled)</p>
+                    <div className="grid sm:grid-cols-3 gap-3">
+                      <FormField control={step2Form.control} name="parentRefName" render={({ field }) => (
+                        <FormItem><FormLabel className="text-xs">Name</FormLabel><FormControl><Input data-testid="input-parent-ref-name" {...field} /></FormControl><FormMessage /></FormItem>
+                      )} />
+                      <FormField control={step2Form.control} name="parentRefEmail" render={({ field }) => (
+                        <FormItem><FormLabel className="text-xs">Email</FormLabel><FormControl><Input type="email" data-testid="input-parent-ref-email" {...field} /></FormControl><FormMessage /></FormItem>
+                      )} />
+                      <FormField control={step2Form.control} name="parentRefPhone" render={({ field }) => (
+                        <FormItem><FormLabel className="text-xs">Phone</FormLabel><FormControl><Input type="tel" data-testid="input-parent-ref-phone" {...field} /></FormControl><FormMessage /></FormItem>
+                      )} />
+                    </div>
                   </div>
 
                   <div className="flex justify-between pt-4">
@@ -836,7 +827,7 @@ export function ScreeningFlow() {
             <CardHeader className="bg-white pb-6 border-b">
               <StepIndicator current={3} />
               <CardTitle className="text-2xl font-display text-primary text-center">Facility & Compliance</CardTitle>
-              <CardDescription className="text-center">Your learning space and regulatory standing.</CardDescription>
+              <CardDescription className="text-center">Tell us about your school's physical location.</CardDescription>
             </CardHeader>
             <CardContent className="pt-8 bg-white">
               <Form {...step3Form}>
@@ -848,12 +839,13 @@ export function ScreeningFlow() {
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl><SelectTrigger data-testid="select-facility-type"><SelectValue placeholder="Select type" /></SelectTrigger></FormControl>
                           <SelectContent>
-                            <SelectItem value="church_religious">Church or Religious Facility</SelectItem>
-                            <SelectItem value="commercial">Commercial Space (retail, office, coworking)</SelectItem>
-                            <SelectItem value="community_center">Community Center or Nonprofit Facility</SelectItem>
-                            <SelectItem value="existing_school">Existing School (shared use or sublease)</SelectItem>
-                            <SelectItem value="dedicated">Dedicated Facility (exclusive use)</SelectItem>
-                            <SelectItem value="public_building">Public Building (library, municipal)</SelectItem>
+                            <SelectItem value="church_religious">Church / Religious Facility</SelectItem>
+                            <SelectItem value="commercial">Commercial Space</SelectItem>
+                            <SelectItem value="community_nonprofit">Community Center / Nonprofit</SelectItem>
+                            <SelectItem value="existing_school">Existing School Building</SelectItem>
+                            <SelectItem value="dedicated">Dedicated Facility</SelectItem>
+                            <SelectItem value="public_building">Public Building</SelectItem>
+                            <SelectItem value="residential">Residential (Applicant-Owned Home)</SelectItem>
                             <SelectItem value="other">Other</SelectItem>
                           </SelectContent>
                         </Select>
@@ -866,10 +858,10 @@ export function ScreeningFlow() {
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl><SelectTrigger data-testid="select-facility-status"><SelectValue placeholder="Select status" /></SelectTrigger></FormControl>
                           <SelectContent>
-                            <SelectItem value="own">We own the facility</SelectItem>
-                            <SelectItem value="signed_lease">Signed lease agreement</SelectItem>
-                            <SelectItem value="loi_contractor">LOI + contractor budget</SelectItem>
-                            <SelectItem value="actively_searching">Actively searching (not yet secured)</SelectItem>
+                            <SelectItem value="own">Own</SelectItem>
+                            <SelectItem value="signed_lease">Signed Lease</SelectItem>
+                            <SelectItem value="loi_contractor">LOI + Contractor Budget</SelectItem>
+                            <SelectItem value="actively_searching">Actively Searching</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -877,22 +869,50 @@ export function ScreeningFlow() {
                     )} />
                   </div>
 
-                  <div className="grid sm:grid-cols-3 gap-4">
-                    <FormField control={step3Form.control} name="leaseExpiry" render={({ field }) => (
-                      <FormItem><FormLabel>Lease Expiry Date</FormLabel><FormControl><Input type="date" data-testid="input-lease-expiry" {...field} /></FormControl><FormMessage /></FormItem>
+                  {watchedFacilityStatus === "actively_searching" && (
+                    <div className="bg-red-50 border border-red-200 p-4 rounded-lg flex items-start gap-3">
+                      <XCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+                      <div className="text-sm">
+                        <strong className="text-red-800 block mb-1">Facility Must Be Secured</strong>
+                        <span className="text-red-700">You cannot proceed without a secured facility. A signed lease, owned property, or LOI with contractor budget is required.</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {hasLease && (
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <FormField control={step3Form.control} name="leaseExpiry" render={({ field }) => (
+                        <FormItem><FormLabel>Lease Expiry Date</FormLabel><FormControl><Input type="date" data-testid="input-lease-expiry" {...field} /></FormControl></FormItem>
+                      )} />
+                      <FormField control={step3Form.control} name="monthlyFacilityPayment" render={({ field }) => (
+                        <FormItem><FormLabel>Monthly Facility Payment ($)</FormLabel><FormControl><Input type="number" min={0} data-testid="input-facility-payment" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} /></FormControl></FormItem>
+                      )} />
+                    </div>
+                  )}
+
+                  {hasLease && (
+                    <FormField control={step3Form.control} name="rentUtilitiesCurrent" render={({ field }) => (
+                      <FormItem className="space-y-3">
+                        <FormLabel>Are all rent and utility payments current with no delinquencies?</FormLabel>
+                        <FormControl>
+                          <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4">
+                            <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="yes" /></FormControl><FormLabel className="font-normal">Yes</FormLabel></FormItem>
+                            <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="no" /></FormControl><FormLabel className="font-normal">No</FormLabel></FormItem>
+                          </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
                     )} />
-                    <FormField control={step3Form.control} name="monthlyFacilityPayment" render={({ field }) => (
-                      <FormItem><FormLabel>Monthly Payment ($)</FormLabel><FormControl><Input type="number" min={0} data-testid="input-facility-payment" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} /></FormControl><FormMessage /></FormItem>
-                    )} />
-                    <FormField control={step3Form.control} name="maxCapacity" render={({ field }) => (
-                      <FormItem><FormLabel>Max Enrollment Capacity</FormLabel><FormControl><Input type="number" min={0} data-testid="input-capacity" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} /></FormControl><FormMessage /></FormItem>
-                    )} />
-                  </div>
+                  )}
+
+                  <FormField control={step3Form.control} name="maxCapacity" render={({ field }) => (
+                    <FormItem><FormLabel>Maximum Enrollment Capacity</FormLabel><FormControl><Input type="number" min={0} data-testid="input-max-capacity" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} /></FormControl></FormItem>
+                  )} />
 
                   <div className="grid sm:grid-cols-2 gap-4">
                     <FormField control={step3Form.control} name="fireInspection" render={({ field }) => (
                       <FormItem className="space-y-3">
-                        <FormLabel>Has your facility passed a fire inspection?</FormLabel>
+                        <FormLabel>Fire inspection passed?</FormLabel>
                         <FormControl>
                           <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4">
                             <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="yes" /></FormControl><FormLabel className="font-normal">Yes</FormLabel></FormItem>
@@ -902,80 +922,121 @@ export function ScreeningFlow() {
                         <FormMessage />
                       </FormItem>
                     )} />
-                    <FormField control={step3Form.control} name="certificateOfOccupancy" render={({ field }) => (
-                      <FormItem className="space-y-3">
-                        <FormLabel>Certificate of occupancy for school use?</FormLabel>
-                        <FormControl>
-                          <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4">
-                            <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="yes" /></FormControl><FormLabel className="font-normal">Yes</FormLabel></FormItem>
-                            <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="no" /></FormControl><FormLabel className="font-normal">No</FormLabel></FormItem>
-                          </RadioGroup>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
+                    {step3Form.watch("fireInspection") === "yes" && (
+                      <FormField control={step3Form.control} name="fireInspectionDate" render={({ field }) => (
+                        <FormItem><FormLabel>Inspection Date</FormLabel><FormControl><Input type="date" data-testid="input-fire-date" {...field} /></FormControl></FormItem>
+                      )} />
+                    )}
                   </div>
 
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <FormField control={step3Form.control} name="insuranceStatus" render={({ field }) => (
-                      <FormItem className="space-y-3">
-                        <FormLabel>General liability insurance?</FormLabel>
-                        <FormControl>
-                          <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4">
-                            <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="yes" /></FormControl><FormLabel className="font-normal">Yes</FormLabel></FormItem>
-                            <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="pursuing" /></FormControl><FormLabel className="font-normal">Pursuing</FormLabel></FormItem>
-                            <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="no" /></FormControl><FormLabel className="font-normal">No</FormLabel></FormItem>
-                          </RadioGroup>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-                    <FormField control={step3Form.control} name="residentialDwelling" render={({ field }) => (
-                      <FormItem className="space-y-3">
-                        <FormLabel>Does your program operate in a residential dwelling?</FormLabel>
-                        <FormControl>
-                          <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4">
-                            <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="yes" /></FormControl><FormLabel className="font-normal">Yes</FormLabel></FormItem>
-                            <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="no" /></FormControl><FormLabel className="font-normal">No</FormLabel></FormItem>
-                          </RadioGroup>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-                  </div>
+                  <FormField control={step3Form.control} name="certificateOfOccupancy" render={({ field }) => (
+                    <FormItem className="space-y-3">
+                      <FormLabel>Certificate of occupancy for school use?</FormLabel>
+                      <FormControl>
+                        <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4">
+                          <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="yes" /></FormControl><FormLabel className="font-normal">Yes</FormLabel></FormItem>
+                          <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="no" /></FormControl><FormLabel className="font-normal">No</FormLabel></FormItem>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+
+                  <FormField control={step3Form.control} name="insuranceStatus" render={({ field }) => (
+                    <FormItem className="space-y-3">
+                      <FormLabel>Do you have at least $2M/$1M general liability insurance?</FormLabel>
+                      <FormControl>
+                        <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid sm:grid-cols-3 gap-4">
+                          {[
+                            { value: "yes_2m_1m", label: "Yes, have $2M/$1M coverage" },
+                            { value: "will_obtain", label: "Will obtain before closing" },
+                            { value: "no", label: "No" },
+                          ].map(opt => (
+                            <div key={opt.value} className="flex items-center space-x-2 border rounded-lg p-3 cursor-pointer hover:bg-muted/50">
+                              <RadioGroupItem value={opt.value} id={`ins-${opt.value}`} />
+                              <label htmlFor={`ins-${opt.value}`} className="flex-1 cursor-pointer text-sm">{opt.label}</label>
+                            </div>
+                          ))}
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+
+                  <FormField control={step3Form.control} name="residentialDwelling" render={({ field }) => (
+                    <FormItem className="space-y-3">
+                      <FormLabel>Does your program operate in a residential dwelling?</FormLabel>
+                      <FormControl>
+                        <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4">
+                          <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="yes" /></FormControl><FormLabel className="font-normal">Yes</FormLabel></FormItem>
+                          <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="no" /></FormControl><FormLabel className="font-normal">No</FormLabel></FormItem>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+
+                  {watchedResidential === "yes" && (
+                    <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg space-y-4">
+                      <p className="font-semibold text-amber-800 text-sm flex items-center gap-2">
+                        <Home className="w-4 h-4" /> Residential Dwelling — Ownership Verification
+                      </p>
+                      <p className="text-xs text-amber-700">Schools may operate from a residential dwelling only if the applicant owns the home and can submit the deed.</p>
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <FormField control={step3Form.control} name="ownsHome" render={({ field }) => (
+                          <FormItem className="space-y-3">
+                            <FormLabel className="text-sm">Do you own this home?</FormLabel>
+                            <FormControl>
+                              <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4">
+                                <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="yes" /></FormControl><FormLabel className="font-normal">Yes</FormLabel></FormItem>
+                                <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="no" /></FormControl><FormLabel className="font-normal">No</FormLabel></FormItem>
+                              </RadioGroup>
+                            </FormControl>
+                          </FormItem>
+                        )} />
+                        <FormField control={step3Form.control} name="canSubmitDeed" render={({ field }) => (
+                          <FormItem className="space-y-3">
+                            <FormLabel className="text-sm">Can you submit the deed?</FormLabel>
+                            <FormControl>
+                              <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4">
+                                <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="yes" /></FormControl><FormLabel className="font-normal">Yes</FormLabel></FormItem>
+                                <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="no" /></FormControl><FormLabel className="font-normal">No</FormLabel></FormItem>
+                              </RadioGroup>
+                            </FormControl>
+                          </FormItem>
+                        )} />
+                      </div>
+                    </div>
+                  )}
 
                   <FormField control={step3Form.control} name="stateRegistration" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Is your school registered with the state as a private school?</FormLabel>
+                      <FormLabel>State Private School Registration</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger data-testid="select-state-reg"><SelectValue placeholder="Select" /></SelectTrigger></FormControl>
                         <SelectContent>
                           <SelectItem value="yes">Yes</SelectItem>
                           <SelectItem value="no">No</SelectItem>
-                          <SelectItem value="not_required">Not required in my state</SelectItem>
+                          <SelectItem value="not_required">Not Required in My State</SelectItem>
                         </SelectContent>
                       </Select>
-                      <FormMessage />
                     </FormItem>
                   )} />
 
-                  <div className="border-t pt-6 mt-6">
-                    <h3 className="text-lg font-bold text-primary mb-4 flex items-center gap-2">
-                      <Users className="w-5 h-5" /> Board Member Reference
-                    </h3>
-                    <p className="text-sm text-muted-foreground mb-4">Provide a reference from an unrelated board member (not a spouse, employee, or vendor of the school leader).</p>
-                  </div>
-
-                  <div className="grid sm:grid-cols-3 gap-4">
-                    <FormField control={step3Form.control} name="boardRefName" render={({ field }) => (
-                      <FormItem><FormLabel>Name</FormLabel><FormControl><Input data-testid="input-board-ref-name" {...field} /></FormControl><FormMessage /></FormItem>
-                    )} />
-                    <FormField control={step3Form.control} name="boardRefEmail" render={({ field }) => (
-                      <FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" data-testid="input-board-ref-email" {...field} /></FormControl><FormMessage /></FormItem>
-                    )} />
-                    <FormField control={step3Form.control} name="boardRefPhone" render={({ field }) => (
-                      <FormItem><FormLabel>Phone</FormLabel><FormControl><Input type="tel" data-testid="input-board-ref-phone" {...field} /></FormControl><FormMessage /></FormItem>
-                    )} />
+                  <div className="bg-muted/30 p-4 rounded-lg space-y-4">
+                    <p className="font-semibold text-primary text-sm flex items-center gap-2"><Users className="w-4 h-4" /> Board Member Reference (Unrelated)</p>
+                    <p className="text-xs text-muted-foreground">Must be a board member who is not an employee, contractor, or related to the school leader.</p>
+                    <div className="grid sm:grid-cols-3 gap-3">
+                      <FormField control={step3Form.control} name="boardRefName" render={({ field }) => (
+                        <FormItem><FormLabel className="text-xs">Name</FormLabel><FormControl><Input data-testid="input-board-ref-name" {...field} /></FormControl><FormMessage /></FormItem>
+                      )} />
+                      <FormField control={step3Form.control} name="boardRefEmail" render={({ field }) => (
+                        <FormItem><FormLabel className="text-xs">Email</FormLabel><FormControl><Input type="email" data-testid="input-board-ref-email" {...field} /></FormControl><FormMessage /></FormItem>
+                      )} />
+                      <FormField control={step3Form.control} name="boardRefPhone" render={({ field }) => (
+                        <FormItem><FormLabel className="text-xs">Phone</FormLabel><FormControl><Input type="tel" data-testid="input-board-ref-phone" {...field} /></FormControl><FormMessage /></FormItem>
+                      )} />
+                    </div>
                   </div>
 
                   <div className="flex justify-between pt-4">
@@ -997,7 +1058,7 @@ export function ScreeningFlow() {
             <CardHeader className="bg-white pb-6 border-b">
               <StepIndicator current={4} />
               <CardTitle className="text-2xl font-display text-primary text-center">Financial Discipline & Operations</CardTitle>
-              <CardDescription className="text-center">Demonstrate financial maturity and operational readiness.</CardDescription>
+              <CardDescription className="text-center">How your school manages money matters.</CardDescription>
             </CardHeader>
             <CardContent className="pt-8 bg-white">
               <Form {...step4Form}>
@@ -1033,16 +1094,16 @@ export function ScreeningFlow() {
                     </div>
                   )}
 
-                  {isYear1Plus && (
+                  {isYear2Plus && (
                     <div className="bg-muted/30 p-4 rounded-lg space-y-3">
                       <p className="font-semibold text-primary text-sm">Can you provide the following financial documents?</p>
                       <div className="grid sm:grid-cols-2 gap-3">
                         {[
-                          { name: "hasBalanceSheet" as const, label: "Balance Sheet" },
+                          { name: "hasBalanceSheet" as const, label: "EOY Balance Sheet" },
                           { name: "hasPnL" as const, label: "Profit & Loss Statement" },
-                          { name: "hasCashForecast" as const, label: "Cash Forecast" },
+                          { name: "hasCashForecast" as const, label: "Cash Flow Statement" },
                           { name: "hasYTD" as const, label: "Year-to-Date Financials" },
-                          { name: "hasTaxReturn" as const, label: "Most Recent Tax Return" },
+                          { name: "hasTaxReturn" as const, label: "Most Recent Tax Filing" },
                         ].map(doc => (
                           <FormField key={doc.name} control={step4Form.control} name={doc.name} render={({ field }) => (
                             <FormItem className="flex items-center space-x-2">
@@ -1061,7 +1122,7 @@ export function ScreeningFlow() {
                     <FormField control={step4Form.control} name="personalFinancialStatement" render={({ field }) => (
                       <FormItem className="space-y-3">
                         <FormLabel>Are you willing to provide a personal financial statement?</FormLabel>
-                        <FormDescription>Required for Year 0 schools (not a personal guarantee — for stability assessment only)</FormDescription>
+                        <FormDescription>Required for Year 0 schools — used for financial stability assessment</FormDescription>
                         <FormControl>
                           <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4">
                             <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="yes" /></FormControl><FormLabel className="font-normal">Yes</FormLabel></FormItem>
@@ -1112,21 +1173,6 @@ export function ScreeningFlow() {
                       <FormMessage />
                     </FormItem>
                   )} />
-
-                  {isYear1Plus && (
-                    <FormField control={step4Form.control} name="rentUtilitiesCurrent" render={({ field }) => (
-                      <FormItem className="space-y-3">
-                        <FormLabel>Are all rent and utility payments current with no delinquencies?</FormLabel>
-                        <FormControl>
-                          <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4">
-                            <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="yes" /></FormControl><FormLabel className="font-normal">Yes</FormLabel></FormItem>
-                            <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="no" /></FormControl><FormLabel className="font-normal">No</FormLabel></FormItem>
-                          </RadioGroup>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-                  )}
 
                   <FormField control={step4Form.control} name="payrollMethod" render={({ field }) => (
                     <FormItem className="space-y-3">
@@ -1250,21 +1296,45 @@ export function ScreeningFlow() {
             <CardHeader className="bg-white pb-6 border-b">
               <StepIndicator current={5} />
               <CardTitle className="text-2xl font-display text-primary text-center">Loan Request</CardTitle>
-              <CardDescription className="text-center">Select your loan amount and how you plan to use the funds.</CardDescription>
+              <CardDescription className="text-center">Select your {isLOC ? "line of credit" : "loan"} amount and how you plan to use the funds.</CardDescription>
             </CardHeader>
             <CardContent className="pt-8 bg-white">
               <Form {...step5Form}>
                 <form onSubmit={step5Form.handleSubmit(onStep5Submit)} className="space-y-6">
+
+                  <div className="bg-primary/5 border border-primary/20 p-4 rounded-lg" data-testid="terms-summary">
+                    <p className="font-semibold text-primary mb-2">
+                      {isLOC ? "Revolving Line of Credit Terms" : "Term Loan Terms"}
+                    </p>
+                    <div className="text-sm text-muted-foreground space-y-1">
+                      {isTermLoan && (
+                        <>
+                          <p>$10K-$50K in $10K increments. 3-5 year terms. Quarterly payments.</p>
+                          <p>3-6% interest (determined during underwriting). 2% origination fee. No prepayment penalty.</p>
+                          <p>UCC-1 filing on pledged revenues and assets. Personal guarantee may be required based on credit profile.</p>
+                        </>
+                      )}
+                      {isLOC && (
+                        <>
+                          <p>Up to $100K commitment. 12-month draw period. 18-24 month maturity.</p>
+                          <p>3-6% interest on drawn balance only (accrued daily). Monthly interest-only payments via ACH.</p>
+                          <p>2% origination fee. No prepayment penalty. Clean-up requirement: balance must pay down to &le;10% for 30 consecutive days once per year.</p>
+                          <p>UCC-1 filing on pledged revenues and assets. Personal guarantee may be required based on credit profile.</p>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
                   <FormField control={step5Form.control} name="loanAmount" render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-base font-bold">Loan Amount</FormLabel>
+                      <FormLabel className="text-base font-bold">{isLOC ? "Line of Credit Amount" : "Loan Amount"}</FormLabel>
                       {watchedSchoolYear === "0" && (
                         <FormDescription>Year 0 schools are capped at $25,000</FormDescription>
                       )}
                       <Select onValueChange={(v) => field.onChange(Number(v))} defaultValue={field.value?.toString()}>
                         <FormControl>
                           <SelectTrigger data-testid="select-loan-amount" className="text-lg py-6">
-                            <SelectValue placeholder="Select loan amount" />
+                            <SelectValue placeholder={isLOC ? "Select credit line amount" : "Select loan amount"} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -1279,24 +1349,39 @@ export function ScreeningFlow() {
                     </FormItem>
                   )} />
 
-                  {paymentInfo && (
-                    <div className="bg-primary/5 border border-primary/20 p-4 rounded-lg" data-testid="payment-schedule">
-                      <p className="font-semibold text-primary mb-2">Payment Schedule — ${watchedLoanAmount?.toLocaleString()} ({paymentInfo.term})</p>
-                      <div className="grid grid-cols-3 gap-4 text-sm">
-                        <div>
-                          <p className="text-muted-foreground">Year 1 (Interest Only)</p>
-                          <p className="font-bold text-primary">{paymentInfo.y1}</p>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground">Year 2 (Partial P+I)</p>
-                          <p className="font-bold text-primary">{paymentInfo.y2}</p>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground">Years 3+ (Full Amort.)</p>
-                          <p className="font-bold text-primary">{paymentInfo.y3}</p>
-                        </div>
-                      </div>
-                    </div>
+                  {isLOC && (
+                    <>
+                      <FormField control={step5Form.control} name="locIntendedUse" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>How do you intend to use the line of credit?</FormLabel>
+                          <FormDescription>Lines of credit are for timing gaps and seasonal cash flow, not structural deficits</FormDescription>
+                          <FormControl><Input placeholder="e.g., Bridge summer cash gap between enrollment deposits and fall tuition" data-testid="input-loc-use" {...field} /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+                      <FormField control={step5Form.control} name="locCleanupAcknowledged" render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel>Do you understand the clean-up requirement? (Balance must pay down to 10% or less for 30 consecutive days at least once every 12 months)</FormLabel>
+                          <FormControl>
+                            <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4">
+                              <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="yes" /></FormControl><FormLabel className="font-normal">Yes, I understand</FormLabel></FormItem>
+                              <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="no" /></FormControl><FormLabel className="font-normal">I have questions</FormLabel></FormItem>
+                            </RadioGroup>
+                          </FormControl>
+                        </FormItem>
+                      )} />
+                      <FormField control={step5Form.control} name="locNoAdditionalDebt" render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel>Do you agree to not take on additional debt without lender approval while the line is open?</FormLabel>
+                          <FormControl>
+                            <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4">
+                              <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="yes" /></FormControl><FormLabel className="font-normal">Yes</FormLabel></FormItem>
+                              <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="no" /></FormControl><FormLabel className="font-normal">No</FormLabel></FormItem>
+                            </RadioGroup>
+                          </FormControl>
+                        </FormItem>
+                      )} />
+                    </>
                   )}
 
                   <FormField control={step5Form.control} name="projectedRevenue" render={({ field }) => (
@@ -1313,7 +1398,10 @@ export function ScreeningFlow() {
                   )} />
 
                   <div>
-                    <FormLabel className="text-base font-bold mb-3 block">How do you plan to use the loan funds?</FormLabel>
+                    <FormLabel className="text-base font-bold mb-3 block">How do you plan to use the funds?</FormLabel>
+                    {isLOC && (
+                      <p className="text-xs text-muted-foreground mb-3">Note: Lines of credit cannot be used for payroll catch-up, past-due rent, debt refinance, or international work.</p>
+                    )}
                     <div className="grid sm:grid-cols-2 gap-3">
                       {USE_OF_FUNDS_OPTIONS.map(fund => (
                         <div key={fund} className="flex items-center space-x-2">
@@ -1388,7 +1476,7 @@ export function ScreeningFlow() {
               </div>
               <h3 className="text-2xl font-display font-bold text-primary">You Pre-Qualify for The Lending Lab!</h3>
               <p className="text-muted-foreground max-w-md mx-auto">
-                Based on your responses, your school meets our initial screening criteria. The next step is to complete the full application.
+                Based on your responses, your school meets our initial screening criteria for a {isLOC ? "revolving line of credit" : "term loan"}. The next step is to complete the full application.
               </p>
 
               <div className="bg-muted/30 p-6 rounded-lg text-left max-w-md mx-auto">
@@ -1398,12 +1486,12 @@ export function ScreeningFlow() {
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />5-year financial model (Excel)</li>
                   <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />Signed tuition contracts</li>
-                  <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />Certificate of insurance</li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />Certificate of insurance ($2M/$1M general liability)</li>
                   <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />Signed lease or facility agreement</li>
                   <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />Articles of incorporation / operating agreement</li>
-                  <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />Two reference letters of support</li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />Two reference contacts (enrolled parent + board member)</li>
                   {isNonprofit && <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />Board resolution letter with member emails</li>}
-                  {isYear1Plus && <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />Most recent tax return</li>}
+                  {isYear2Plus && <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />Tax filing, EOY balance sheet, P&L, cash flow</li>}
                 </ul>
               </div>
 

@@ -12,11 +12,31 @@ export function Hero() {
               Backed by Building Hope Impact Fund
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight text-primary mb-6 leading-[1.1]" data-testid="text-hero-title">
-              $5K–$50K microloans for school founders. 3% fixed. Zero fees. No personal guarantee.
+              Term Loans up to $50K & Revolving Lines of Credit up to $100K for school founders.
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed" data-testid="text-hero-subtitle">
-              No credit check. No fees. No personal guarantee. Below-market capital paired with business infrastructure to help microschools and early-stage education entrepreneurs launch, stabilize, and grow.
+              Two flexible products — 3–6% interest, 2% origination fee, no prepayment penalty. Below-market capital paired with business infrastructure to help microschools and early-stage education entrepreneurs launch, stabilize, and grow.
             </p>
+
+            <div className="grid sm:grid-cols-2 gap-4 mb-8">
+              <div className="rounded-xl border bg-white p-4 shadow-sm" data-testid="card-term-loan">
+                <h3 className="font-display font-bold text-primary mb-1">Term Loan</h3>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>$10K–$50K in $10K increments</li>
+                  <li>3–5 year terms, paid quarterly</li>
+                  <li>3–6% interest · 2% origination fee</li>
+                </ul>
+              </div>
+              <div className="rounded-xl border bg-white p-4 shadow-sm" data-testid="card-revolving-loc">
+                <h3 className="font-display font-bold text-primary mb-1">Revolving Line of Credit</h3>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>Up to $100K commitment</li>
+                  <li>12-month draw period</li>
+                  <li>Interest only on drawn balance</li>
+                </ul>
+              </div>
+            </div>
+
             <div className="flex flex-col sm:flex-row gap-4">
               <Button size="lg" className="bg-secondary hover:bg-secondary/90 text-white h-14 px-8 text-base font-bold rounded-full shadow-lg transition-transform hover:-translate-y-0.5" asChild data-testid="button-check-eligibility">
                 <a href="#apply">
@@ -56,9 +76,9 @@ export function Hero() {
               <div data-testid="stat-terms">
                 <div className="flex items-center gap-2 text-primary mb-2">
                   <ShieldCheck className="h-5 w-5" />
-                  <h3 className="font-bold text-2xl font-display">3%</h3>
+                  <h3 className="font-bold text-2xl font-display">3–6%</h3>
                 </div>
-                <p className="text-sm text-muted-foreground">Fixed rate, no fees</p>
+                <p className="text-sm text-muted-foreground">No prepayment penalty</p>
               </div>
             </div>
           </div>

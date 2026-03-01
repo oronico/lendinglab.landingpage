@@ -12,7 +12,7 @@ const faqCategories = [
     items: [
       {
         q: "Can I apply if my school operates out of a home?",
-        a: "No. Loans cannot be used for schools operating in residential dwellings. You must have a dedicated commercial, institutional, or otherwise non-residential facility with a signed lease, ownership, or an LOI plus a contractor budget.",
+        a: "Yes, if you own the home. Schools operating from a residential dwelling are eligible provided the applicant owns the property and can submit the deed as part of the application. All applicants must also carry at least $2M/$1M general liability insurance.",
       },
       {
         q: "Is my school eligible if we're fully online with no physical location?",
@@ -32,24 +32,57 @@ const faqCategories = [
       },
       {
         q: "My school hasn't opened yet (Year 0). Can I still apply?",
-        a: "Yes! Year 0 (pre-launch) schools are eligible, but loans are capped at $25,000. Since there's no operating history, we'll evaluate your signed tuition contracts, $25+ enrollment deposits (minimum 10 families), financial model, facility plan, and references. You'll also need to provide a personal financial statement from the founder.",
+        a: "Yes! Year 0 (pre-launch) schools are eligible. Since there's no operating history, we'll evaluate your signed tuition contracts, enrollment deposits (all enrolled families must have paid the deposit specified in their contract), financial model, facility plan, and references. You'll also need to provide a personal financial statement from the founder.",
       },
     ],
   },
   {
-    title: "Loan Terms",
+    title: "Loan Products",
     items: [
       {
-        q: "How much can I borrow and what are the terms?",
-        a: "Loans range from $5,000 to $50,000 in $5,000 increments at a fixed 3% annual interest rate. There are zero fees, no personal guarantee, and no credit check. Loan terms scale by amount: $5K-$10K = 3 years, $15K-$25K = 4 years, $30K-$50K = 5 years. Year 0 schools are capped at $25K.",
+        q: "What loan products are available?",
+        a: "We offer two products: (1) Term Loans ranging from $10,000 to $50,000 in $10,000 increments with 3–5 year terms and quarterly payments, and (2) a Working Capital Revolving Line of Credit (Revolver) with commitments up to $100,000, a 12-month draw period, and 18–24 month total maturity. Both products carry 3–6% interest (determined during underwriting), a 2% origination fee, and no prepayment penalty.",
       },
       {
-        q: "How does the graduated repayment schedule work?",
-        a: "Payments are made quarterly and increase gradually. Year 1 is interest-only (e.g., $75/quarter on a $10K loan). Year 2 shifts to partial principal + interest. Years 3+ move to full amortization. This structure gives your school time to grow revenue before full payments begin.",
+        q: "How much can I borrow with a Term Loan?",
+        a: "Term Loans range from $10,000 to $50,000 in $10,000 increments. Interest is 3–6% (rate determined during underwriting) with a 2% origination fee. Terms are 3–5 years with quarterly payments. A UCC-1 filing is placed on pledged revenues and assets. Personal guarantees may be required depending on your credit profile, and a credit check is performed.",
       },
       {
         q: "Can I pay off my loan early?",
-        a: "Absolutely. There are zero prepayment fees or penalties. We celebrate when a school is able to pay off early — for example, after receiving an ESA disbursement or a large philanthropic grant.",
+        a: "Absolutely. There is no prepayment penalty on either product. We celebrate when a school is able to pay off early — for example, after receiving an ESA disbursement or a large philanthropic grant.",
+      },
+      {
+        q: "Is a personal guarantee required?",
+        a: "Personal guarantees may be required, dependent on your credit profile. This is determined during underwriting. A credit check is performed for all applicants.",
+      },
+    ],
+  },
+  {
+    title: "Revolving Line of Credit",
+    items: [
+      {
+        q: "What is the revolving line of credit?",
+        a: "The Working Capital Revolving Line of Credit (Revolver) is designed to address timing gaps and predictable seasonality in your school's cash flow. It is not intended for structural deficits. Commitments are available up to $100,000 with a 12-month draw period and 18–24 month total maturity (or 12 months with a renewal option).",
+      },
+      {
+        q: "How do draws work?",
+        a: "Draws are initiated by a simple written request. Funds are delivered via ACH credit, typically same-day or next-day. You can draw any amount up to your available commitment during the 12-month draw period.",
+      },
+      {
+        q: "What is the clean-up requirement?",
+        a: "Your outstanding balance must pay down to 10% or less of your total line for at least 30 consecutive days, at least once every 12 months. This ensures the line is being used for short-term working capital needs rather than as permanent financing.",
+      },
+      {
+        q: "What are the LOC restrictions?",
+        a: "Funds from the revolving line of credit cannot be used for payroll catch-up, past-due rent, debt refinance, or international work. These use-of-funds limitations ensure the line supports healthy cash flow management.",
+      },
+      {
+        q: "How is LOC interest calculated?",
+        a: "Interest at 3–6% is charged only on the drawn balance and accrued daily. Payments are monthly interest-only via ACH auto-debit. You can repay principal at any time via ACH with no prepayment penalty. A 2% origination fee also applies.",
+      },
+      {
+        q: "What ongoing controls apply to the LOC?",
+        a: "LOC borrowers must maintain a Plaid connection (continuous monitoring), provide quarterly financial reporting, and may not take on additional debt without prior approval. An optional reserve requirement (minimum cash reserve in a segregated account) may also apply.",
       },
     ],
   },
@@ -58,11 +91,11 @@ const faqCategories = [
     items: [
       {
         q: "What documents do I need to prepare before applying?",
-        a: "For Year 1+ schools: balance sheet, P&L statement, cash forecast, YTD financials, most recent tax return, signed tuition contracts, a 5-year financial model, articles of incorporation or operating agreement, proof of insurance, and lease documentation. Nonprofits also need a signed board resolution letter and IRS determination letter. Year 0 schools substitute a personal financial statement and lean on contracts, deposits, and their financial model.",
+        a: "For Year 2+ schools: tax filings, end-of-year balance sheet, P&L statement, and cash flow statement, along with YTD financials, signed tuition contracts, a 5-year financial model, articles of incorporation or operating agreement, proof of $2M/$1M general liability insurance, and lease documentation. Nonprofits also need a signed board resolution letter, IRS determination letter, and an independent board member as co-applicant. Year 0 schools substitute a personal financial statement and lean on contracts, deposits, and their financial model.",
       },
       {
         q: "How long does the application process take?",
-        a: "The screening wizard takes about 10-15 minutes. If you pre-qualify, the full application takes approximately 60 minutes if you've prepared your documents in advance. Download our Preparation Guide before starting. Underwriting, reference checks, and Plaid/QBO verification follow your submission.",
+        a: "The screening wizard takes about 10-15 minutes. If you pre-qualify, the full application takes approximately 60 minutes if you've prepared your documents in advance. Download our Preparation Guide before starting. Underwriting, reference checks, credit check, and Plaid/QBO verification follow your submission.",
       },
       {
         q: "How competitive is the process? How many schools get funded?",
@@ -74,21 +107,29 @@ const faqCategories = [
     title: "Deposits & Enrollment",
     items: [
       {
-        q: "What counts as a $25 enrollment deposit?",
-        a: "A minimum $25 deposit per family collected to confirm enrollment intent. These must be from at least 10 separate families for Year 0 and Year 1 schools. Deposits demonstrate real demand from real families and are verified during underwriting.",
+        q: "What counts as an enrollment deposit?",
+        a: "All enrolled families must have paid the enrollment deposit specified in their signed tuition contract. The deposit amount is defined in each family's contract — there is no fixed dollar minimum. Deposits demonstrate real demand from real families and are verified during underwriting.",
       },
       {
         q: "What if we haven't collected deposits yet?",
-        a: "Year 0 and Year 1 schools must have collected $25+ deposits from at least 10 families to proceed. If you haven't reached that threshold yet, focus on enrollment outreach first and apply when you have the deposits in hand.",
+        a: "All borrowers must have signed tuition contracts with enrolled families, and all enrolled families must have paid the enrollment deposit specified in their contract. If you haven't reached that point yet, focus on enrollment outreach and securing signed contracts before applying.",
+      },
+      {
+        q: "What qualifies as a tuition contract?",
+        a: "Actual signed tuition contracts — not handbooks or general enrollment forms. The contract must specify the required enrollment deposit. These contracts are verified during underwriting.",
       },
     ],
   },
   {
-    title: "Facility Requirements",
+    title: "Insurance & Facility Requirements",
     items: [
       {
+        q: "What insurance coverage is required?",
+        a: "All applicants must carry at least $2,000,000/$1,000,000 general liability insurance. If you don't currently have this coverage, you can indicate that you will obtain it before closing.",
+      },
+      {
         q: "What if I don't have a signed lease yet?",
-        a: "You need at minimum a Letter of Intent (LOI) plus a contractor budget showing your facility plan. If you're still actively searching for a facility with nothing secured, you cannot proceed with the application at this time.",
+        a: "You need at minimum a Letter of Intent (LOI) plus a contractor budget showing your facility plan. If you're still actively searching for a facility with nothing secured, you cannot proceed with the application at this time. All applicants with a signed lease must demonstrate on-time rent payments.",
       },
       {
         q: "Do I need a fire inspection and certificate of occupancy?",
@@ -101,7 +142,7 @@ const faqCategories = [
     items: [
       {
         q: "Why do you require a formal payroll system like Gusto?",
-        a: "Paying staff through Venmo, Zelle, Cash App, or cash is a red flag for financial discipline and creates legal and tax compliance risks. A formal payroll system (e.g., Gusto) ensures proper tax withholding, creates an audit trail, and demonstrates the operational maturity we look for in borrowers.",
+        a: "Paying staff through Venmo, Zelle, Cash App, or cash is a red flag for financial discipline and creates legal and tax compliance risks. A formal payroll system (e.g., Gusto) ensures proper tax withholding, creates an audit trail, and demonstrates the operational maturity we look for in borrowers. This applies to all applicants with staff.",
       },
       {
         q: "Why can't I mix personal and business finances?",
@@ -114,7 +155,7 @@ const faqCategories = [
     items: [
       {
         q: "Why do you require both Plaid and QuickBooks Online?",
-        a: "Plaid connects your business bank account for secure, automated quarterly loan payments via ACH — removing friction and reducing default risk. QuickBooks Online gives us (and you) real-time visibility into your school's financial health. Both are mandatory for all borrowers and help us support you proactively if issues arise.",
+        a: "Plaid connects your business bank account for secure, automated loan payments via ACH — removing friction and reducing default risk. For LOC borrowers, Plaid provides continuous monitoring. QuickBooks Online gives us (and you) real-time visibility into your school's financial health. Both are mandatory for all borrowers and help us support you proactively if issues arise.",
       },
     ],
   },
@@ -123,7 +164,7 @@ const faqCategories = [
     items: [
       {
         q: "What are the board independence and resolution requirements for nonprofits?",
-        a: "Nonprofits must have a board where a majority of members are independent of the organization and school leader — meaning no spouses, employees, or vendors. You'll need a signed board resolution letter from the full board (with member emails) approving pursuit of the loan, and a board member must serve as co-applicant. These requirements ensure proper governance and accountability.",
+        a: "Nonprofits must have a board where a majority of members are independent of the organization and school leader — meaning no spouses, employees, or vendors. You'll need a signed board resolution letter from the full board (with member emails) approving pursuit of the loan. An independent board member must serve as co-applicant — this person cannot be an employee, contractor, or related to the school leader. These requirements ensure proper governance and accountability.",
       },
     ],
   },
@@ -141,7 +182,16 @@ const faqCategories = [
     items: [
       {
         q: "What happens if my school can't make a payment?",
-        a: "Contact us immediately. Our goal is to support your school's success, not to penalize you. We'll work with you to understand the situation and explore options. That said, consistent on-time payment is expected — Cycle 1 achieved 100% on-time repayment across all 11 schools. Payments are collected automatically via Plaid-connected ACH on a quarterly schedule.",
+        a: "Contact us immediately. Our goal is to support your school's success, not to penalize you. We'll work with you to understand the situation and explore options. That said, consistent on-time payment is expected — Cycle 1 achieved 100% on-time repayment across all 11 schools. Term loan payments are collected quarterly via ACH, and LOC interest payments are collected monthly via ACH auto-debit.",
+      },
+    ],
+  },
+  {
+    title: "Retention & Attrition",
+    items: [
+      {
+        q: "What retention and attrition data do I need to provide?",
+        a: "Operating schools (Year 1+) must provide two data points: your 2024-25 Retention Rate (%) and your 2025-26 Projected Attrition (%). These are separate fields that help us understand enrollment stability and forecast your school's financial health.",
       },
     ],
   },

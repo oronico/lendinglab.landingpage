@@ -6,6 +6,8 @@ import { z } from "zod";
 export const leads = pgTable("leads", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
 
+  productType: text("product_type").notNull(),
+
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
   email: text("email").notNull(),
@@ -36,6 +38,7 @@ export const leads = pgTable("leads", {
   revenueSources: text("revenue_sources"),
   waitlistCount: integer("waitlist_count"),
   retentionRate: integer("retention_rate"),
+  attritionRate: integer("attrition_rate"),
   priorYearEnrollment: integer("prior_year_enrollment"),
 
   parentRefName: text("parent_ref_name").notNull(),
@@ -55,6 +58,8 @@ export const leads = pgTable("leads", {
   certificateOfOccupancy: text("certificate_of_occupancy"),
   insuranceStatus: text("insurance_status").notNull(),
   residentialDwelling: text("residential_dwelling").notNull(),
+  ownsHome: text("owns_home"),
+  canSubmitDeed: text("can_submit_deed"),
   stateRegistration: text("state_registration"),
 
   bookkeepingTool: text("bookkeeping_tool").notNull(),
@@ -78,6 +83,10 @@ export const leads = pgTable("leads", {
   loanAmount: integer("loan_amount").notNull(),
   projectedRevenue: integer("projected_revenue").notNull(),
   useOfFunds: text("use_of_funds").notNull(),
+
+  locIntendedUse: text("loc_intended_use"),
+  locCleanupAcknowledged: text("loc_cleanup_acknowledged"),
+  locNoAdditionalDebt: text("loc_no_additional_debt"),
 
   flags: text("flags").array(),
   status: text("status").notNull().default("qualified"),

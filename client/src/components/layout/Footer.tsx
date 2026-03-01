@@ -6,7 +6,7 @@ export function Footer() {
           <div className="md:col-span-2">
             <h3 className="font-display font-bold text-2xl mb-4 text-primary">The Lending Lab</h3>
             <p className="text-muted-foreground mb-6 max-w-sm leading-relaxed">
-              Patient microloans for the school founders that banks typically won't serve. $5K-$50K at 3% fixed. No fees. No personal guarantee. No credit check.
+              Flexible financing for microschool founders: Term Loans ($10K–$50K) and Revolving Lines of Credit (up to $100K). 3–6% interest, 2% origination fee, no prepayment penalty.
             </p>
             <p className="text-sm text-muted-foreground">
               Backed by the <a href="https://www.buildinghope.org/about-building-hope-impact-fund" target="_blank" rel="noreferrer" className="text-secondary hover:underline font-medium">Building Hope Impact Fund</a>, a 501(c)(3) organization.
