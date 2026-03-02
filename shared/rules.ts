@@ -12,7 +12,9 @@ export const RULES = {
   LOC_MIN_ANNUAL_REVENUE: 100000,
 
   FICO_PREFERRED: 650,
-  FICO_MIN_YEAR0: 575,
+
+  EXCLUDED_STATES: ["CA", "HI", "ND"] as readonly string[],
+  EXCLUDED_STATES_DISPLAY: { CA: "California", HI: "Hawaii", ND: "North Dakota" } as Record<string, string>,
 
   DSR_CAP_YEAR0: 0.10,
   DSR_CAP_OPERATING: 0.14,

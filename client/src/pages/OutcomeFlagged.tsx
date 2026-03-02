@@ -2,7 +2,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { AlertTriangle, ArrowRight, AlertCircle, Mail, CalendarClock } from "lucide-react";
+import { AlertTriangle, ArrowRight, AlertCircle, Mail, CalendarClock, ExternalLink } from "lucide-react";
 import { RULES } from "@shared/rules";
 
 export default function OutcomeFlagged() {
@@ -53,6 +53,21 @@ export default function OutcomeFlagged() {
                   </ul>
                 </div>
               )}
+
+              <div className="bg-secondary/5 border border-secondary/20 rounded-lg p-5 max-w-lg mx-auto text-left">
+                <p className="text-sm text-muted-foreground mb-3">
+                  We're building SchoolStack.ai to help small schools strengthen their operations and get loan-ready — coming soon.
+                </p>
+                <a
+                  href="https://schoolstack.ai/?ref=lendinglab&outcome=flagged"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-secondary hover:underline"
+                  data-testid="link-schoolstack-flagged"
+                >
+                  Learn more <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              </div>
 
               <div className="pt-4 space-y-3">
                 {applicationsOpen && hasHandoffUrl ? (

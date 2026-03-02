@@ -22,7 +22,7 @@ export const CONTENT = {
         ["Payments", "Quarterly"],
         ["Origination", "2% (added to principal)"],
         ["Security", "UCC-1 on revenues & assets"],
-        ["Credit", "FICO 650+ preferred (575 min for Year 0)"],
+        ["Credit", "FICO 650+ preferred"],
       ],
       typicalUse: "Facility build-out, furniture, curriculum, marketing, licensing",
     },
@@ -82,6 +82,10 @@ export const CONTENT = {
     {
       q: "What counts as 'enrolled'?",
       a: "A student is enrolled when a family has signed a tuition contract. We do not count handbooks, verbal commitments, or waitlists.",
+    },
+    {
+      q: "Are there states where you don't lend?",
+      a: "Due to regulatory requirements, the Lending Lab is not currently available in California, Hawaii, or North Dakota. We hope to expand in future cycles.",
     },
     {
       q: "What happens if I'm not eligible?",

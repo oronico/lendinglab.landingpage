@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { ArrowRight, CheckCircle2, XCircle, AlertTriangle, Loader2, Mail, TrendingUp, GraduationCap, FileText, CalendarClock } from "lucide-react";
+import { ArrowRight, CheckCircle2, XCircle, AlertTriangle, Loader2, Mail, TrendingUp, GraduationCap, FileText, CalendarClock, Rocket, ExternalLink } from "lucide-react";
 import { CONTENT } from "@shared/content";
 import { RULES } from "@shared/rules";
 
@@ -337,6 +337,34 @@ function PreLaunchLanding() {
 
         <LoanDetails />
 
+        <section className="py-16 bg-secondary/5">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
+            <div className="rounded-2xl border border-secondary/20 bg-white p-8 md:p-10 text-center space-y-4">
+              <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mx-auto">
+                <Rocket className="w-6 h-6 text-secondary" />
+              </div>
+              <h2 className="text-2xl md:text-3xl font-display font-bold text-primary" data-testid="text-schoolstack-prelaunch-title">
+                Coming Soon: SchoolStack.ai
+              </h2>
+              <p className="text-muted-foreground leading-relaxed max-w-xl mx-auto">
+                A new mission-fueled platform to help small schools start strong and thrive — budgeting tools, enrollment planning, and operational support built for schools like yours. From the same team behind the Lending Lab.
+              </p>
+              <div className="pt-2">
+                <a
+                  href="https://schoolstack.ai/?ref=lendinglab"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-secondary/10 text-secondary font-semibold hover:bg-secondary/20 transition-colors"
+                  data-testid="link-schoolstack-prelaunch"
+                >
+                  Learn More
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section id="faq" className="py-20 bg-muted/30">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
             <div className="text-center mb-12">
@@ -464,6 +492,33 @@ export default function Home() {
         <WhoThisIsFor />
         <HardGates />
         <HowItWorks />
+        <section className="py-16 bg-secondary/5">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
+            <div className="rounded-2xl border border-secondary/20 bg-white p-8 md:p-10 text-center space-y-4">
+              <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mx-auto">
+                <Rocket className="w-6 h-6 text-secondary" />
+              </div>
+              <h2 className="text-2xl md:text-3xl font-display font-bold text-primary" data-testid="text-schoolstack-title">
+                Coming Soon: SchoolStack.ai
+              </h2>
+              <p className="text-muted-foreground leading-relaxed max-w-xl mx-auto">
+                A new mission-fueled platform to help small schools start strong and thrive — budgeting tools, enrollment planning, and operational support built for schools like yours. From the same team behind the Lending Lab.
+              </p>
+              <div className="pt-2">
+                <a
+                  href="https://schoolstack.ai/?ref=lendinglab"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-secondary/10 text-secondary font-semibold hover:bg-secondary/20 transition-colors"
+                  data-testid="link-schoolstack-home"
+                >
+                  Learn More
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
         <FAQ />
         <FinalCTA />
         <Disclaimers />

@@ -3,7 +3,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircle2, ArrowRight, FileText, Mail, CalendarClock } from "lucide-react";
+import { CheckCircle2, ArrowRight, FileText, Mail, CalendarClock, ExternalLink } from "lucide-react";
 import { RULES } from "@shared/rules";
 
 export default function OutcomeQualified() {
@@ -55,6 +55,22 @@ export default function OutcomeQualified() {
                   <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />Parent and board member references</li>
                   <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />Board resolution authorizing loan <span className="text-xs italic">(nonprofits)</span></li>
                 </ul>
+              </div>
+
+              <div className="bg-secondary/5 border border-secondary/20 rounded-lg p-5 max-w-md mx-auto text-left">
+                <p className="font-semibold text-primary text-sm mb-1">You're building something that matters.</p>
+                <p className="text-sm text-muted-foreground mb-3">
+                  SchoolStack.ai is a new platform from our team to help small schools like yours thrive — coming soon.
+                </p>
+                <a
+                  href="https://schoolstack.ai/?ref=lendinglab&outcome=qualified"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-secondary hover:underline"
+                  data-testid="link-schoolstack-qualified"
+                >
+                  Learn more <ExternalLink className="w-3.5 h-3.5" />
+                </a>
               </div>
 
               <div className="pt-4">

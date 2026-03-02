@@ -16,7 +16,7 @@ Multi-page marketing and lead generation website for Building Hope Impact Fund's
 ### Term Loan
 - $10K–$50K in $10K increments, 4–6 year terms, quarterly payments
 - Rate: 5%, 2% origination fee, no prepayment penalty
-- FICO 650+ preferred (575 min for Year 0), Year 0 requires personal guarantee
+- FICO 650+ preferred, Year 0 requires personal guarantee
 
 ### Revolving Line of Credit
 - Up to $100K, 12-month draw period, monthly interest-only payments
@@ -52,6 +52,7 @@ Multi-page marketing and lead generation website for Building Hope Impact Fund's
   - APPLICATIONS_OPEN_DATE ("May 6, 2026"), APPLICATIONS_CLOSE_DATE ("November 6, 2026"), APPLICATIONS_CLOSE_NOTE
   - FUND_TARGET ($1M total), DEPLOY_AMOUNT ($450K committed), FUNDRAISE_GOAL ($650K still to raise)
   - NONPROFIT_MIN_BOARD_SIZE (4), NONPROFIT_BOARD_MUST_BE_INDEPENDENT, NONPROFIT_REQUIRES_BOARD_RESOLUTION
+  - EXCLUDED_STATES (CA, HI, ND — hard stop due to regulatory requirements)
   - HANDOFF_URL_QUALIFIED / HANDOFF_URL_FLAGGED (redirect targets)
 - `shared/content.ts` — All UI copy, nonprofit requirements, nonprofit attestation labels
 

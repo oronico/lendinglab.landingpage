@@ -27,6 +27,9 @@ export default function Terms() {
             <h2 className="text-lg font-bold text-primary mt-8">Eligibility Requirements</h2>
             <p>Eligibility requirements are determined by {RULES.PHILANTHROPY.fund} and may change between lending cycles. Meeting pre-qualification criteria does not guarantee loan approval.</p>
 
+            <h2 className="text-lg font-bold text-primary mt-8">Non-Discrimination Statement</h2>
+            <p>Building Hope Impact Fund does not discriminate on the basis of race, color, religion, national origin, sex, sexual orientation, gender identity, disability, age, veteran status, or any other legally protected characteristic in its lending decisions, programs, or activities. All applicants are evaluated based on their school's financial readiness, operational capacity, and ability to repay.</p>
+
             <h2 className="text-lg font-bold text-primary mt-8">Contact</h2>
             <p>Questions? Contact {RULES.CONTACT.name} at <a href={`mailto:${RULES.CONTACT.email}`} className="text-secondary hover:underline">{RULES.CONTACT.email}</a>.</p>
           </div>

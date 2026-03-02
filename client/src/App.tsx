@@ -8,6 +8,7 @@ import Eligibility from "@/pages/Eligibility";
 import PreQual from "@/pages/PreQual";
 import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
+import Accessibility from "@/pages/Accessibility";
 import OutcomeQualified from "@/pages/OutcomeQualified";
 import OutcomeFlagged from "@/pages/OutcomeFlagged";
 import OutcomeIneligible from "@/pages/OutcomeIneligible";
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/prequal" component={PreQual} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/terms" component={Terms} />
+      <Route path="/accessibility" component={Accessibility} />
       <Route path="/outcome/qualified" component={OutcomeQualified} />
       <Route path="/outcome/flagged" component={OutcomeFlagged} />
       <Route path="/outcome/ineligible" component={OutcomeIneligible} />

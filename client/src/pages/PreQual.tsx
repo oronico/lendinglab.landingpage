@@ -49,8 +49,7 @@ const REVENUE_RANGES = [
 ];
 
 const CREDIT_RANGES = [
-  { value: "below_575", label: "Below 575" },
-  { value: "575_649", label: "575 – 649" },
+  { value: "below_650", label: "Below 650" },
   { value: "650_699", label: "650 – 699" },
   { value: "700_749", label: "700 – 749" },
   { value: "750_plus", label: "750+" },
@@ -129,8 +128,7 @@ function getRevenueMidpoint(range: string): number {
 
 function getCreditMidpoint(range: string): number {
   const map: Record<string, number> = {
-    below_575: 550,
-    "575_649": 612,
+    below_650: 600,
     "650_699": 675,
     "700_749": 725,
     "750_plus": 775,
@@ -231,14 +229,13 @@ export default function PreQual() {
       }
     }
 
-    const creditScore = getCreditMidpoint(form.creditRange);
-    if (creditScore > 0 && creditScore < RULES.FICO_MIN_YEAR0) {
-      hardStops.push(`Credit score below minimum threshold (${RULES.FICO_MIN_YEAR0})`);
-      riskScore -= 20;
+    if (form.state && (RULES.EXCLUDED_STATES as readonly string[]).includes(form.state)) {
+      hardStops.push(`The Lending Lab is not currently available in ${RULES.EXCLUDED_STATES_DISPLAY[form.state]} due to regulatory requirements`);
     }
 
-    if (creditScore > 0 && creditScore >= RULES.FICO_MIN_YEAR0 && creditScore < RULES.FICO_PREFERRED) {
-      flags.push(`Credit score between ${RULES.FICO_MIN_YEAR0} and ${RULES.FICO_PREFERRED} — additional review required`);
+    const creditScore = getCreditMidpoint(form.creditRange);
+    if (creditScore > 0 && creditScore < RULES.FICO_PREFERRED) {
+      flags.push("Credit score below 650 — additional review required");
       riskScore -= 10;
     }
     if (form.creditRange === "unknown") {

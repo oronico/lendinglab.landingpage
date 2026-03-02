@@ -22,7 +22,8 @@ export function Footer() {
               <li><Link href="/prequal" className="hover:text-secondary transition-colors">Pre-Qualify</Link></li>
               <li><Link href="/privacy" className="hover:text-secondary transition-colors">Privacy</Link></li>
               <li><Link href="/terms" className="hover:text-secondary transition-colors">Terms</Link></li>
-              <li><a href="https://schoolstack.ai" target="_blank" rel="noreferrer" className="hover:text-secondary transition-colors">SchoolStack.ai</a></li>
+              <li><Link href="/accessibility" className="hover:text-secondary transition-colors">Accessibility</Link></li>
+              <li><a href="https://schoolstack.ai/?ref=lendinglab" target="_blank" rel="noreferrer" className="hover:text-secondary transition-colors">SchoolStack.ai</a></li>
             </ul>
           </div>
           <div>
@@ -38,6 +39,7 @@ export function Footer() {
           <div className="flex gap-4">
             <Link href="/privacy" className="hover:text-secondary">Privacy</Link>
             <Link href="/terms" className="hover:text-secondary">Terms</Link>
+            <Link href="/accessibility" className="hover:text-secondary">Accessibility</Link>
           </div>
         </div>
       </div>

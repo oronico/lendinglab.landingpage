@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RULES, type EligibilityResult } from "@shared/rules";
 import { CONTENT } from "@shared/content";
 import {
@@ -21,6 +22,7 @@ import {
 type YesNo = "yes" | "no" | null;
 
 interface EligibilityAnswers {
+  state: string | null;
   businessBankAccount: YesNo;
   noCommingling: YesNo;
   legalRegistration: YesNo;
@@ -30,7 +32,7 @@ interface EligibilityAnswers {
   productType: "term" | "loc" | null;
   qbo: YesNo;
   homeBased: YesNo;
-  ficoRange: "above650" | "between575and650" | "below575" | null;
+  ficoRange: "above650" | "below650" | null;
   monthsOperating: "less12" | "12plus" | null;
   annualRevenue: "below100k" | "100kplus" | null;
   entityType: "llc" | "corp" | "501c3" | null;
@@ -41,7 +43,14 @@ interface EligibilityAnswers {
   reconciliationsCurrent: YesNo;
 }
 
+const US_STATES = [
+  "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY",
+  "LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND",
+  "OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY","DC"
+];
+
 const initialAnswers: EligibilityAnswers = {
+  state: null,
   businessBankAccount: null,
   noCommingling: null,
   legalRegistration: null,
@@ -65,6 +74,10 @@ const initialAnswers: EligibilityAnswers = {
 function evaluateEligibility(answers: EligibilityAnswers): EligibilityResult {
   const hardStops: string[] = [];
   const flags: string[] = [];
+
+  if (answers.state && (RULES.EXCLUDED_STATES as readonly string[]).includes(answers.state)) {
+    hardStops.push(`The Lending Lab is not currently available in ${RULES.EXCLUDED_STATES_DISPLAY[answers.state]} due to regulatory requirements.`);
+  }
 
   if (answers.businessBankAccount === "no") {
     hardStops.push("A dedicated business bank account is required.");
@@ -106,16 +119,8 @@ function evaluateEligibility(answers: EligibilityAnswers): EligibilityResult {
     }
   }
 
-  if (answers.ficoRange === "below575") {
-    hardStops.push(`A minimum FICO score of ${RULES.FICO_MIN_YEAR0} is required.`);
-  }
-
-  if (answers.ficoRange === "between575and650") {
-    if (isYear0) {
-      flags.push(`Your FICO score is between ${RULES.FICO_MIN_YEAR0} and ${RULES.FICO_PREFERRED}. Year 0 applicants in this range may still qualify with additional review.`);
-    } else {
-      flags.push(`A FICO score of ${RULES.FICO_PREFERRED}+ is preferred. Scores between ${RULES.FICO_MIN_YEAR0} and ${RULES.FICO_PREFERRED} require additional review.`);
-    }
+  if (answers.ficoRange === "below650") {
+    flags.push(`A FICO score of ${RULES.FICO_PREFERRED}+ is preferred. Scores below ${RULES.FICO_PREFERRED} may require additional review.`);
   }
 
   if (answers.monthsOperating === "less12" && !isYear0) {
@@ -208,9 +213,18 @@ export default function Eligibility() {
   const steps = [
     {
       title: "School Profile",
-      isComplete: () => answers.schoolStage !== null && answers.productType !== null && answers.homeBased !== null,
+      isComplete: () => answers.state !== null && answers.schoolStage !== null && answers.productType !== null && answers.homeBased !== null,
       content: (
         <div className="space-y-6">
+          <Question question="What state is your school located in?">
+            <Select value={answers.state ?? ""} onValueChange={(v) => update("state", v)}>
+              <SelectTrigger data-testid="select-eligibility-state"><SelectValue placeholder="Select state" /></SelectTrigger>
+              <SelectContent>
+                {US_STATES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </Question>
+
           <Question question="What stage is your school in?">
             <RadioGroup
               value={answers.schoolStage ?? ""}
@@ -469,18 +483,14 @@ export default function Eligibility() {
       content: (
         <div className="space-y-6">
           <Question question="What is your approximate FICO credit score range?">
-            <RadioGroup value={answers.ficoRange ?? ""} onValueChange={(v) => update("ficoRange", v as "above650" | "between575and650" | "below575")} className="flex flex-col gap-2" data-testid="radio-fico">
+            <RadioGroup value={answers.ficoRange ?? ""} onValueChange={(v) => update("ficoRange", v as "above650" | "below650")} className="flex flex-col gap-2" data-testid="radio-fico">
               <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.ficoRange === "above650" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="fico-above650">
                 <RadioGroupItem value="above650" id="fico-above650" data-testid="radio-fico-above650" />
                 <span className="font-medium">{RULES.FICO_PREFERRED}+ (Preferred)</span>
               </Label>
-              <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.ficoRange === "between575and650" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="fico-between">
-                <RadioGroupItem value="between575and650" id="fico-between" data-testid="radio-fico-between" />
-                <span className="font-medium">{RULES.FICO_MIN_YEAR0} – {RULES.FICO_PREFERRED}</span>
-              </Label>
-              <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.ficoRange === "below575" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="fico-below">
-                <RadioGroupItem value="below575" id="fico-below" data-testid="radio-fico-below" />
-                <span className="font-medium">Below {RULES.FICO_MIN_YEAR0}</span>
+              <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.ficoRange === "below650" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="fico-below650">
+                <RadioGroupItem value="below650" id="fico-below650" data-testid="radio-fico-below650" />
+                <span className="font-medium">Below {RULES.FICO_PREFERRED}</span>
               </Label>
             </RadioGroup>
           </Question>
@@ -838,13 +848,13 @@ export default function Eligibility() {
                             View Full Details
                           </Button>
                           <a
-                            href="https://schoolstack.ai"
+                            href="https://schoolstack.ai/?ref=lendinglab"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1.5 text-sm font-medium text-secondary hover:underline py-2"
                             data-testid="link-schoolstack"
                           >
-                            Visit SchoolStack.ai for resources
+                            Learn about SchoolStack.ai — coming soon
                             <ExternalLink className="h-3.5 w-3.5" />
                           </a>
                         </div>

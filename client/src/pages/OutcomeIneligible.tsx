@@ -42,11 +42,20 @@ export default function OutcomeIneligible() {
               )}
 
               <div className="pt-4 space-y-3">
-                <Button asChild className="bg-secondary hover:bg-secondary/90 text-white rounded-full px-8">
-                  <a href="https://schoolstack.ai" target="_blank" rel="noreferrer">
-                    Get Help with SchoolStack.ai <ExternalLink className="ml-2 h-4 w-4" />
+                <div className="bg-secondary/5 border border-secondary/20 rounded-lg p-5 max-w-lg mx-auto text-left">
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Not ready yet? We're building SchoolStack.ai to help early-stage schools like yours build the foundation you need — coming soon.
+                  </p>
+                  <a
+                    href="https://schoolstack.ai/?ref=lendinglab&outcome=ineligible"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-secondary hover:underline"
+                    data-testid="link-schoolstack-ineligible"
+                  >
+                    Learn more <ExternalLink className="w-3.5 h-3.5" />
                   </a>
-                </Button>
+                </div>
                 <p className="text-xs text-muted-foreground">Most schools can reapply after addressing these items.</p>
               </div>
 
