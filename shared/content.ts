@@ -8,7 +8,7 @@ export const CONTENT = {
   hero: {
     badge: `Powered by ${RULES.PHILANTHROPY.partners.join(" & ")}`,
     headline: "Capital for schools that run like a business.",
-    subhead: `Cycle 2: Raising $${(RULES.FUNDRAISE_GOAL / 1000).toFixed(0)}K. Term loans and revolving lines of credit for microschool founders who demonstrate financial discipline.`,
+    subhead: `Cycle 2: Building a $${(RULES.FUND_TARGET / 1000000).toFixed(0)}M fund. Term loans and revolving lines of credit for microschool founders who demonstrate financial discipline.`,
     cta1: "Check Eligibility",
     cta2: "Pre-qualify in 3 minutes",
   },

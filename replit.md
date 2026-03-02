@@ -49,8 +49,8 @@ Multi-page marketing and lead generation website for Building Hope Impact Fund's
 ## Centralized Configuration
 - `shared/rules.ts` — All thresholds + handoff config:
   - APPLICATIONS_OPEN (boolean gate for wizard vs waitlist)
-  - APPLICATIONS_OPEN_DATE (display string)
-  - FUNDRAISE_GOAL ($650K Cycle 2 goal), DEPLOY_AMOUNT ($450K committed)
+  - APPLICATIONS_OPEN_DATE ("May 6, 2026"), APPLICATIONS_CLOSE_DATE ("November 6, 2026"), APPLICATIONS_CLOSE_NOTE
+  - FUND_TARGET ($1M total), DEPLOY_AMOUNT ($450K committed), FUNDRAISE_GOAL ($650K still to raise)
   - NONPROFIT_MIN_BOARD_SIZE (4), NONPROFIT_BOARD_MUST_BE_INDEPENDENT, NONPROFIT_REQUIRES_BOARD_RESOLUTION
   - HANDOFF_URL_QUALIFIED / HANDOFF_URL_FLAGGED (redirect targets)
 - `shared/content.ts` — All UI copy, nonprofit requirements, nonprofit attestation labels

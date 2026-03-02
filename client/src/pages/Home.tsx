@@ -180,10 +180,10 @@ function PreLaunchLanding() {
               Capital for schools that run like a business.
             </p>
             <p className="text-lg text-primary-foreground/70 max-w-2xl mx-auto mb-4">
-              Raising <span className="text-secondary font-bold">${(RULES.FUNDRAISE_GOAL / 1000).toFixed(0)}K</span> to fund term loans and lines of credit for microschool founders across the country.
+              Building a <span className="text-secondary font-bold">${(RULES.FUND_TARGET / 1000000).toFixed(0)}M fund</span> for term loans and lines of credit to microschool founders across the country.
             </p>
             <p className="text-base text-primary-foreground/60 max-w-xl mx-auto mb-8">
-              <span className="text-white font-semibold">${(RULES.DEPLOY_AMOUNT / 1000).toFixed(0)}K committed</span> · ${((RULES.FUNDRAISE_GOAL - RULES.DEPLOY_AMOUNT) / 1000).toFixed(0)}K still needed
+              <span className="text-white font-semibold">${(RULES.DEPLOY_AMOUNT / 1000).toFixed(0)}K committed</span> · Raising ${(RULES.FUNDRAISE_GOAL / 1000).toFixed(0)}K more · Fundraising ongoing
             </p>
             <p className="text-sm text-primary-foreground/60">
               Powered by {RULES.PHILANTHROPY.fund} · {RULES.PHILANTHROPY.partners.join(" & ")}
@@ -201,7 +201,7 @@ function PreLaunchLanding() {
                   </div>
                   <h2 className="text-xl font-display font-bold text-primary">For Philanthropists</h2>
                   <p className="text-muted-foreground text-sm leading-relaxed">
-                    We're raising ${(RULES.FUNDRAISE_GOAL / 1000).toFixed(0)}K and still need ${((RULES.FUNDRAISE_GOAL - RULES.DEPLOY_AMOUNT) / 1000).toFixed(0)}K to reach our goal. Interested in powering up this fund to help K-12 entrepreneurs build sustainable schools?
+                    We're building a ${(RULES.FUND_TARGET / 1000000).toFixed(0)}M loan fund and still need to raise ${(RULES.FUNDRAISE_GOAL / 1000).toFixed(0)}K. Interested in powering capital to K-12 entrepreneurs building sustainable schools?
                   </p>
                   <a
                     href="mailto:aserafin@bhope.org"
@@ -281,8 +281,11 @@ function PreLaunchLanding() {
                 <FileText className="w-5 h-5" />
                 Use this time wisely
               </div>
-              <p className="text-muted-foreground leading-relaxed">
-                There's no incentive in being first. Only prequalified complete applications will be reviewed. Use this time to get your documents together.
+              <p className="text-muted-foreground leading-relaxed font-medium">
+                We will not review incomplete applications.
+              </p>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Qualified, complete applications matter far more than being first. Use this time to get your books reconciled, recruitment in place, tuition contracts signed, and facilities lined up. Everything together is what counts.
               </p>
             </div>
 
@@ -301,9 +304,12 @@ function PreLaunchLanding() {
             </div>
 
             <div className="pt-4">
-              <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-white font-display font-bold text-lg" data-testid="badge-launch-date">
-                <CalendarClock className="w-5 h-5" />
-                See you {RULES.APPLICATIONS_OPEN_DATE}!
+              <div className="inline-flex flex-col items-center gap-1 px-6 py-3 rounded-full bg-primary text-white font-display font-bold text-lg" data-testid="badge-launch-date">
+                <div className="flex items-center gap-2">
+                  <CalendarClock className="w-5 h-5" />
+                  Applications: {RULES.APPLICATIONS_OPEN_DATE} – {RULES.APPLICATIONS_CLOSE_DATE}
+                </div>
+                <span className="text-xs font-normal text-primary-foreground/70">{RULES.APPLICATIONS_CLOSE_NOTE}</span>
               </div>
             </div>
           </div>

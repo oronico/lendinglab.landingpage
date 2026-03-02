@@ -66,8 +66,9 @@ export default function OutcomeFlagged() {
                   <div className="space-y-3">
                     <div className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-secondary/10 text-secondary font-semibold">
                       <CalendarClock className="w-5 h-5" />
-                      Applications open {RULES.APPLICATIONS_OPEN_DATE}
+                      Applications: {RULES.APPLICATIONS_OPEN_DATE} – {RULES.APPLICATIONS_CLOSE_DATE}
                     </div>
+                    <p className="text-xs text-muted-foreground">{RULES.APPLICATIONS_CLOSE_NOTE}</p>
                     <p className="text-sm text-muted-foreground">Your screening has been saved. Address the flagged items above before applications open.</p>
                   </div>
                 )}
