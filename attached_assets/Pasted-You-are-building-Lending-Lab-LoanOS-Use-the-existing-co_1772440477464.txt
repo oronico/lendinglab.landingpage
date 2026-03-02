@@ -1,0 +1,82 @@
+You are building Lending Lab LoanOS. Use the existing codebase structure (React/Express/Postgres/Drizzle).
+
+GOAL:
+Implement production-grade payment + prepayment engines for:
+1) Term loans (quarterly, 30/360, Y1 interest-only, Y2 ramp 50%, Y3+ full amort)
+2) Line of Credit (daily accrual, ledger-first, monthly statements)
+
+NON-NEGOTIABLE FINANCIAL RULES:
+- Interest accrues daily (Term: 30/360; LOC: actual/365 by default but configurable).
+- Payment allocation order: fees -> accrued interest -> principal.
+- No prepayment penalty. Term loans require prepayment notice tracking (2 business days) but engine must work regardless.
+- Must support schedule versioning after principal curtailments.
+- Must support auditability: immutable money events (void + adjustment only).
+
+TASKS (IMPLEMENT IN THIS ORDER):
+
+1) Business Day Calendar Utility
+- Create shared util to shift dates to next business day.
+- Include weekends + US bank holidays (configurable list).
+- Replace any “weekend only” shifting.
+
+2) Term Loan Accrual Engine
+- Create server/services/term-accrual.ts
+- Inputs: loanId, asOfDate
+- Output: principalOutstanding, accruedInterest (30/360 from lastAccrualDate), payoffAmount, perDiemInterest.
+- Add tests with known date pairs.
+
+3) Fix Term Schedule Generation
+- When generating program_standard schedules, pass disbursementDate so stub interest for first payment is correct.
+- Use business-day shifting (weekends + holidays).
+
+4) Term Loan Payment Posting Refactor
+- Update POST /api/payments logic:
+  - compute accrual as-of paymentDate
+  - pay fees due <= paymentDate first
+  - then accrued interest
+  - then principal
+  - update loan balances and status fields
+- Ensure partial payments reduce accrued interest appropriately.
+
+5) Payoff Quote Endpoint
+- Add GET /api/loans/:id/payoff-quote?asOf&goodThrough
+- Return transparent breakdown + total.
+
+6) Term Loan Prepayment Engine
+- Add POST /api/loans/:id/apply-prepayment with:
+  - effectiveDate, amount, strategy: recast_payment|shorten_term
+- On recast:
+  - supersede remaining schedule rows (scheduleVersion++)
+  - regenerate schedule for remaining term with updated principal
+  - preserve past schedule rows as historical.
+- On shorten_term:
+  - keep payment amounts and reduce number of remaining payments, update maturity date.
+
+7) Late Fees + Grace Period
+- Implement graceDays=10 default on term loans (configurable in loanTerms).
+- Assess late fee (5%) only after grace period, only once per installment.
+- Store assessment in lateFees/fees and include in payoff quote.
+
+8) LOC Statements Fix
+- Fix interestAccruedCents calculation:
+  - interestDueEnd = accruedInterest(periodEnd)
+  - interestDueStart = accruedInterest(periodStart)
+  - interestPaidDuringPeriod = sum(repayments interest component in period)
+  - interestAccruedDuringPeriod = (interestDueEnd - interestDueStart) + interestPaidDuringPeriod
+  - interestDueCents = interestDueEnd
+- Shift statement due dates to business days.
+
+9) Origination Fees
+- Add origination fee = 2% into fees table at loan creation/closing.
+- Support netting from disbursement (record fee as paid at disbursement if withheld).
+
+10) Auditor Export
+- Add auditor role + endpoint to export an audit package zip for a loan:
+  - executed docs, schedule versions, payments, fees, covenants, audit log.
+
+ACCEPTANCE CRITERIA:
+- Term-loan payoff quote matches manual calc with 30/360 stub interest.
+- Mid-quarter prepayment reduces interest vs waiting until due date.
+- Recast schedule produces a new scheduleVersion and preserves history.
+- LOC statement interestAccrued is correct even if interest was paid during period.
+- All money-affecting events are auditable and immutable (void+adjust).
