@@ -201,12 +201,20 @@ function PreLaunchLanding() {
         </section>
 
         <section className="py-10 bg-white border-b border-border/40">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl text-center">
-            <p className="text-sm text-muted-foreground mb-6">Their generosity makes this possible.</p>
-            <div className="flex items-center justify-center gap-8 md:gap-12 flex-wrap">
-              <img src="/bhif-logo.png" alt="Building Hope Impact Fund" className="h-16 md:h-20 object-contain" data-testid="logo-bhif" />
-              <img src="/stt-logo.webp" alt="Stand Together Trust" className="h-10 md:h-12 object-contain" data-testid="logo-stt" />
-              <img src="/curry-logo.png" alt="The Beth & Ravenel Curry Foundation" className="h-6 md:h-8 object-contain" data-testid="logo-curry" />
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
+            <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
+              <div className="flex flex-col items-center gap-2">
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Administered by</p>
+                <img src="/bhif-logo.png" alt="Building Hope Impact Fund" className="h-14 md:h-16 object-contain" data-testid="logo-bhif" />
+              </div>
+              <div className="hidden md:block w-px h-16 bg-border" />
+              <div className="flex flex-col items-center gap-3">
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Made possible by</p>
+                <div className="flex items-center gap-8">
+                  <img src="/stt-logo.webp" alt="Stand Together Trust" className="h-10 md:h-12 object-contain" data-testid="logo-stt" />
+                  <img src="/curry-logo.png" alt="The Beth & Ravenel Curry Foundation" className="h-6 md:h-8 object-contain" data-testid="logo-curry" />
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -294,21 +302,22 @@ function PreLaunchLanding() {
           </div>
         </section>
 
+        <section className="py-12 bg-muted/20 overflow-hidden">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <img src="/school-outdoor.jpg" alt="Students learning outdoors" className="w-full h-40 md:h-48 object-cover rounded-xl" data-testid="photo-outdoor" />
+              <img src="/school-classroom.jpg" alt="Students in classroom discussion" className="w-full h-40 md:h-48 object-cover rounded-xl" data-testid="photo-classroom" />
+              <img src="/school-violin.jpeg" alt="Music lesson at a small school" className="w-full h-40 md:h-48 object-cover rounded-xl" data-testid="photo-violin" />
+              <img src="/school-kids-group.jpg" alt="Small school students" className="w-full h-40 md:h-48 object-cover rounded-xl" data-testid="photo-kids" />
+            </div>
+          </div>
+        </section>
+
         <section className="py-16 bg-muted/30">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl text-center space-y-8">
-            <div className="space-y-3">
-              <div className="inline-flex items-center gap-2 text-secondary font-semibold">
-                <FileText className="w-5 h-5" />
-                Use this time wisely
-              </div>
-              <div className="bg-amber-50 border border-amber-200 rounded-lg px-5 py-3 max-w-md mx-auto">
-                <p className="text-amber-900 font-semibold text-sm">
-                  We will not review incomplete applications.
-                </p>
-              </div>
-              <p className="text-muted-foreground text-sm leading-relaxed max-w-lg mx-auto">
-                Completeness matters far more than speed. Use this time to get your books reconciled, recruitment in place, contracts signed, and facilities lined up.
-              </p>
+            <div className="inline-flex items-center gap-2 text-secondary font-semibold">
+              <FileText className="w-5 h-5" />
+              Use this time wisely
             </div>
 
             <div className="bg-white rounded-xl p-6 text-left max-w-md mx-auto shadow-sm border border-border/60">
