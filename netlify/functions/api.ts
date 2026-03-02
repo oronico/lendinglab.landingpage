@@ -156,9 +156,9 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
         const emailMatch = duplicates.some(d => d.contactEmail === data.contactEmail);
         const schoolMatch = duplicates.some(d => d.schoolName === data.schoolName);
         if (ipMatch) {
-          existingFlags.push("Multiple submissions from the same address — prior application on file");
+          existingFlags.push("Multiple submissions from the same address. Prior application on file.");
         } else if (emailMatch || schoolMatch) {
-          existingFlags.push("Duplicate detected — same email or school name already exists");
+          existingFlags.push("Duplicate detected. Same email or school name already exists.");
         }
         data.flags = existingFlags;
         if (data.status === "qualified") {
