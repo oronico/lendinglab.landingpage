@@ -337,14 +337,14 @@ function PreLaunchLanding() {
 
         <LoanDetails />
 
-        <section className="py-16 bg-secondary/5">
+        <section className="py-16 bg-orange-500/5">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
-            <div className="rounded-2xl border border-secondary/20 bg-white p-8 md:p-10 text-center space-y-4">
-              <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mx-auto">
-                <Rocket className="w-6 h-6 text-secondary" />
+            <div className="rounded-2xl border border-orange-500/20 bg-white p-8 md:p-10 text-center space-y-4">
+              <div className="w-12 h-12 bg-orange-500/10 rounded-full flex items-center justify-center mx-auto">
+                <Rocket className="w-6 h-6 text-orange-500" />
               </div>
               <h2 className="text-2xl md:text-3xl font-display font-bold text-primary" data-testid="text-schoolstack-prelaunch-title">
-                Coming Soon: <a href="https://schoolstack.ai/?ref=lendinglab" target="_blank" rel="noreferrer" className="text-secondary hover:underline font-medium">SchoolStack.ai</a>
+                Coming Soon: <a href="https://schoolstack.ai/?ref=lendinglab" target="_blank" rel="noreferrer" className="text-orange-500 hover:underline font-medium">SchoolStack.ai</a>
               </h2>
               <p className="text-muted-foreground leading-relaxed max-w-xl mx-auto">
                 A new mission-fueled platform to help small schools start strong and thrive. Budgeting tools, enrollment planning, and operational support built for schools like yours. From the same team behind the Lending Lab.
@@ -354,7 +354,7 @@ function PreLaunchLanding() {
                   href="https://schoolstack.ai/?ref=lendinglab"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-secondary/10 text-secondary font-semibold hover:bg-secondary/20 transition-colors"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-orange-500/10 text-orange-600 font-semibold hover:bg-orange-500/20 transition-colors"
                   data-testid="link-schoolstack-prelaunch"
                 >
                   Learn More
@@ -492,14 +492,14 @@ export default function Home() {
         <WhoThisIsFor />
         <HardGates />
         <HowItWorks />
-        <section className="py-16 bg-secondary/5">
+        <section className="py-16 bg-orange-500/5">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
-            <div className="rounded-2xl border border-secondary/20 bg-white p-8 md:p-10 text-center space-y-4">
-              <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mx-auto">
-                <Rocket className="w-6 h-6 text-secondary" />
+            <div className="rounded-2xl border border-orange-500/20 bg-white p-8 md:p-10 text-center space-y-4">
+              <div className="w-12 h-12 bg-orange-500/10 rounded-full flex items-center justify-center mx-auto">
+                <Rocket className="w-6 h-6 text-orange-500" />
               </div>
               <h2 className="text-2xl md:text-3xl font-display font-bold text-primary" data-testid="text-schoolstack-title">
-                Coming Soon: <a href="https://schoolstack.ai/?ref=lendinglab" target="_blank" rel="noreferrer" className="text-secondary hover:underline font-medium">SchoolStack.ai</a>
+                Coming Soon: <a href="https://schoolstack.ai/?ref=lendinglab" target="_blank" rel="noreferrer" className="text-orange-500 hover:underline font-medium">SchoolStack.ai</a>
               </h2>
               <p className="text-muted-foreground leading-relaxed max-w-xl mx-auto">
                 A new mission-fueled platform to help small schools start strong and thrive. Budgeting tools, enrollment planning, and operational support built for schools like yours. From the same team behind the Lending Lab.
@@ -509,7 +509,7 @@ export default function Home() {
                   href="https://schoolstack.ai/?ref=lendinglab"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-secondary/10 text-secondary font-semibold hover:bg-secondary/20 transition-colors"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-orange-500/10 text-orange-600 font-semibold hover:bg-orange-500/20 transition-colors"
                   data-testid="link-schoolstack-home"
                 >
                   Learn More

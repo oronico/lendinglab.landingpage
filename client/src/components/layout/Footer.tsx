@@ -23,7 +23,7 @@ export function Footer() {
               <li><Link href="/privacy" className="hover:text-secondary transition-colors">Privacy</Link></li>
               <li><Link href="/terms" className="hover:text-secondary transition-colors">Terms</Link></li>
               <li><Link href="/accessibility" className="hover:text-secondary transition-colors">Accessibility</Link></li>
-              <li><a href="https://schoolstack.ai/?ref=lendinglab" target="_blank" rel="noreferrer" className="hover:text-secondary transition-colors">SchoolStack.ai</a></li>
+              <li><a href="https://schoolstack.ai/?ref=lendinglab" target="_blank" rel="noreferrer" className="text-orange-500/80 hover:text-orange-500 transition-colors">SchoolStack.ai</a></li>
             </ul>
           </div>
           <div>

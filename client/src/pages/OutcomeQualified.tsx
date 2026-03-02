@@ -57,16 +57,16 @@ export default function OutcomeQualified() {
                 </ul>
               </div>
 
-              <div className="bg-secondary/5 border border-secondary/20 rounded-lg p-5 max-w-md mx-auto text-left">
+              <div className="bg-orange-500/5 border border-orange-500/20 rounded-lg p-5 max-w-md mx-auto text-left">
                 <p className="font-semibold text-primary text-sm mb-1">You're building something that matters.</p>
                 <p className="text-sm text-muted-foreground mb-3">
-                  <a href="https://schoolstack.ai/?ref=lendinglab&outcome=qualified" target="_blank" rel="noreferrer" className="text-secondary hover:underline font-medium">SchoolStack.ai</a> is a new platform from our team to help small schools like yours thrive. Coming soon.
+                  <a href="https://schoolstack.ai/?ref=lendinglab&outcome=qualified" target="_blank" rel="noreferrer" className="text-orange-500 hover:underline font-medium">SchoolStack.ai</a> is a new platform from our team to help small schools like yours thrive. Coming soon.
                 </p>
                 <a
                   href="https://schoolstack.ai/?ref=lendinglab&outcome=qualified"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 text-sm font-medium text-secondary hover:underline"
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-orange-600 hover:underline"
                   data-testid="link-schoolstack-qualified"
                 >
                   Learn more <ExternalLink className="w-3.5 h-3.5" />

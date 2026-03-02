@@ -851,7 +851,7 @@ export default function Eligibility() {
                             href="https://schoolstack.ai/?ref=lendinglab"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 text-sm font-medium text-secondary hover:underline py-2"
+                            className="inline-flex items-center gap-1.5 text-sm font-medium text-orange-600 hover:underline py-2"
                             data-testid="link-schoolstack"
                           >
                             Learn about SchoolStack.ai - coming soon
