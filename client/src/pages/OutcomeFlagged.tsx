@@ -2,7 +2,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { AlertTriangle, ArrowRight, AlertCircle, Mail, Phone, CalendarClock } from "lucide-react";
+import { AlertTriangle, ArrowRight, AlertCircle, Mail, CalendarClock } from "lucide-react";
 import { RULES } from "@shared/rules";
 
 export default function OutcomeFlagged() {
@@ -73,10 +73,8 @@ export default function OutcomeFlagged() {
                 )}
               </div>
 
-              <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground pt-2">
+              <div className="flex items-center justify-center text-sm text-muted-foreground pt-2">
                 <a href={`mailto:${RULES.CONTACT.email}`} className="flex items-center gap-1 text-secondary hover:underline"><Mail className="w-4 h-4" />{RULES.CONTACT.email}</a>
-                <span>|</span>
-                <a href={`tel:${RULES.CONTACT.phone.replace(/[^\d]/g, '')}`} className="flex items-center gap-1 text-secondary hover:underline"><Phone className="w-4 h-4" />{RULES.CONTACT.phone}</a>
               </div>
             </CardContent>
           </Card>

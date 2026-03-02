@@ -790,6 +790,7 @@ export default function PreQual() {
                   </div>
 
                   <div className="bg-muted/50 p-4 rounded-lg text-xs text-muted-foreground space-y-1">
+                    <p className="font-semibold">One pre-qualification per school. Duplicate submissions will be flagged for review.</p>
                     {CONTENT.disclaimers.map((d, i) => (
                       <p key={i}>• {d}</p>
                     ))}

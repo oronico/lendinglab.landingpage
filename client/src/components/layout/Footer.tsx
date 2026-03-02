@@ -30,7 +30,6 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="font-medium text-primary">{RULES.CONTACT.name}</li>
               <li><a href={`mailto:${RULES.CONTACT.email}`} className="hover:text-secondary transition-colors">{RULES.CONTACT.email}</a></li>
-              <li><a href={`tel:${RULES.CONTACT.phone.replace(/[^\d]/g, '')}`} className="hover:text-secondary transition-colors">{RULES.CONTACT.phone}</a></li>
             </ul>
           </div>
         </div>

@@ -38,13 +38,9 @@ export function FAQ() {
 
         <div data-testid="faq-contact-info" className="mt-12 text-center text-sm text-muted-foreground">
           <p>
-            Still have questions? Contact{" "}
+            Still have questions? Email{" "}
             <a href={`mailto:${RULES.CONTACT.email}`} className="text-secondary hover:underline font-medium" data-testid="link-contact-email">
-              {RULES.CONTACT.name}
-            </a>{" "}
-            at{" "}
-            <a href={`tel:${RULES.CONTACT.phone.replace(/[^\d]/g, '')}`} className="text-secondary hover:underline font-medium" data-testid="link-contact-phone">
-              {RULES.CONTACT.phone}
+              {RULES.CONTACT.email}
             </a>
           </p>
         </div>

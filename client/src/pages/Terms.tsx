@@ -28,7 +28,7 @@ export default function Terms() {
             <p>Eligibility requirements are determined by {RULES.PHILANTHROPY.fund} and may change between lending cycles. Meeting pre-qualification criteria does not guarantee loan approval.</p>
 
             <h2 className="text-lg font-bold text-primary mt-8">Contact</h2>
-            <p>Questions? Contact {RULES.CONTACT.name} at <a href={`mailto:${RULES.CONTACT.email}`} className="text-secondary hover:underline">{RULES.CONTACT.email}</a> or {RULES.CONTACT.phone}.</p>
+            <p>Questions? Contact {RULES.CONTACT.name} at <a href={`mailto:${RULES.CONTACT.email}`} className="text-secondary hover:underline">{RULES.CONTACT.email}</a>.</p>
           </div>
         </div>
       </main>

@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/sections/Hero";
@@ -5,8 +8,12 @@ import { LoanDetails } from "@/components/sections/LoanDetails";
 import { FAQ } from "@/components/sections/FAQ";
 import { HowItWorks } from "@/components/sections/HowItWorks";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
-import { ArrowRight, CheckCircle2, XCircle, AlertTriangle } from "lucide-react";
+import { ArrowRight, CheckCircle2, XCircle, AlertTriangle, Loader2, Mail, TrendingUp, GraduationCap, FileText, CalendarClock } from "lucide-react";
 import { CONTENT } from "@shared/content";
 import { RULES } from "@shared/rules";
 
@@ -108,12 +115,220 @@ function FinalCTA() {
         </div>
         <div className="text-sm text-primary-foreground/70 space-y-1">
           <p>
-            Contact: <a href={`mailto:${RULES.CONTACT.email}`} className="underline hover:text-white">{RULES.CONTACT.email}</a> · <a href={`tel:${RULES.CONTACT.phone.replace(/[^\d]/g, '')}`} className="underline hover:text-white">{RULES.CONTACT.phone}</a>
+            Contact: <a href={`mailto:${RULES.CONTACT.email}`} className="underline hover:text-white">{RULES.CONTACT.email}</a>
           </p>
           <p>{RULES.CONTACT.name}, {RULES.CONTACT.title}</p>
         </div>
       </div>
     </section>
+  );
+}
+
+function PreLaunchLanding() {
+  const [email, setEmail] = useState("");
+  const [schoolName, setSchoolName] = useState("");
+  const [productInterest, setProductInterest] = useState("");
+  const [honeypot, setHoneypot] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+
+  const submitWaitlist = useMutation({
+    mutationFn: async (payload: Record<string, unknown>) => {
+      const res = await apiRequest("POST", "/api/waitlist", payload);
+      return res.json();
+    },
+  });
+
+  async function handleSubmit() {
+    setError("");
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+    if (!schoolName.trim()) {
+      setError("Please enter your school name");
+      return;
+    }
+    try {
+      await submitWaitlist.mutateAsync({
+        email,
+        schoolName,
+        productInterest: productInterest || null,
+        honeypot,
+      });
+      setSubmitted(true);
+    } catch {
+      setError("Something went wrong. Please try again.");
+    }
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col font-sans">
+      <Header />
+      <main className="flex-1">
+        <section className="relative py-24 md:py-32 bg-gradient-to-br from-primary via-primary to-primary/90 overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(20,184,166,0.15),transparent_60%)]" />
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl relative z-10 text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-secondary border border-secondary/30 text-sm font-semibold mb-8" data-testid="badge-active-fundraise">
+              <TrendingUp className="w-4 h-4" />
+              Cycle {RULES.CYCLE} — Active Fundraise
+            </div>
+            <h1 className="text-4xl md:text-6xl font-display font-bold text-white mb-6 leading-tight" data-testid="text-prelaunch-title">
+              The Lending Lab
+            </h1>
+            <p className="text-xl md:text-2xl text-primary-foreground/80 mb-4 font-display">
+              Capital for schools that run like a business.
+            </p>
+            <p className="text-lg text-primary-foreground/70 max-w-2xl mx-auto mb-8">
+              <span className="text-secondary font-bold">${(RULES.DEPLOY_AMOUNT / 1000).toFixed(0)}K ready to deploy</span> in term loans and lines of credit to microschool founders across the country.
+            </p>
+            <p className="text-sm text-primary-foreground/60">
+              Powered by {RULES.PHILANTHROPY.fund} · {RULES.PHILANTHROPY.partners.join(" & ")}
+            </p>
+          </div>
+        </section>
+
+        <section className="py-16 md:py-20 bg-white">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+            <div className="grid md:grid-cols-2 gap-10">
+              <Card className="shadow-lg border-0 bg-muted/20" data-testid="card-philanthropists">
+                <CardContent className="pt-8 pb-8 space-y-5">
+                  <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center">
+                    <TrendingUp className="w-6 h-6 text-secondary" />
+                  </div>
+                  <h2 className="text-xl font-display font-bold text-primary">For Philanthropists</h2>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    Interested in powering up this fund to help K-12 entrepreneurs build sustainable schools? We'd love to talk.
+                  </p>
+                  <a
+                    href="mailto:aserafin@bhope.org"
+                    className="inline-flex items-center gap-2 text-secondary font-semibold hover:underline"
+                    data-testid="link-philanthropy-email"
+                  >
+                    <Mail className="w-4 h-4" />
+                    Email Allison Serafin
+                  </a>
+                  <p className="text-xs text-muted-foreground">aserafin@bhope.org</p>
+                </CardContent>
+              </Card>
+
+              <Card className="shadow-lg border-0 bg-muted/20" data-testid="card-schools">
+                <CardContent className="pt-8 pb-8 space-y-5">
+                  <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center">
+                    <GraduationCap className="w-6 h-6 text-secondary" />
+                  </div>
+                  <h2 className="text-xl font-display font-bold text-primary">For Schools</h2>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    Want to know when the loan fund opens? Fill out this quick form and we'll notify you.
+                  </p>
+
+                  {submitted ? (
+                    <div className="flex items-center gap-2 text-emerald-700 bg-emerald-50 p-4 rounded-lg" data-testid="text-waitlist-success">
+                      <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
+                      <span className="font-semibold text-sm">You're on the list. We'll be in touch.</span>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <div>
+                        <Label htmlFor="pl-school" className="text-xs">School name *</Label>
+                        <Input id="pl-school" data-testid="input-prelaunch-school" value={schoolName} onChange={e => setSchoolName(e.target.value)} placeholder="Your school's name" className="h-9" />
+                      </div>
+                      <div>
+                        <Label htmlFor="pl-email" className="text-xs">Email *</Label>
+                        <Input id="pl-email" data-testid="input-prelaunch-email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@school.org" className="h-9" />
+                      </div>
+                      <div>
+                        <Label htmlFor="pl-product" className="text-xs">Interested in</Label>
+                        <Select value={productInterest} onValueChange={setProductInterest}>
+                          <SelectTrigger data-testid="select-prelaunch-product" className="h-9"><SelectValue placeholder="Select product" /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="term_loan">Term Loan</SelectItem>
+                            <SelectItem value="loc">Line of Credit</SelectItem>
+                            <SelectItem value="year0">Year 0 Term Loan</SelectItem>
+                            <SelectItem value="unsure">Not sure yet</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="sr-only" aria-hidden="true">
+                        <Label htmlFor="pl-hp">Leave blank</Label>
+                        <Input id="pl-hp" value={honeypot} onChange={e => setHoneypot(e.target.value)} tabIndex={-1} autoComplete="off" />
+                      </div>
+                      {error && <p className="text-xs text-destructive">{error}</p>}
+                      <Button
+                        className="w-full bg-secondary hover:bg-secondary/90 text-white font-bold rounded-full h-10"
+                        data-testid="button-prelaunch-waitlist"
+                        onClick={handleSubmit}
+                        disabled={submitWaitlist.isPending}
+                      >
+                        {submitWaitlist.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                        Join Waitlist
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16 bg-muted/30">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl text-center space-y-8">
+            <div className="space-y-4">
+              <div className="inline-flex items-center gap-2 text-secondary font-semibold">
+                <FileText className="w-5 h-5" />
+                Use this time wisely
+              </div>
+              <p className="text-muted-foreground leading-relaxed">
+                There's no incentive in being first. Only prequalified complete applications will be reviewed. Use this time to get your documents together.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl p-6 text-left max-w-md mx-auto shadow-sm border border-border/60">
+              <h4 className="font-bold text-primary text-sm mb-3">Documents to prepare:</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />5-year financial model</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />Signed tuition contracts</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />Certificate of insurance ($2M/$1M GL)</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />Signed lease or facility agreement</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />Articles of incorporation / operating agreement</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />Reconciled QuickBooks Online</li>
+              </ul>
+            </div>
+
+            <div className="pt-4">
+              <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-white font-display font-bold text-lg" data-testid="badge-launch-date">
+                <CalendarClock className="w-5 h-5" />
+                See you {RULES.APPLICATIONS_OPEN_DATE}!
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-10 bg-white">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+              <div data-testid="stat-cycle1-deployed">
+                <p className="text-2xl font-display font-bold text-primary">${(RULES.CYCLE1_DEPLOYED / 1000).toFixed(0)}K</p>
+                <p className="text-xs text-muted-foreground">Cycle 1 Deployed</p>
+              </div>
+              <div data-testid="stat-cycle1-schools">
+                <p className="text-2xl font-display font-bold text-primary">{RULES.CYCLE1_SCHOOLS}</p>
+                <p className="text-xs text-muted-foreground">Schools Funded</p>
+              </div>
+              <div data-testid="stat-cycle1-states">
+                <p className="text-2xl font-display font-bold text-primary">{RULES.CYCLE1_STATES}</p>
+                <p className="text-xs text-muted-foreground">States</p>
+              </div>
+              <div data-testid="stat-cycle1-repayment">
+                <p className="text-2xl font-display font-bold text-primary">{RULES.CYCLE1_REPAYMENT_RATE}%</p>
+                <p className="text-xs text-muted-foreground">On-Time Repayment</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
   );
 }
 
@@ -132,6 +347,10 @@ function Disclaimers() {
 }
 
 export default function Home() {
+  if (!RULES.APPLICATIONS_OPEN) {
+    return <PreLaunchLanding />;
+  }
+
   return (
     <div className="min-h-screen flex flex-col font-sans">
       <Header />

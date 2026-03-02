@@ -94,4 +94,5 @@ Multi-page marketing and lead generation website for Building Hope Impact Fund's
 - `client/src/pages/OutcomeFlagged.tsx` — Flagged outcome with handoff
 
 ## Contact
-- Allison Serafin: aserafin@bhope.org, (702) 539-9230 (Program Director)
+- General questions: help@lendinglab.org
+- Philanthropy inquiries: Allison Serafin, aserafin@bhope.org (Program Director)

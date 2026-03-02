@@ -35,8 +35,7 @@ export const RULES = {
   CONTACT: {
     name: "Allison Serafin",
     title: "Program Director",
-    email: "aserafin@bhope.org",
-    phone: "(702) 539-9230",
+    email: "help@lendinglab.org",
   },
   PHILANTHROPY: {
     fund: "Building Hope Impact Fund",
@@ -44,7 +43,7 @@ export const RULES = {
   },
 
   APPLICATIONS_OPEN: false,
-  APPLICATIONS_OPEN_DATE: "2026-05-01",
+  APPLICATIONS_OPEN_DATE: "May 6, 2026",
   HANDOFF_URL_QUALIFIED: "",
   HANDOFF_URL_FLAGGED: "",
 } as const;
