@@ -166,7 +166,7 @@ function PreLaunchLanding() {
     <div className="min-h-screen flex flex-col font-sans">
       <Header />
       <main className="flex-1">
-        <section className="relative py-24 md:py-32 bg-gradient-to-br from-primary via-primary to-primary/90 overflow-hidden">
+        <section className="relative py-20 md:py-28 bg-gradient-to-br from-primary via-primary to-primary/90 overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(20,184,166,0.15),transparent_60%)]" />
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl relative z-10 text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-secondary border border-secondary/30 text-sm font-semibold mb-8" data-testid="badge-active-fundraise">
@@ -176,18 +176,38 @@ function PreLaunchLanding() {
             <h1 className="text-4xl md:text-6xl font-display font-bold text-white mb-6 leading-tight" data-testid="text-prelaunch-title">
               The Lending Lab
             </h1>
-            <p className="text-xl md:text-2xl text-primary-foreground/80 mb-4 font-display">
+            <p className="text-xl md:text-2xl text-white/90 mb-3 font-display">
               Capital for schools that run like a business.
             </p>
-            <p className="text-lg text-primary-foreground/70 max-w-2xl mx-auto mb-4">
-              Building a <span className="text-secondary font-bold">${(RULES.FUND_TARGET / 1000000).toFixed(0)}M fund</span> for term loans and lines of credit to early-stage small schools, tuition-based K-12 programs, and small school networks across the country.
+            <p className="text-base md:text-lg text-white/70 max-w-xl mx-auto mb-10">
+              Term loans and lines of credit for small schools enrolling 10–100 pK-12 students in 2026-27.
             </p>
-            <p className="text-base text-primary-foreground/60 max-w-xl mx-auto mb-8">
-              <span className="text-white font-semibold">${(RULES.DEPLOY_AMOUNT / 1000).toFixed(0)}K committed</span> · Raising ${(RULES.FUNDRAISE_GOAL / 1000).toFixed(0)}K more · Fundraising ongoing
-            </p>
-            <p className="text-sm text-primary-foreground/60">
-              Powered by {RULES.PHILANTHROPY.fund} · {RULES.PHILANTHROPY.partners.join(" & ")}
-            </p>
+
+            <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto mb-10">
+              <div data-testid="stat-fund-target">
+                <p className="text-2xl md:text-3xl font-display font-bold text-secondary">${(RULES.FUND_TARGET / 1000000).toFixed(0)}M</p>
+                <p className="text-xs text-white/60">Fund Target</p>
+              </div>
+              <div data-testid="stat-committed">
+                <p className="text-2xl md:text-3xl font-display font-bold text-white">${(RULES.DEPLOY_AMOUNT / 1000).toFixed(0)}K</p>
+                <p className="text-xs text-white/60">Committed</p>
+              </div>
+              <div data-testid="stat-raising">
+                <p className="text-2xl md:text-3xl font-display font-bold text-white">${(RULES.FUNDRAISE_GOAL / 1000).toFixed(0)}K</p>
+                <p className="text-xs text-white/60">Still Raising</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-10 bg-white border-b border-border/40">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl text-center">
+            <p className="text-sm text-muted-foreground mb-6">Their generosity makes this possible.</p>
+            <div className="flex items-center justify-center gap-8 md:gap-12 flex-wrap">
+              <img src="/bhif-logo.png" alt="Building Hope Impact Fund" className="h-16 md:h-20 object-contain" data-testid="logo-bhif" />
+              <img src="/stt-logo.webp" alt="Stand Together Trust" className="h-10 md:h-12 object-contain" data-testid="logo-stt" />
+              <img src="/curry-logo.png" alt="The Beth & Ravenel Curry Foundation" className="h-6 md:h-8 object-contain" data-testid="logo-curry" />
+            </div>
           </div>
         </section>
 
@@ -201,7 +221,7 @@ function PreLaunchLanding() {
                   </div>
                   <h2 className="text-xl font-display font-bold text-primary">For Philanthropists</h2>
                   <p className="text-muted-foreground text-sm leading-relaxed">
-                    We're building a ${(RULES.FUND_TARGET / 1000000).toFixed(0)}M loan fund and still need to raise ${(RULES.FUNDRAISE_GOAL / 1000).toFixed(0)}K. Interested in powering capital to early-stage small schools and tuition-based K-12 programs?
+                    Philanthropy is what allows us to offer below-market interest rates and build lending infrastructure for small schools. We're raising ${(RULES.FUNDRAISE_GOAL / 1000).toFixed(0)}K more to reach our ${(RULES.FUND_TARGET / 1000000).toFixed(0)}M goal.
                   </p>
                   <a
                     href="mailto:aserafin@bhope.org"
@@ -276,23 +296,25 @@ function PreLaunchLanding() {
 
         <section className="py-16 bg-muted/30">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl text-center space-y-8">
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="inline-flex items-center gap-2 text-secondary font-semibold">
                 <FileText className="w-5 h-5" />
                 Use this time wisely
               </div>
-              <p className="text-muted-foreground leading-relaxed font-medium">
-                We will not review incomplete applications.
-              </p>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Qualified, complete applications matter far more than being first. Use this time to get your books reconciled, recruitment in place, tuition contracts signed, and facilities lined up. Everything together is what counts.
+              <div className="bg-amber-50 border border-amber-200 rounded-lg px-5 py-3 max-w-md mx-auto">
+                <p className="text-amber-900 font-semibold text-sm">
+                  We will not review incomplete applications.
+                </p>
+              </div>
+              <p className="text-muted-foreground text-sm leading-relaxed max-w-lg mx-auto">
+                Completeness matters far more than speed. Use this time to get your books reconciled, recruitment in place, contracts signed, and facilities lined up.
               </p>
             </div>
 
             <div className="bg-white rounded-xl p-6 text-left max-w-md mx-auto shadow-sm border border-border/60">
               <h4 className="font-bold text-primary text-sm mb-3">Documents to prepare:</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />2026-27 pro forma (budget) with projected enrollment, revenue, and expenses</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />2026-27 pro forma budget</li>
                 <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />5-year financial model</li>
                 <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />Signed tuition contracts</li>
                 <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />Certificate of insurance ($2M/$1M GL)</li>

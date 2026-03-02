@@ -3,12 +3,12 @@ import { RULES } from "./rules";
 export const CONTENT = {
   meta: {
     title: "The Lending Lab | Cycle 2",
-    description: "Capital for schools that run like a business. Term loans up to $50K and lines of credit up to $100K for early-stage small schools and tuition-based K-12 programs.",
+    description: "Capital for schools that run like a business. Term loans up to $50K and lines of credit up to $100K for small schools enrolling 10–100 pK-12 students.",
   },
   hero: {
     badge: `Powered by ${RULES.PHILANTHROPY.partners.join(" & ")}`,
     headline: "Capital for schools that run like a business.",
-    subhead: `Cycle 2: Building a $${(RULES.FUND_TARGET / 1000000).toFixed(0)}M fund. Term loans and revolving lines of credit for early-stage small schools and tuition-based K-12 programs.`,
+    subhead: `Cycle 2: Building a $${(RULES.FUND_TARGET / 1000000).toFixed(0)}M fund. Term loans and revolving lines of credit for small schools enrolling 10–100 pK-12 students.`,
     cta1: "Check Eligibility",
     cta2: "Pre-qualify in 3 minutes",
   },
