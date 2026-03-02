@@ -214,14 +214,14 @@ function PreLaunchLanding() {
             <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
               <div className="flex flex-col items-center gap-2">
                 <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Administered by</p>
-                <img src="/bhif-logo.png" alt="Building Hope Impact Fund" className="h-14 md:h-16 object-contain" data-testid="logo-bhif" />
+                <img src="/bhif-logo.png" alt="Building Hope Impact Fund" className="h-16 md:h-20 object-contain" data-testid="logo-bhif" />
               </div>
-              <div className="hidden md:block w-px h-16 bg-border" />
+              <div className="hidden md:block w-px h-20 bg-border" />
               <div className="flex flex-col items-center gap-3">
                 <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Made possible by</p>
                 <div className="flex items-center gap-8">
-                  <img src="/stt-logo.webp" alt="Stand Together Trust" className="h-10 md:h-12 object-contain" data-testid="logo-stt" />
-                  <img src="/curry-logo.png" alt="The Beth & Ravenel Curry Foundation" className="h-6 md:h-8 object-contain" data-testid="logo-curry" />
+                  <img src="/stt-logo.webp" alt="Stand Together Trust" className="h-12 md:h-16 object-contain" data-testid="logo-stt" />
+                  <img src="/curry-logo.png" alt="The Beth & Ravenel Curry Foundation" className="h-8 md:h-12 object-contain" data-testid="logo-curry" />
                 </div>
               </div>
             </div>
