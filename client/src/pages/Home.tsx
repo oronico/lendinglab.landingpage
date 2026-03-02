@@ -239,6 +239,10 @@ function PreLaunchLanding() {
             <p className="text-muted-foreground leading-relaxed">
               The Lending Lab changes that. Administered by Building Hope Impact Fund and fueled by the generosity of Stand Together Trust and The Beth & Ravenel Curry Foundation, we offer below-market loans so these schools can open their doors, equip their classrooms, and grow with confidence.
             </p>
+            <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-amber-50 border border-amber-200/60 text-sm text-amber-800" data-testid="notice-excluded-states">
+              <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
+              <span>Not currently available in {Object.values(RULES.EXCLUDED_STATES_DISPLAY).join(", ")}. We hope to expand in future cycles.</span>
+            </div>
           </div>
         </section>
 
