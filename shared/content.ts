@@ -91,6 +91,32 @@ export const CONTENT = {
       a: "Typically 2–4 weeks from complete application submission, depending on reference and document verification timelines.",
     },
   ],
+  prelaunchFaq: [
+    {
+      q: "Why can't small schools get traditional bank loans?",
+      a: "Banks see thin operating history, small revenue, and unconventional models as too risky. Most small schools — especially in their first few years — simply don't fit the boxes traditional lenders require. The Lending Lab exists to fill that gap.",
+    },
+    {
+      q: "What makes The Lending Lab different from a grant?",
+      a: "This is a loan — schools repay at below-market rates made possible by philanthropic support. When loans are repaid, that capital recycles back into the fund to help the next school. It's a sustainable model that multiplies the impact of every donor dollar.",
+    },
+    {
+      q: "How can I set my school up for success before applications open?",
+      a: "Get your books into QuickBooks Online and keep them reconciled monthly. Sign tuition contracts with your families. Set up formal payroll. Secure your lease or facility agreement. The better organized your finances are, the stronger your application will be.",
+    },
+    {
+      q: "Do you fund brand-new schools that haven't opened yet?",
+      a: "Yes. Year 0 schools are eligible for term loans with a personal guarantee. You'll need signed tuition contracts showing real enrollment demand and a clear plan for how you'll use the funds.",
+    },
+    {
+      q: "How does philanthropic support make this possible?",
+      a: `Donor capital is what allows us to offer loans at below-market rates (currently ${(RULES.CURRENT_RATE * 100).toFixed(2)}%) that traditional lenders would never offer to early-stage schools. Without philanthropy, these schools would have nowhere to turn. Every dollar invested recycles as loans are repaid, multiplying its impact over time.`,
+    },
+    {
+      q: "What happened in Cycle 1?",
+      a: `We deployed $${(RULES.CYCLE1_DEPLOYED / 1000).toFixed(0)}K to ${RULES.CYCLE1_SCHOOLS} schools across ${RULES.CYCLE1_STATES} states — with ${RULES.CYCLE1_REPAYMENT_RATE}% on-time repayment. These schools used the capital to build out classrooms, purchase curriculum, and bridge cash flow gaps. Cycle 2 aims to grow the fund to $${(RULES.FUND_TARGET / 1000000).toFixed(0)}M.`,
+    },
+  ],
   disclaimers: [
     "Completing this screening is not a loan approval or commitment.",
     "Final underwriting includes documentation review and verification.",

@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ArrowRight, CheckCircle2, XCircle, AlertTriangle, Loader2, Mail, TrendingUp, GraduationCap, FileText, CalendarClock } from "lucide-react";
 import { CONTENT } from "@shared/content";
 import { RULES } from "@shared/rules";
@@ -166,8 +167,11 @@ function PreLaunchLanding() {
     <div className="min-h-screen flex flex-col font-sans">
       <Header />
       <main className="flex-1">
-        <section className="relative py-20 md:py-28 bg-gradient-to-br from-primary via-primary to-primary/90 overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(20,184,166,0.15),transparent_60%)]" />
+        <section className="relative py-20 md:py-28 overflow-hidden">
+          <div className="absolute inset-0">
+            <img src="/school-kids-group.jpg" alt="" className="w-full h-full object-cover" aria-hidden="true" />
+            <div className="absolute inset-0 bg-primary/85 bg-gradient-to-br from-primary/90 via-primary/85 to-primary/80" />
+          </div>
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl relative z-10 text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-secondary border border-secondary/30 text-sm font-semibold mb-8" data-testid="badge-active-fundraise">
               <TrendingUp className="w-4 h-4" />
@@ -318,16 +322,55 @@ function PreLaunchLanding() {
 
         <section className="py-12 bg-muted/20 overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-3 gap-3">
               <img src="/school-outdoor.jpg" alt="Students learning outdoors" className="w-full h-40 md:h-48 object-cover rounded-xl" data-testid="photo-outdoor" />
               <img src="/school-classroom.jpg" alt="Students in classroom discussion" className="w-full h-40 md:h-48 object-cover rounded-xl" data-testid="photo-classroom" />
               <img src="/school-violin.jpeg" alt="Music lesson at a small school" className="w-full h-40 md:h-48 object-cover rounded-xl" data-testid="photo-violin" />
-              <img src="/school-kids-group.jpg" alt="Small school students" className="w-full h-40 md:h-48 object-cover rounded-xl" data-testid="photo-kids" />
             </div>
           </div>
         </section>
 
-        <section id="documents" className="py-16 bg-muted/30">
+        <LoanDetails />
+
+        <section id="faq" className="py-20 bg-muted/30">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
+            <div className="text-center mb-12">
+              <p className="text-sm font-semibold tracking-widest text-secondary uppercase mb-3">FAQ</p>
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-primary" data-testid="text-prelaunch-faq-title">
+                Common Questions
+              </h2>
+            </div>
+
+            <Accordion type="single" collapsible className="w-full space-y-3">
+              {CONTENT.prelaunchFaq.map((item, idx) => (
+                <AccordionItem
+                  key={idx}
+                  value={`prelaunch-faq-${idx}`}
+                  data-testid={`prelaunch-faq-item-${idx}`}
+                  className="bg-white px-6 rounded-xl border border-border/60"
+                >
+                  <AccordionTrigger className="text-left font-display font-bold text-base hover:no-underline py-4 text-primary hover:text-secondary transition-colors">
+                    {item.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground pb-4 text-sm leading-relaxed">
+                    {item.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+
+            <div className="mt-12 text-center text-sm text-muted-foreground">
+              <p>
+                Have more questions? Email{" "}
+                <a href={`mailto:${RULES.CONTACT.email}`} className="text-secondary hover:underline font-medium" data-testid="link-prelaunch-contact-email">
+                  {RULES.CONTACT.email}
+                </a>
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="documents" className="py-16 bg-white">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl text-center space-y-8">
             <div className="inline-flex items-center gap-2 text-secondary font-semibold">
               <FileText className="w-5 h-5" />

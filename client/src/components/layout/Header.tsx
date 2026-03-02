@@ -24,8 +24,8 @@ export function Header() {
             ) : (
               <>
                 <a href="#about" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">About</a>
-                <a href="#get-involved" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Get Involved</a>
-                <a href="#documents" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Prepare</a>
+                <a href="#products" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Products</a>
+                <a href="#faq" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">FAQ</a>
               </>
             )
           ) : (
