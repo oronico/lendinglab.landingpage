@@ -5,7 +5,7 @@ import { insertLeadSchema, insertWaitlistSchema } from "@shared/schema";
 import { fireWebhook } from "./services/webhook";
 
 const RATE_LIMIT_WINDOW = 60 * 60 * 1000;
-const RATE_LIMIT_MAX = 5;
+const RATE_LIMIT_MAX = 3;
 const ipSubmissions = new Map<string, { count: number; resetAt: number }>();
 
 function checkRateLimit(ip: string): boolean {
@@ -67,10 +67,19 @@ export async function registerRoutes(
       return res.status(200).json({ message: "Submission received" });
     }
 
-    const duplicates = await storage.findDuplicates(data.contactEmail, data.schoolName);
+    data.ipAddress = ip;
+
+    const duplicates = await storage.findDuplicates(data.contactEmail, data.schoolName, ip);
     if (duplicates.length > 0) {
       const existingFlags = Array.isArray(data.flags) ? [...data.flags] : [];
-      existingFlags.push("Duplicate detected — same email or school name already exists");
+      const ipMatch = duplicates.some(d => d.ipAddress === ip);
+      const emailMatch = duplicates.some(d => d.contactEmail === data.contactEmail);
+      const schoolMatch = duplicates.some(d => d.schoolName === data.schoolName);
+      if (ipMatch) {
+        existingFlags.push("Multiple submissions from the same address — prior application on file");
+      } else if (emailMatch || schoolMatch) {
+        existingFlags.push("Duplicate detected — same email or school name already exists");
+      }
       data.flags = existingFlags;
       if (data.status === "qualified") {
         data.status = "flagged";
@@ -179,7 +188,7 @@ export async function registerRoutes(
     if (!lead) {
       return res.status(404).json({ message: "Lead not found" });
     }
-    const { honeypot, ...exportData } = lead;
+    const { honeypot, ipAddress, ...exportData } = lead;
     return res.json(exportData);
   });
 

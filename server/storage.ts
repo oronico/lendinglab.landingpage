@@ -8,7 +8,7 @@ export interface IStorage {
   getLeadsByStatus(status: string): Promise<Lead[]>;
   getLeadsByHandoffStatus(handoffStatus: string): Promise<Lead[]>;
   getLead(id: string): Promise<Lead | undefined>;
-  findDuplicates(email: string, schoolName: string): Promise<Lead[]>;
+  findDuplicates(email: string, schoolName: string, ipAddress?: string): Promise<Lead[]>;
   claimLead(id: string, claimedBy: string): Promise<Lead | undefined>;
   updateLeadHandoffStatus(id: string, handoffStatus: string): Promise<Lead | undefined>;
   getLeadStats(): Promise<{ total: number; qualified: number; flagged: number; ineligible: number; handedOff: number; waitlisted: number }>;
@@ -41,13 +41,15 @@ export class DatabaseStorage implements IStorage {
     return result;
   }
 
-  async findDuplicates(email: string, schoolName: string): Promise<Lead[]> {
-    return db.select().from(leads).where(
-      or(
-        eq(leads.contactEmail, email),
-        eq(leads.schoolName, schoolName)
-      )
-    );
+  async findDuplicates(email: string, schoolName: string, ipAddress?: string): Promise<Lead[]> {
+    const conditions = [
+      eq(leads.contactEmail, email),
+      eq(leads.schoolName, schoolName),
+    ];
+    if (ipAddress && ipAddress !== "unknown") {
+      conditions.push(eq(leads.ipAddress, ipAddress));
+    }
+    return db.select().from(leads).where(or(...conditions));
   }
 
   async claimLead(id: string, claimedBy: string): Promise<Lead | undefined> {

@@ -249,7 +249,10 @@ export default function PreQual() {
       riskScore -= 10;
     }
 
-    if (isLOC && (form.yearsOperating === "0" || form.yearsOperating === "1")) {
+    if (isLOC && form.yearsOperating === "0") {
+      hardStops.push("Line of credit requires at least 12 months of operating history");
+      riskScore -= 25;
+    } else if (isLOC && form.yearsOperating === "1") {
       flags.push(`Less than ${RULES.LOC_MIN_MONTHS_OPERATING} months operating — LOC requires 12+ months`);
       riskScore -= 10;
     }
@@ -509,7 +512,13 @@ export default function PreQual() {
                       </div>
                       <div>
                         <Label htmlFor="yearsOperating">Years operating *</Label>
-                        <Select value={form.yearsOperating} onValueChange={v => update("yearsOperating", v)}>
+                        <Select value={form.yearsOperating} onValueChange={v => {
+                          update("yearsOperating", v);
+                          if (v === "0" && form.productType === "loc") {
+                            update("productType", "");
+                            update("amountRequested", 0);
+                          }
+                        }}>
                           <SelectTrigger data-testid="select-years"><SelectValue placeholder="Select" /></SelectTrigger>
                           <SelectContent>
                             {YEARS_OPTIONS.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
@@ -555,13 +564,17 @@ export default function PreQual() {
                     <div>
                       <Label>Product type *</Label>
                       <div className="grid gap-3 mt-2">
-                        {PRODUCT_OPTIONS.map(opt => (
+                        {PRODUCT_OPTIONS.map(opt => {
+                          const isLocDisabled = opt.value === "loc" && form.yearsOperating === "0";
+                          return (
                           <label
                             key={opt.value}
-                            className={`flex items-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-colors ${
-                              form.productType === opt.value
-                                ? "border-secondary bg-secondary/5"
-                                : "border-border hover:border-secondary/30"
+                            className={`flex items-center gap-3 p-4 rounded-lg border-2 transition-colors ${
+                              isLocDisabled
+                                ? "border-border bg-muted/50 cursor-not-allowed opacity-60"
+                                : form.productType === opt.value
+                                  ? "border-secondary bg-secondary/5 cursor-pointer"
+                                  : "border-border hover:border-secondary/30 cursor-pointer"
                             }`}
                             data-testid={`option-product-${opt.value}`}
                           >
@@ -570,9 +583,12 @@ export default function PreQual() {
                               name="productType"
                               value={opt.value}
                               checked={form.productType === opt.value}
+                              disabled={isLocDisabled}
                               onChange={() => {
-                                update("productType", opt.value);
-                                update("amountRequested", 0);
+                                if (!isLocDisabled) {
+                                  update("productType", opt.value);
+                                  update("amountRequested", 0);
+                                }
                               }}
                               className="sr-only"
                             />
@@ -581,9 +597,15 @@ export default function PreQual() {
                             }`}>
                               {form.productType === opt.value && <div className="w-2 h-2 rounded-full bg-secondary" />}
                             </div>
-                            <span className="font-medium text-sm">{opt.label}</span>
+                            <div className="flex flex-col">
+                              <span className="font-medium text-sm">{opt.label}</span>
+                              {isLocDisabled && (
+                                <span className="text-xs text-muted-foreground">Requires 12+ months operating history</span>
+                              )}
+                            </div>
                           </label>
-                        ))}
+                          );
+                        })}
                       </div>
                       {errors.productType && <p className="text-xs text-destructive mt-1">{errors.productType}</p>}
                     </div>

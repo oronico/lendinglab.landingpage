@@ -48,10 +48,11 @@ Multi-page marketing and lead generation website for Building Hope Impact Fund's
 - `shared/content.ts` — All UI copy
 
 ## Security
-- Rate limiting on POST endpoints (5 per IP per hour)
+- Rate limiting on POST endpoints (3 per IP per hour)
+- IP-based duplicate detection: IP stored with lead, repeat submissions from same IP flagged
 - Admin auth: Bearer token or Basic Auth or X-Admin-Key header or ?key= param (ADMIN_KEY env var)
 - Honeypot field for spam protection
-- No PII in server logs
+- No PII in server logs; IP stripped from export endpoints
 - Webhook HMAC-SHA256 signature (WEBHOOK_SECRET env var)
 
 ## Environment Variables
@@ -61,7 +62,8 @@ Multi-page marketing and lead generation website for Building Hope Impact Fund's
 - `DATABASE_URL` — PostgreSQL connection string
 
 ## Data Model
-- `leads` table: school info, product type, amount, attestations (8 booleans), revenue/credit range, contact, flags, hard stops, status, risk score, DSR result, suggested amount, handoffStatus (pending/handed_off/waitlisted), claimedAt, claimedBy, timestamps
+- `leads` table: school info, product type, amount, attestations (8 booleans), revenue/credit range, contact, ipAddress, flags, hard stops, status, risk score, DSR result, suggested amount, handoffStatus (pending/handed_off/waitlisted), claimedAt, claimedBy, timestamps
+- LOC blocked for Year 0 founders in both PreQual wizard (disabled option) and Eligibility checker (disabled radio); evaluation hard-stops Year 0 + LOC
 - `waitlist` table: email, school name, product interest, honeypot, timestamps
 
 ## API Endpoints

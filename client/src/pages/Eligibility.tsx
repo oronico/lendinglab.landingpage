@@ -190,7 +190,12 @@ export default function Eligibility() {
           <Question question="What stage is your school in?">
             <RadioGroup
               value={answers.schoolStage ?? ""}
-              onValueChange={(v) => update("schoolStage", v as "year0" | "operating")}
+              onValueChange={(v) => {
+                update("schoolStage", v as "year0" | "operating");
+                if (v === "year0" && answers.productType === "loc") {
+                  update("productType", null);
+                }
+              }}
               className="flex flex-col gap-2"
               data-testid="radio-school-stage"
             >
@@ -225,11 +230,21 @@ export default function Eligibility() {
                   <p className="text-xs text-muted-foreground">Fixed amount, 4–6 year repayment</p>
                 </div>
               </Label>
-              <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.productType === "loc" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="product-loc">
-                <RadioGroupItem value="loc" id="product-loc" data-testid="radio-product-loc" />
+              <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 transition-colors ${
+                answers.schoolStage === "year0"
+                  ? "opacity-60 cursor-not-allowed bg-muted/50 border-border"
+                  : answers.productType === "loc"
+                    ? "border-secondary bg-secondary/5 cursor-pointer"
+                    : "border-border hover:bg-muted/50 cursor-pointer"
+              }`} htmlFor="product-loc">
+                <RadioGroupItem value="loc" id="product-loc" data-testid="radio-product-loc" disabled={answers.schoolStage === "year0"} />
                 <div>
                   <span className="font-medium">Line of Credit (up to $100K)</span>
-                  <p className="text-xs text-muted-foreground">Revolving credit, 12+ months operating required</p>
+                  <p className="text-xs text-muted-foreground">
+                    {answers.schoolStage === "year0"
+                      ? "Requires 12+ months operating history"
+                      : "Revolving credit, 12+ months operating required"}
+                  </p>
                 </div>
               </Label>
             </RadioGroup>

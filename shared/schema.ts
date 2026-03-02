@@ -34,6 +34,7 @@ export const leads = pgTable("leads", {
   contactPhone: text("contact_phone").notNull(),
 
   honeypot: text("honeypot"),
+  ipAddress: text("ip_address"),
 
   flags: text("flags").array(),
   hardStops: text("hard_stops").array(),
