@@ -1,5 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
+import { RULES } from "@shared/rules";
 
 export function Header() {
   const [location] = useLocation();
@@ -14,11 +15,19 @@ export function Header() {
         </Link>
         <nav className="hidden md:flex gap-6 items-center">
           {isHome ? (
-            <>
-              <a href="#products" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Products</a>
-              <a href="#how-it-works" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">How It Works</a>
-              <a href="#faq" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">FAQ</a>
-            </>
+            RULES.APPLICATIONS_OPEN ? (
+              <>
+                <a href="#products" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Products</a>
+                <a href="#how-it-works" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">How It Works</a>
+                <a href="#faq" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">FAQ</a>
+              </>
+            ) : (
+              <>
+                <a href="#about" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">About</a>
+                <a href="#get-involved" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Get Involved</a>
+                <a href="#documents" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Prepare</a>
+              </>
+            )
           ) : (
             <>
               <Link href="/" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Home</Link>

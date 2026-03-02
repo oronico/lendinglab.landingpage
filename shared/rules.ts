@@ -48,6 +48,8 @@ export const RULES = {
     partners: ["Stand Together Trust", "The Beth & Ravenel Curry Foundation"],
   },
 
+  US_ONLY: true,
+
   APPLICATIONS_OPEN: false,
   APPLICATIONS_OPEN_DATE: "May 6, 2026",
   APPLICATIONS_CLOSE_DATE: "November 6, 2026",

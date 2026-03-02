@@ -177,10 +177,10 @@ function PreLaunchLanding() {
               The Lending Lab
             </h1>
             <p className="text-xl md:text-2xl text-white/90 mb-3 font-display">
-              Capital for schools that run like a business.
+              Loan capital for the schools banks overlook.
             </p>
             <p className="text-base md:text-lg text-white/70 max-w-xl mx-auto mb-10">
-              Term loans and lines of credit for small schools enrolling 10–100 pK-12 students in 2026-27.
+              Philanthropically fueled term loans and lines of credit for small schools across the United States enrolling 10–100 pK-12 students.
             </p>
 
             <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto mb-10">
@@ -219,7 +219,21 @@ function PreLaunchLanding() {
           </div>
         </section>
 
-        <section className="py-16 md:py-20 bg-white">
+        <section id="about" className="py-16 md:py-20 bg-muted/20">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl text-center space-y-6">
+            <h2 className="text-2xl md:text-3xl font-display font-bold text-primary" data-testid="text-about-title">
+              Why The Lending Lab Exists
+            </h2>
+            <p className="text-muted-foreground leading-relaxed">
+              Small schools — the ones serving 10 to 100 students — are transforming education across the country. But traditional banks won't lend to them. They're too new, too small, or too unconventional to qualify for a standard business loan.
+            </p>
+            <p className="text-muted-foreground leading-relaxed">
+              The Lending Lab changes that. Administered by Building Hope Impact Fund and fueled by the generosity of Stand Together Trust and The Beth & Ravenel Curry Foundation, we offer below-market loans so these schools can open their doors, equip their classrooms, and grow with confidence.
+            </p>
+          </div>
+        </section>
+
+        <section id="get-involved" className="py-16 md:py-20 bg-white">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
             <div className="grid md:grid-cols-2 gap-10">
               <Card className="shadow-lg border-0 bg-muted/20" data-testid="card-philanthropists">
@@ -229,7 +243,7 @@ function PreLaunchLanding() {
                   </div>
                   <h2 className="text-xl font-display font-bold text-primary">For Philanthropists</h2>
                   <p className="text-muted-foreground text-sm leading-relaxed">
-                    Philanthropy is what allows us to offer below-market interest rates and build lending infrastructure for small schools. We're raising ${(RULES.FUNDRAISE_GOAL / 1000).toFixed(0)}K more to reach our ${(RULES.FUND_TARGET / 1000000).toFixed(0)}M goal.
+                    Your support helps schools that traditional lenders won't touch get the capital they need to open their doors. We're raising ${(RULES.FUNDRAISE_GOAL / 1000).toFixed(0)}K more to reach our ${(RULES.FUND_TARGET / 1000000).toFixed(0)}M Cycle {RULES.CYCLE} goal.
                   </p>
                   <a
                     href="mailto:aserafin@bhope.org"
@@ -250,7 +264,7 @@ function PreLaunchLanding() {
                   </div>
                   <h2 className="text-xl font-display font-bold text-primary">For Schools</h2>
                   <p className="text-muted-foreground text-sm leading-relaxed">
-                    Want to know when the loan fund opens? Fill out this quick form and we'll notify you.
+                    Opening or growing a small school? We're building a loan fund designed for you. Join the waitlist and we'll let you know when applications open.
                   </p>
 
                   {submitted ? (
@@ -313,7 +327,7 @@ function PreLaunchLanding() {
           </div>
         </section>
 
-        <section className="py-16 bg-muted/30">
+        <section id="documents" className="py-16 bg-muted/30">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl text-center space-y-8">
             <div className="inline-flex items-center gap-2 text-secondary font-semibold">
               <FileText className="w-5 h-5" />
