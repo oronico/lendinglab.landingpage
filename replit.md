@@ -89,11 +89,27 @@ Multi-page marketing and lead generation website for Building Hope Impact Fund's
 - `GET /api/waitlist` — List waitlist entries (admin)
 - `POST /api/admin/verify` — Verify admin key (admin)
 
+## Deployment
+
+### Replit
+- `npm run build` — Builds client + server bundle
+- `npm start` — Runs production Express server
+
+### Netlify
+- Config in `netlify.toml` — auto-detected by Netlify
+- Build: `npx vite build` → outputs to `dist/public`
+- API routes served via Netlify Functions (`netlify/functions/api.ts`)
+- `/api/*` proxied to `/.netlify/functions/api` via redirect rules
+- `client/public/_redirects` — SPA fallback
+- Set DATABASE_URL, ADMIN_KEY in Netlify dashboard environment variables
+- Replit-specific Vite plugins (cartographer, dev-banner, runtime-error-modal) are gated behind `REPL_ID` env var — automatically excluded on Netlify
+
 ## Key Files
 - `shared/rules.ts` — Eligibility thresholds, DSR functions, handoff config
 - `shared/content.ts` — All UI copy
 - `shared/schema.ts` — Drizzle schema (leads + waitlist tables)
-- `server/routes.ts` — All API routes with auth
+- `server/routes.ts` — All API routes with auth (Express)
+- `netlify/functions/api.ts` — All API routes (Netlify Functions)
 - `server/storage.ts` — Database storage layer
 - `server/services/webhook.ts` — Webhook delivery service
 - `client/src/pages/Admin.tsx` — Admin dashboard
