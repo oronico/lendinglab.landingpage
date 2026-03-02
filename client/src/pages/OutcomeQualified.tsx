@@ -46,12 +46,14 @@ export default function OutcomeQualified() {
                   <FileText className="w-5 h-5" /> Documents to prepare
                 </h4>
                 <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />2026-27 pro forma (budget) with projected enrollment, revenue, and expenses</li>
                   <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />5-year financial model</li>
                   <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />Signed tuition contracts</li>
                   <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />Certificate of insurance ($2M/$1M GL)</li>
                   <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />Signed lease or facility agreement</li>
                   <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />Articles of incorporation / operating agreement</li>
                   <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />Parent and board member references</li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />Board resolution authorizing loan <span className="text-xs italic">(nonprofits)</span></li>
                 </ul>
               </div>
 

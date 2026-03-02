@@ -23,7 +23,7 @@ const US_STATES = [
 const ENTITY_TYPES = [
   { value: "llc", label: "LLC" },
   { value: "corporation", label: "Corporation" },
-  { value: "nonprofit", label: "Nonprofit" },
+  { value: "501c3", label: "501(c)(3) Nonprofit" },
 ];
 
 const YEARS_OPTIONS = [
@@ -81,6 +81,8 @@ interface FormData {
   attBillsPaid: boolean;
   attContracts: boolean;
   attEnrollmentVerification: boolean;
+  attBoardIndependence: boolean;
+  attBoardResolution: boolean;
 
   revenueRange: string;
   creditRange: string;
@@ -110,6 +112,8 @@ const initialFormData: FormData = {
   attBillsPaid: false,
   attContracts: false,
   attEnrollmentVerification: false,
+  attBoardIndependence: false,
+  attBoardResolution: false,
   revenueRange: "",
   creditRange: "",
   contactName: "",
@@ -271,6 +275,18 @@ export default function PreQual() {
     }
     if (isYear0 && !form.attQbo) {
       flags.push("Year 0: must adopt QuickBooks Online before closing");
+    }
+
+    const isNonprofit = form.entityType === "501c3";
+    if (isNonprofit) {
+      if (!form.attBoardIndependence) {
+        hardStops.push(`Nonprofits must have an independent board of at least ${RULES.NONPROFIT_MIN_BOARD_SIZE} members unrelated to the organization and staff`);
+        riskScore -= 25;
+      }
+      if (!form.attBoardResolution) {
+        hardStops.push("Nonprofits must have a board resolution approved by the full board authorizing the loan");
+        riskScore -= 20;
+      }
     }
 
     let dsrResult = "";
@@ -678,6 +694,35 @@ export default function PreQual() {
                         </label>
                       );
                     })}
+
+                    {form.entityType === "501c3" && (
+                      <>
+                        <div className="pt-2 pb-1">
+                          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Nonprofit Requirements</p>
+                        </div>
+                        {(Object.keys(CONTENT.nonprofitAttestationLabels) as Array<keyof typeof CONTENT.nonprofitAttestationLabels>).map(key => {
+                          const fieldMap: Record<string, keyof FormData> = {
+                            boardIndependence: "attBoardIndependence",
+                            boardResolution: "attBoardResolution",
+                          };
+                          const field = fieldMap[key];
+                          return (
+                            <label
+                              key={key}
+                              className="flex items-start gap-3 p-3 rounded-lg border border-secondary/30 bg-secondary/5 hover:border-secondary/50 cursor-pointer transition-colors"
+                              data-testid={`attestation-nonprofit-${key}`}
+                            >
+                              <Checkbox
+                                checked={form[field] as boolean}
+                                onCheckedChange={v => update(field, !!v)}
+                                className="mt-0.5"
+                              />
+                              <span className="text-sm">{CONTENT.nonprofitAttestationLabels[key]}</span>
+                            </label>
+                          );
+                        })}
+                      </>
+                    )}
                   </div>
                 </div>
               )}

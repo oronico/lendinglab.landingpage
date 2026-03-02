@@ -33,7 +33,10 @@ interface EligibilityAnswers {
   ficoRange: "above650" | "between575and650" | "below575" | null;
   monthsOperating: "less12" | "12plus" | null;
   annualRevenue: "below100k" | "100kplus" | null;
+  entityType: "llc" | "corp" | "501c3" | null;
   boardIndependence: "yes" | "unclear" | "no" | null;
+  boardSize: "4plus" | "less4" | null;
+  boardResolution: YesNo;
   billsCurrent: "yes" | "pastdue_now_current" | "pastdue" | null;
   reconciliationsCurrent: YesNo;
 }
@@ -51,7 +54,10 @@ const initialAnswers: EligibilityAnswers = {
   ficoRange: null,
   monthsOperating: null,
   annualRevenue: null,
+  entityType: null,
   boardIndependence: null,
+  boardSize: null,
+  boardResolution: null,
   billsCurrent: null,
   reconciliationsCurrent: null,
 };
@@ -124,8 +130,26 @@ function evaluateEligibility(answers: EligibilityAnswers): EligibilityResult {
     flags.push(`Line of credit requires $${(RULES.LOC_MIN_ANNUAL_REVENUE / 1000).toFixed(0)}K+ in annual revenue. Your application will be reviewed with this consideration.`);
   }
 
-  if (answers.boardIndependence === "unclear") {
-    flags.push("Board independence is unclear — this will need to be clarified during review.");
+  const isNonprofit = answers.entityType === "501c3";
+
+  if (isNonprofit) {
+    if (answers.boardIndependence === "no") {
+      hardStops.push(`Nonprofits must have an independent board of at least ${RULES.NONPROFIT_MIN_BOARD_SIZE} members unrelated to the organization and staff.`);
+    } else if (answers.boardIndependence === "unclear") {
+      flags.push("Board independence is unclear — this will need to be clarified during review.");
+    }
+
+    if (answers.boardSize === "less4") {
+      hardStops.push(`Nonprofits must have at least ${RULES.NONPROFIT_MIN_BOARD_SIZE} independent board members.`);
+    }
+
+    if (answers.boardResolution === "no") {
+      hardStops.push("Nonprofits must have a board resolution approved by the full board authorizing the school to pursue a loan for the stated amount.");
+    }
+  } else {
+    if (answers.boardIndependence === "unclear") {
+      flags.push("Board independence is unclear — this will need to be clarified during review.");
+    }
   }
 
   if (answers.billsCurrent === "pastdue_now_current") {
@@ -277,7 +301,8 @@ export default function Eligibility() {
         answers.noCommingling !== null &&
         answers.payrollFormal !== null &&
         answers.qbo !== null &&
-        answers.legalRegistration !== null,
+        answers.legalRegistration !== null &&
+        (answers.legalRegistration !== "yes" || answers.entityType !== null),
       content: (
         <div className="space-y-6">
           <Question question="Do you have a dedicated business bank account?">
@@ -332,8 +357,13 @@ export default function Eligibility() {
             </RadioGroup>
           </Question>
 
-          <Question question="Is your school legally registered (LLC, Corporation, or 501(c)(3))?">
-            <RadioGroup value={answers.legalRegistration ?? ""} onValueChange={(v) => update("legalRegistration", v as YesNo)} className="flex gap-3" data-testid="radio-legal">
+          <Question question="Is your school legally registered?">
+            <RadioGroup value={answers.legalRegistration ?? ""} onValueChange={(v) => {
+              update("legalRegistration", v as YesNo);
+              if (v !== "yes") {
+                update("entityType", null);
+              }
+            }} className="flex gap-3" data-testid="radio-legal">
               <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.legalRegistration === "yes" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="legal-yes">
                 <RadioGroupItem value="yes" id="legal-yes" data-testid="radio-legal-yes" />
                 <span className="font-medium">Yes</span>
@@ -343,6 +373,25 @@ export default function Eligibility() {
                 <span className="font-medium">No</span>
               </Label>
             </RadioGroup>
+            {answers.legalRegistration === "yes" && (
+              <div className="mt-3">
+                <p className="text-sm text-muted-foreground mb-2">Entity type:</p>
+                <RadioGroup value={answers.entityType ?? ""} onValueChange={(v) => update("entityType", v as "llc" | "corp" | "501c3")} className="flex flex-col gap-2" data-testid="radio-entity-type">
+                  <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.entityType === "llc" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="entity-llc">
+                    <RadioGroupItem value="llc" id="entity-llc" data-testid="radio-entity-llc" />
+                    <span className="font-medium">LLC</span>
+                  </Label>
+                  <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.entityType === "corp" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="entity-corp">
+                    <RadioGroupItem value="corp" id="entity-corp" data-testid="radio-entity-corp" />
+                    <span className="font-medium">Corporation</span>
+                  </Label>
+                  <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.entityType === "501c3" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="entity-501c3">
+                    <RadioGroupItem value="501c3" id="entity-501c3" data-testid="radio-entity-501c3" />
+                    <span className="font-medium">501(c)(3) Nonprofit</span>
+                  </Label>
+                </RadioGroup>
+              </div>
+            )}
           </Question>
         </div>
       ),
@@ -404,8 +453,16 @@ export default function Eligibility() {
       title: "Credit & Capacity",
       isComplete: () => {
         const baseComplete = answers.ficoRange !== null;
+        const isNonprofit = answers.entityType === "501c3";
         if (answers.schoolStage === "operating") {
-          return baseComplete && answers.monthsOperating !== null && answers.annualRevenue !== null && answers.boardIndependence !== null;
+          let complete = baseComplete && answers.monthsOperating !== null && answers.annualRevenue !== null && answers.boardIndependence !== null;
+          if (isNonprofit) {
+            complete = complete && answers.boardSize !== null && answers.boardResolution !== null;
+          }
+          return complete;
+        }
+        if (answers.schoolStage === "year0" && isNonprofit) {
+          return baseComplete && answers.boardIndependence !== null && answers.boardSize !== null && answers.boardResolution !== null;
         }
         return baseComplete;
       },
@@ -471,6 +528,85 @@ export default function Eligibility() {
                     <span className="font-medium">No</span>
                   </Label>
                 </RadioGroup>
+              </Question>
+
+              {answers.entityType === "501c3" && (
+                <>
+                  <Question question={`Does your board have at least ${RULES.NONPROFIT_MIN_BOARD_SIZE} independent members unrelated to the organization and staff?`}>
+                    <RadioGroup value={answers.boardSize ?? ""} onValueChange={(v) => update("boardSize", v as "4plus" | "less4")} className="flex gap-3" data-testid="radio-board-size">
+                      <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.boardSize === "4plus" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="board-size-4plus">
+                        <RadioGroupItem value="4plus" id="board-size-4plus" data-testid="radio-board-size-4plus" />
+                        <span className="font-medium">Yes, {RULES.NONPROFIT_MIN_BOARD_SIZE}+</span>
+                      </Label>
+                      <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.boardSize === "less4" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="board-size-less4">
+                        <RadioGroupItem value="less4" id="board-size-less4" data-testid="radio-board-size-less4" />
+                        <span className="font-medium">No, fewer than {RULES.NONPROFIT_MIN_BOARD_SIZE}</span>
+                      </Label>
+                    </RadioGroup>
+                  </Question>
+
+                  <Question question="Has your board approved a resolution authorizing the school to pursue a loan for the stated amount?">
+                    <RadioGroup value={answers.boardResolution ?? ""} onValueChange={(v) => update("boardResolution", v as YesNo)} className="flex gap-3" data-testid="radio-board-resolution">
+                      <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.boardResolution === "yes" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="resolution-yes">
+                        <RadioGroupItem value="yes" id="resolution-yes" data-testid="radio-resolution-yes" />
+                        <span className="font-medium">Yes</span>
+                      </Label>
+                      <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.boardResolution === "no" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="resolution-no">
+                        <RadioGroupItem value="no" id="resolution-no" data-testid="radio-resolution-no" />
+                        <span className="font-medium">No</span>
+                      </Label>
+                    </RadioGroup>
+                    <p className="text-xs text-muted-foreground mt-1">The resolution must be approved by the entire board and documented in meeting minutes.</p>
+                  </Question>
+                </>
+              )}
+            </>
+          )}
+
+          {answers.schoolStage === "year0" && answers.entityType === "501c3" && (
+            <>
+              <Question question="Does your board have a majority of independent members?">
+                <RadioGroup value={answers.boardIndependence ?? ""} onValueChange={(v) => update("boardIndependence", v as "yes" | "unclear" | "no")} className="flex flex-col gap-2" data-testid="radio-board-y0">
+                  <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.boardIndependence === "yes" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="board-y0-yes">
+                    <RadioGroupItem value="yes" id="board-y0-yes" data-testid="radio-board-y0-yes" />
+                    <span className="font-medium">Yes</span>
+                  </Label>
+                  <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.boardIndependence === "unclear" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="board-y0-unclear">
+                    <RadioGroupItem value="unclear" id="board-y0-unclear" data-testid="radio-board-y0-unclear" />
+                    <span className="font-medium">Unclear / Not sure</span>
+                  </Label>
+                  <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.boardIndependence === "no" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="board-y0-no">
+                    <RadioGroupItem value="no" id="board-y0-no" data-testid="radio-board-y0-no" />
+                    <span className="font-medium">No</span>
+                  </Label>
+                </RadioGroup>
+              </Question>
+
+              <Question question={`Does your board have at least ${RULES.NONPROFIT_MIN_BOARD_SIZE} independent members unrelated to the organization and staff?`}>
+                <RadioGroup value={answers.boardSize ?? ""} onValueChange={(v) => update("boardSize", v as "4plus" | "less4")} className="flex gap-3" data-testid="radio-board-size-y0">
+                  <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.boardSize === "4plus" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="board-size-y0-4plus">
+                    <RadioGroupItem value="4plus" id="board-size-y0-4plus" data-testid="radio-board-size-y0-4plus" />
+                    <span className="font-medium">Yes, {RULES.NONPROFIT_MIN_BOARD_SIZE}+</span>
+                  </Label>
+                  <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.boardSize === "less4" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="board-size-y0-less4">
+                    <RadioGroupItem value="less4" id="board-size-y0-less4" data-testid="radio-board-size-y0-less4" />
+                    <span className="font-medium">No, fewer than {RULES.NONPROFIT_MIN_BOARD_SIZE}</span>
+                  </Label>
+                </RadioGroup>
+              </Question>
+
+              <Question question="Has your board approved a resolution authorizing the school to pursue a loan for the stated amount?">
+                <RadioGroup value={answers.boardResolution ?? ""} onValueChange={(v) => update("boardResolution", v as YesNo)} className="flex gap-3" data-testid="radio-board-resolution-y0">
+                  <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.boardResolution === "yes" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="resolution-y0-yes">
+                    <RadioGroupItem value="yes" id="resolution-y0-yes" data-testid="radio-resolution-y0-yes" />
+                    <span className="font-medium">Yes</span>
+                  </Label>
+                  <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.boardResolution === "no" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="resolution-y0-no">
+                    <RadioGroupItem value="no" id="resolution-y0-no" data-testid="radio-resolution-y0-no" />
+                    <span className="font-medium">No</span>
+                  </Label>
+                </RadioGroup>
+                <p className="text-xs text-muted-foreground mt-1">The resolution must be approved by the entire board and documented in meeting minutes.</p>
               </Question>
             </>
           )}

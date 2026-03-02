@@ -8,7 +8,7 @@ export const CONTENT = {
   hero: {
     badge: `Powered by ${RULES.PHILANTHROPY.partners.join(" & ")}`,
     headline: "Capital for schools that run like a business.",
-    subhead: `Cycle 2: $${(RULES.DEPLOY_AMOUNT / 1000).toFixed(0)}K available. Term loans and revolving lines of credit for microschool founders who demonstrate financial discipline.`,
+    subhead: `Cycle 2: Raising $${(RULES.FUNDRAISE_GOAL / 1000).toFixed(0)}K. Term loans and revolving lines of credit for microschool founders who demonstrate financial discipline.`,
     cta1: "Check Eligibility",
     cta2: "Pre-qualify in 3 minutes",
   },
@@ -58,6 +58,10 @@ export const CONTENT = {
     "Legal business registration in good standing",
     "Bills and rent paid on time",
   ],
+  nonprofitRequirements: [
+    `Independent board of at least ${RULES.NONPROFIT_MIN_BOARD_SIZE} people unrelated to the organization and staff`,
+    "Board resolution approved by the entire board and documented in minutes authorizing the school to pursue a loan for the stated amount",
+  ],
   howItWorks: [
     { step: 1, title: "Eligibility Screen", desc: "Confirm your school meets basic requirements.", time: "2 min" },
     { step: 2, title: "Pre-Qualification", desc: "Answer a short questionnaire to get an initial decision.", time: "3 min" },
@@ -101,5 +105,9 @@ export const CONTENT = {
     billsPaid: "All bills, rent, and utilities are paid on time",
     contracts: "We have signed tuition contracts for every enrolled student",
     enrollmentVerification: "We can provide enrollment verification documentation",
+  },
+  nonprofitAttestationLabels: {
+    boardIndependence: `Our board has at least ${RULES.NONPROFIT_MIN_BOARD_SIZE} independent members unrelated to the organization and staff`,
+    boardResolution: "Our board has approved a resolution authorizing the school to pursue this loan, documented in meeting minutes",
   },
 } as const;

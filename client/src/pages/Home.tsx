@@ -179,8 +179,11 @@ function PreLaunchLanding() {
             <p className="text-xl md:text-2xl text-primary-foreground/80 mb-4 font-display">
               Capital for schools that run like a business.
             </p>
-            <p className="text-lg text-primary-foreground/70 max-w-2xl mx-auto mb-8">
-              <span className="text-secondary font-bold">${(RULES.DEPLOY_AMOUNT / 1000).toFixed(0)}K ready to deploy</span> in term loans and lines of credit to microschool founders across the country.
+            <p className="text-lg text-primary-foreground/70 max-w-2xl mx-auto mb-4">
+              Raising <span className="text-secondary font-bold">${(RULES.FUNDRAISE_GOAL / 1000).toFixed(0)}K</span> to fund term loans and lines of credit for microschool founders across the country.
+            </p>
+            <p className="text-base text-primary-foreground/60 max-w-xl mx-auto mb-8">
+              <span className="text-white font-semibold">${(RULES.DEPLOY_AMOUNT / 1000).toFixed(0)}K committed</span> · ${((RULES.FUNDRAISE_GOAL - RULES.DEPLOY_AMOUNT) / 1000).toFixed(0)}K still needed
             </p>
             <p className="text-sm text-primary-foreground/60">
               Powered by {RULES.PHILANTHROPY.fund} · {RULES.PHILANTHROPY.partners.join(" & ")}
@@ -198,7 +201,7 @@ function PreLaunchLanding() {
                   </div>
                   <h2 className="text-xl font-display font-bold text-primary">For Philanthropists</h2>
                   <p className="text-muted-foreground text-sm leading-relaxed">
-                    Interested in powering up this fund to help K-12 entrepreneurs build sustainable schools? We'd love to talk.
+                    We're raising ${(RULES.FUNDRAISE_GOAL / 1000).toFixed(0)}K and still need ${((RULES.FUNDRAISE_GOAL - RULES.DEPLOY_AMOUNT) / 1000).toFixed(0)}K to reach our goal. Interested in powering up this fund to help K-12 entrepreneurs build sustainable schools?
                   </p>
                   <a
                     href="mailto:aserafin@bhope.org"
@@ -286,12 +289,14 @@ function PreLaunchLanding() {
             <div className="bg-white rounded-xl p-6 text-left max-w-md mx-auto shadow-sm border border-border/60">
               <h4 className="font-bold text-primary text-sm mb-3">Documents to prepare:</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />2026-27 pro forma (budget) with projected enrollment, revenue, and expenses</li>
                 <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />5-year financial model</li>
                 <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />Signed tuition contracts</li>
                 <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />Certificate of insurance ($2M/$1M GL)</li>
                 <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />Signed lease or facility agreement</li>
                 <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />Articles of incorporation / operating agreement</li>
                 <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />Reconciled QuickBooks Online</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />Board resolution authorizing loan <span className="text-xs italic">(nonprofits)</span></li>
               </ul>
             </div>
 

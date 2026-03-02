@@ -40,12 +40,20 @@ Multi-page marketing and lead generation website for Building Hope Impact Fund's
 4. **Admin Dashboard** → Allison reviews leads, marks as handed off, exports CSV
 5. **LoanOS API** → GET /api/leads/qualified, POST /api/leads/:id/claim for external pull
 
+## Nonprofit Requirements
+- Independent board of at least 4 people unrelated to the organization and staff (hard stop if not met)
+- Board resolution approved by entire board and documented in minutes authorizing loan for stated amount (hard stop if not met)
+- Both enforced in Eligibility checker (with entity type detection) and PreQual wizard (attestation checkboxes)
+- Board resolution appears in document checklists on landing page and qualified outcome page
+
 ## Centralized Configuration
 - `shared/rules.ts` — All thresholds + handoff config:
   - APPLICATIONS_OPEN (boolean gate for wizard vs waitlist)
   - APPLICATIONS_OPEN_DATE (display string)
+  - FUNDRAISE_GOAL ($650K Cycle 2 goal), DEPLOY_AMOUNT ($450K committed)
+  - NONPROFIT_MIN_BOARD_SIZE (4), NONPROFIT_BOARD_MUST_BE_INDEPENDENT, NONPROFIT_REQUIRES_BOARD_RESOLUTION
   - HANDOFF_URL_QUALIFIED / HANDOFF_URL_FLAGGED (redirect targets)
-- `shared/content.ts` — All UI copy
+- `shared/content.ts` — All UI copy, nonprofit requirements, nonprofit attestation labels
 
 ## Security
 - Rate limiting on POST endpoints (3 per IP per hour)
