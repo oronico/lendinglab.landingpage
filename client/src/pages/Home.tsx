@@ -170,7 +170,7 @@ function PreLaunchLanding() {
         <section className="relative py-20 md:py-28 overflow-hidden">
           <div className="absolute inset-0">
             <img src="/school-kids-group.jpg" alt="" className="w-full h-full object-cover" aria-hidden="true" />
-            <div className="absolute inset-0 bg-primary/85 bg-gradient-to-br from-primary/90 via-primary/85 to-primary/80" />
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/70 via-primary/60 to-primary/55" />
           </div>
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl relative z-10 text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-secondary border border-secondary/30 text-sm font-semibold mb-8" data-testid="badge-active-fundraise">
