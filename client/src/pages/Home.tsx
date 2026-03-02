@@ -170,36 +170,41 @@ function PreLaunchLanding() {
         <section className="relative py-20 md:py-28 overflow-hidden">
           <div className="absolute inset-0">
             <img src="/school-kids-group.jpg" alt="" className="w-full h-full object-cover" aria-hidden="true" />
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/70 via-primary/60 to-primary/55" />
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/75 via-primary/65 to-primary/60" />
           </div>
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl relative z-10 text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-secondary border border-secondary/30 text-sm font-semibold mb-8" data-testid="badge-active-fundraise">
-              <TrendingUp className="w-4 h-4" />
-              Cycle {RULES.CYCLE} — Active Fundraise
-            </div>
-            <h1 className="text-4xl md:text-6xl font-display font-bold text-white mb-6 leading-tight" data-testid="text-prelaunch-title">
+            <h1 className="text-4xl md:text-6xl font-display font-bold text-white mb-6 leading-tight drop-shadow-lg" data-testid="text-prelaunch-title">
               The Lending Lab
             </h1>
-            <p className="text-xl md:text-2xl text-white/90 mb-3 font-display">
+            <p className="text-xl md:text-2xl text-white mb-3 font-display drop-shadow-md">
               Loan capital for the schools banks overlook.
             </p>
-            <p className="text-base md:text-lg text-white/70 max-w-xl mx-auto mb-10">
+            <p className="text-base md:text-lg text-white/80 max-w-xl mx-auto mb-10 drop-shadow-sm">
               Philanthropically fueled term loans and lines of credit for small schools across the United States enrolling 10–100 pK-12 students.
             </p>
 
             <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto mb-10">
               <div data-testid="stat-fund-target">
-                <p className="text-2xl md:text-3xl font-display font-bold text-secondary">${(RULES.FUND_TARGET / 1000000).toFixed(0)}M</p>
-                <p className="text-xs text-white/60">Fund Target</p>
+                <p className="text-2xl md:text-3xl font-display font-bold text-secondary drop-shadow-md">${(RULES.FUND_TARGET / 1000000).toFixed(0)}M</p>
+                <p className="text-xs text-white/70 drop-shadow-sm">Fund Target</p>
               </div>
               <div data-testid="stat-committed">
-                <p className="text-2xl md:text-3xl font-display font-bold text-white">${(RULES.DEPLOY_AMOUNT / 1000).toFixed(0)}K</p>
-                <p className="text-xs text-white/60">Committed</p>
+                <p className="text-2xl md:text-3xl font-display font-bold text-white drop-shadow-md">${(RULES.DEPLOY_AMOUNT / 1000).toFixed(0)}K</p>
+                <p className="text-xs text-white/70 drop-shadow-sm">Committed</p>
               </div>
               <div data-testid="stat-raising">
-                <p className="text-2xl md:text-3xl font-display font-bold text-white">${(RULES.FUNDRAISE_GOAL / 1000).toFixed(0)}K</p>
-                <p className="text-xs text-white/60">Still Raising</p>
+                <p className="text-2xl md:text-3xl font-display font-bold text-white drop-shadow-md">${(RULES.FUNDRAISE_GOAL / 1000).toFixed(0)}K</p>
+                <p className="text-xs text-white/70 drop-shadow-sm">Still Raising</p>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-4 bg-primary/5 border-b border-border/40">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary border border-primary/20 text-sm font-semibold" data-testid="badge-active-fundraise">
+              <TrendingUp className="w-4 h-4" />
+              Cycle {RULES.CYCLE} — Active Fundraise
             </div>
           </div>
         </section>

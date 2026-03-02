@@ -15,7 +15,7 @@ Multi-page marketing and lead generation website for Building Hope Impact Fund's
 
 ### Term Loan
 - $10K–$50K in $10K increments, 4–6 year terms, quarterly payments
-- Rate: Prime – 1% (currently 5.75%), 2% origination fee, no prepayment penalty
+- Rate: 5%, 2% origination fee, no prepayment penalty
 - FICO 650+ preferred (575 min for Year 0), Year 0 requires personal guarantee
 
 ### Revolving Line of Credit

@@ -18,7 +18,7 @@ export const CONTENT = {
       specs: [
         ["Amount", "$10,000 – $50,000"],
         ["Term", "4 – 6 years"],
-        ["Rate", `Prime – 1% (currently ${(RULES.CURRENT_RATE * 100).toFixed(2)}%)`],
+        ["Rate", `${(RULES.CURRENT_RATE * 100).toFixed(0)}%`],
         ["Payments", "Quarterly"],
         ["Origination", "2% (added to principal)"],
         ["Security", "UCC-1 on revenues & assets"],
@@ -35,7 +35,8 @@ export const CONTENT = {
         ["Rate", `Prime – 1% on drawn balance`],
         ["Origination", "2%"],
         ["Security", "UCC-1 on revenues & assets"],
-        ["Requires", "12+ months operating, $100K+ revenue, FICO 650+"],
+        ["Credit", "FICO 650+ preferred"],
+        ["Requires", "12+ months operating, $100K+ revenue"],
       ],
       typicalUse: "Seasonal cash flow gaps, bridge timing between tuition collections",
     },
