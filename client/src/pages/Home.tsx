@@ -180,7 +180,7 @@ function PreLaunchLanding() {
               Capital for schools that run like a business.
             </p>
             <p className="text-lg text-primary-foreground/70 max-w-2xl mx-auto mb-4">
-              Building a <span className="text-secondary font-bold">${(RULES.FUND_TARGET / 1000000).toFixed(0)}M fund</span> for term loans and lines of credit to microschool founders across the country.
+              Building a <span className="text-secondary font-bold">${(RULES.FUND_TARGET / 1000000).toFixed(0)}M fund</span> for term loans and lines of credit to early-stage small schools, tuition-based K-12 programs, and small school networks across the country.
             </p>
             <p className="text-base text-primary-foreground/60 max-w-xl mx-auto mb-8">
               <span className="text-white font-semibold">${(RULES.DEPLOY_AMOUNT / 1000).toFixed(0)}K committed</span> · Raising ${(RULES.FUNDRAISE_GOAL / 1000).toFixed(0)}K more · Fundraising ongoing
@@ -201,7 +201,7 @@ function PreLaunchLanding() {
                   </div>
                   <h2 className="text-xl font-display font-bold text-primary">For Philanthropists</h2>
                   <p className="text-muted-foreground text-sm leading-relaxed">
-                    We're building a ${(RULES.FUND_TARGET / 1000000).toFixed(0)}M loan fund and still need to raise ${(RULES.FUNDRAISE_GOAL / 1000).toFixed(0)}K. Interested in powering capital to K-12 entrepreneurs building sustainable schools?
+                    We're building a ${(RULES.FUND_TARGET / 1000000).toFixed(0)}M loan fund and still need to raise ${(RULES.FUNDRAISE_GOAL / 1000).toFixed(0)}K. Interested in powering capital to early-stage small schools and tuition-based K-12 programs?
                   </p>
                   <a
                     href="mailto:aserafin@bhope.org"

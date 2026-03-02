@@ -1,7 +1,7 @@
 # The Lending Lab — Building Hope Impact Fund
 
 ## Overview
-Multi-page marketing and lead generation website for Building Hope Impact Fund's "Lending Lab" business loan program for microschool founders. Two products: Term Loans ($10K–$50K, 4–6yr, Prime–1%) and Revolving Lines of Credit (up to $100K). Features an eligibility checker, streamlined pre-qualification wizard with DSR-based ability-to-repay calculations, admin dashboard for lead management, webhook notifications, waitlist capture, and configurable handoff to the separate LoanOS backend. Designed for a one-person operator (Allison Serafin).
+Multi-page marketing and lead generation website for Building Hope Impact Fund's "Lending Lab" business loan program for early-stage small schools, tuition-based K-12 programs, and small school networks (enrollment up to 100 students). Two products: Term Loans ($10K–$50K, 4–6yr, Prime–1%) and Revolving Lines of Credit (up to $100K). Features an eligibility checker, streamlined pre-qualification wizard with DSR-based ability-to-repay calculations, admin dashboard for lead management, webhook notifications, waitlist capture, and configurable handoff to the separate LoanOS backend. Designed for a one-person operator (Allison Serafin).
 
 ## Architecture
 - **Frontend**: React + Vite, TailwindCSS, shadcn/ui, wouter routing, TanStack Query

@@ -499,7 +499,7 @@ export default function PreQual() {
                 <div className="space-y-6" data-testid="step-school">
                   <div>
                     <h2 className="text-2xl font-display font-bold text-primary">About Your School</h2>
-                    <p className="text-sm text-muted-foreground mt-1">Basic information about your microschool.</p>
+                    <p className="text-sm text-muted-foreground mt-1">Basic information about your school.</p>
                   </div>
 
                   <div className="space-y-4">
