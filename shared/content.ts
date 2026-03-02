@@ -42,14 +42,14 @@ export const CONTENT = {
     },
   },
   goodFit: [
-    "You run your school like a business — separate bank account, formal payroll, reconciled books.",
+    "You run your school like a business: separate bank account, formal payroll, reconciled books.",
     "You have signed tuition contracts and can prove real enrollment demand.",
     "You use (or will adopt) QuickBooks Online and are ready to connect Plaid.",
   ],
   notAFit: [
     "You mix personal and school money or pay staff through Venmo / Cash App.",
     "You don't have tuition contracts or can't verify enrollment.",
-    "You're looking for a grant — this is a loan with underwriting and repayment.",
+    "You're looking for a grant. This is a loan with underwriting and repayment.",
   ],
   hardGates: [
     "Dedicated business bank account (no commingling)",
@@ -89,7 +89,7 @@ export const CONTENT = {
     },
     {
       q: "What happens if I'm not eligible?",
-      a: "You'll see exactly what needs to change. Most schools can reapply after addressing the gap — often within one enrollment cycle.",
+      a: "You'll see exactly what needs to change. Most schools can reapply after addressing the gap, often within one enrollment cycle.",
     },
     {
       q: "How long does underwriting take?",
@@ -99,11 +99,11 @@ export const CONTENT = {
   prelaunchFaq: [
     {
       q: "Why can't small schools get traditional bank loans?",
-      a: "Banks see thin operating history, small revenue, and unconventional models as too risky. Most small schools — especially in their first few years — simply don't fit the boxes traditional lenders require. The Lending Lab exists to fill that gap.",
+      a: "Banks see thin operating history, small revenue, and unconventional models as too risky. Most small schools, especially in their first few years, simply don't fit the boxes traditional lenders require. The Lending Lab exists to fill that gap.",
     },
     {
       q: "What makes The Lending Lab different from a grant?",
-      a: "This is a loan — schools repay at below-market rates made possible by philanthropic support. When loans are repaid, that capital recycles back into the fund to help the next school. It's a sustainable model that multiplies the impact of every donor dollar.",
+      a: "This is a loan. Schools repay at below-market rates made possible by philanthropic support. When loans are repaid, that capital recycles back into the fund to help the next school. It's a sustainable model that multiplies the impact of every donor dollar.",
     },
     {
       q: "How can I set my school up for success before applications open?",
@@ -119,7 +119,7 @@ export const CONTENT = {
     },
     {
       q: "What happened in Cycle 1?",
-      a: `We deployed $${(RULES.CYCLE1_DEPLOYED / 1000).toFixed(0)}K to ${RULES.CYCLE1_SCHOOLS} schools across ${RULES.CYCLE1_STATES} states — with ${RULES.CYCLE1_REPAYMENT_RATE}% on-time repayment. These schools used the capital to build out classrooms, purchase curriculum, and bridge cash flow gaps. Cycle 2 aims to grow the fund to $${(RULES.FUND_TARGET / 1000000).toFixed(0)}M.`,
+      a: `We deployed $${(RULES.CYCLE1_DEPLOYED / 1000).toFixed(0)}K to ${RULES.CYCLE1_SCHOOLS} schools across ${RULES.CYCLE1_STATES} states with ${RULES.CYCLE1_REPAYMENT_RATE}% on-time repayment. These schools used the capital to build out classrooms, purchase curriculum, and bridge cash flow gaps. Cycle 2 aims to grow the fund to $${(RULES.FUND_TARGET / 1000000).toFixed(0)}M.`,
     },
   ],
   disclaimers: [

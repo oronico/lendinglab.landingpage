@@ -235,11 +235,11 @@ export default function PreQual() {
 
     const creditScore = getCreditMidpoint(form.creditRange);
     if (creditScore > 0 && creditScore < RULES.FICO_PREFERRED) {
-      flags.push("Credit score below 650 — additional review required");
+      flags.push("Credit score below 650. Additional review required.");
       riskScore -= 10;
     }
     if (form.creditRange === "unknown") {
-      flags.push("Credit score unknown — will be verified during underwriting");
+      flags.push("Credit score unknown. Will be verified during underwriting.");
       riskScore -= 5;
     }
 
@@ -254,7 +254,7 @@ export default function PreQual() {
       hardStops.push("Line of credit requires at least 12 months of operating history");
       riskScore -= 25;
     } else if (isLOC && form.yearsOperating === "1") {
-      flags.push(`Less than ${RULES.LOC_MIN_MONTHS_OPERATING} months operating — LOC requires 12+ months`);
+      flags.push(`Less than ${RULES.LOC_MIN_MONTHS_OPERATING} months operating. LOC requires 12+ months.`);
       riskScore -= 10;
     }
 
@@ -263,7 +263,7 @@ export default function PreQual() {
       riskScore -= 5;
     }
     if (!form.attBillsPaid) {
-      flags.push("Past-due bills reported — review needed");
+      flags.push("Past-due bills reported. Review needed.");
       riskScore -= 5;
     }
     if (!form.attEnrollmentVerification) {
@@ -728,7 +728,7 @@ export default function PreQual() {
                 <div className="space-y-6" data-testid="step-capacity">
                   <div>
                     <h2 className="text-2xl font-display font-bold text-primary">Financial Capacity</h2>
-                    <p className="text-sm text-muted-foreground mt-1">We use ranges — we do not collect your SSN or exact figures.</p>
+                    <p className="text-sm text-muted-foreground mt-1">We use ranges. We do not collect your SSN or exact figures.</p>
                   </div>
 
                   <div className="space-y-4">

@@ -92,7 +92,7 @@ function evaluateEligibility(answers: EligibilityAnswers): EligibilityResult {
   }
 
   if (answers.payrollFormal === "no") {
-    hardStops.push("Payroll must be processed through a formal provider — not Venmo, Zelle, Cash App, or cash.");
+    hardStops.push("Payroll must be processed through a formal provider, not Venmo, Zelle, Cash App, or cash.");
   }
 
   if (answers.tuitionContracts === "no") {
@@ -141,7 +141,7 @@ function evaluateEligibility(answers: EligibilityAnswers): EligibilityResult {
     if (answers.boardIndependence === "no") {
       hardStops.push(`Nonprofits must have an independent board of at least ${RULES.NONPROFIT_MIN_BOARD_SIZE} members unrelated to the organization and staff.`);
     } else if (answers.boardIndependence === "unclear") {
-      flags.push("Board independence is unclear — this will need to be clarified during review.");
+      flags.push("Board independence is unclear. This will need to be clarified during review.");
     }
 
     if (answers.boardSize === "less4") {
@@ -153,7 +153,7 @@ function evaluateEligibility(answers: EligibilityAnswers): EligibilityResult {
     }
   } else {
     if (answers.boardIndependence === "unclear") {
-      flags.push("Board independence is unclear — this will need to be clarified during review.");
+      flags.push("Board independence is unclear. This will need to be clarified during review.");
     }
   }
 
@@ -854,7 +854,7 @@ export default function Eligibility() {
                             className="inline-flex items-center gap-1.5 text-sm font-medium text-secondary hover:underline py-2"
                             data-testid="link-schoolstack"
                           >
-                            Learn about SchoolStack.ai — coming soon
+                            Learn about SchoolStack.ai - coming soon
                             <ExternalLink className="h-3.5 w-3.5" />
                           </a>
                         </div>

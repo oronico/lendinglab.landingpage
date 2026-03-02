@@ -56,7 +56,7 @@ export default function OutcomeFlagged() {
 
               <div className="bg-secondary/5 border border-secondary/20 rounded-lg p-5 max-w-lg mx-auto text-left">
                 <p className="text-sm text-muted-foreground mb-3">
-                  We're building SchoolStack.ai to help small schools strengthen their operations and get loan-ready — coming soon.
+                  We're building <a href="https://schoolstack.ai/?ref=lendinglab&outcome=flagged" target="_blank" rel="noreferrer" className="text-secondary hover:underline font-medium">SchoolStack.ai</a> to help small schools strengthen their operations and get loan-ready. Coming soon.
                 </p>
                 <a
                   href="https://schoolstack.ai/?ref=lendinglab&outcome=flagged"

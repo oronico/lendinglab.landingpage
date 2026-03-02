@@ -44,7 +44,7 @@ export default function OutcomeIneligible() {
               <div className="pt-4 space-y-3">
                 <div className="bg-secondary/5 border border-secondary/20 rounded-lg p-5 max-w-lg mx-auto text-left">
                   <p className="text-sm text-muted-foreground mb-3">
-                    Not ready yet? We're building SchoolStack.ai to help early-stage schools like yours build the foundation you need — coming soon.
+                    Not ready yet? We're building <a href="https://schoolstack.ai/?ref=lendinglab&outcome=ineligible" target="_blank" rel="noreferrer" className="text-secondary hover:underline font-medium">SchoolStack.ai</a> to help early-stage schools like yours build the foundation you need. Coming soon.
                   </p>
                   <a
                     href="https://schoolstack.ai/?ref=lendinglab&outcome=ineligible"

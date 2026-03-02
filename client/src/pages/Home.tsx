@@ -204,7 +204,7 @@ function PreLaunchLanding() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary border border-primary/20 text-sm font-semibold" data-testid="badge-active-fundraise">
               <TrendingUp className="w-4 h-4" />
-              Cycle {RULES.CYCLE} — Active Fundraise
+              Cycle {RULES.CYCLE}: Active Fundraise
             </div>
           </div>
         </section>
@@ -234,7 +234,7 @@ function PreLaunchLanding() {
               Why The Lending Lab Exists
             </h2>
             <p className="text-muted-foreground leading-relaxed">
-              Small schools — the ones serving 10 to 100 students — are transforming education across the country. But traditional banks won't lend to them. They're too new, too small, or too unconventional to qualify for a standard business loan.
+              Small schools, the ones serving 10 to 100 students, are transforming education across the country. But traditional banks won't lend to them. They're too new, too small, or too unconventional to qualify for a standard business loan.
             </p>
             <p className="text-muted-foreground leading-relaxed">
               The Lending Lab changes that. Administered by Building Hope Impact Fund and fueled by the generosity of Stand Together Trust and The Beth & Ravenel Curry Foundation, we offer below-market loans so these schools can open their doors, equip their classrooms, and grow with confidence.
@@ -344,10 +344,10 @@ function PreLaunchLanding() {
                 <Rocket className="w-6 h-6 text-secondary" />
               </div>
               <h2 className="text-2xl md:text-3xl font-display font-bold text-primary" data-testid="text-schoolstack-prelaunch-title">
-                Coming Soon: SchoolStack.ai
+                Coming Soon: <a href="https://schoolstack.ai/?ref=lendinglab" target="_blank" rel="noreferrer" className="text-secondary hover:underline font-medium">SchoolStack.ai</a>
               </h2>
               <p className="text-muted-foreground leading-relaxed max-w-xl mx-auto">
-                A new mission-fueled platform to help small schools start strong and thrive — budgeting tools, enrollment planning, and operational support built for schools like yours. From the same team behind the Lending Lab.
+                A new mission-fueled platform to help small schools start strong and thrive. Budgeting tools, enrollment planning, and operational support built for schools like yours. From the same team behind the Lending Lab.
               </p>
               <div className="pt-2">
                 <a
@@ -499,10 +499,10 @@ export default function Home() {
                 <Rocket className="w-6 h-6 text-secondary" />
               </div>
               <h2 className="text-2xl md:text-3xl font-display font-bold text-primary" data-testid="text-schoolstack-title">
-                Coming Soon: SchoolStack.ai
+                Coming Soon: <a href="https://schoolstack.ai/?ref=lendinglab" target="_blank" rel="noreferrer" className="text-secondary hover:underline font-medium">SchoolStack.ai</a>
               </h2>
               <p className="text-muted-foreground leading-relaxed max-w-xl mx-auto">
-                A new mission-fueled platform to help small schools start strong and thrive — budgeting tools, enrollment planning, and operational support built for schools like yours. From the same team behind the Lending Lab.
+                A new mission-fueled platform to help small schools start strong and thrive. Budgeting tools, enrollment planning, and operational support built for schools like yours. From the same team behind the Lending Lab.
               </p>
               <div className="pt-2">
                 <a
