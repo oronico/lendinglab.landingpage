@@ -42,6 +42,11 @@ export const RULES = {
     fund: "Building Hope Impact Fund",
     partners: ["Stand Together Trust", "The Beth & Ravenel Curry Foundation"],
   },
+
+  APPLICATIONS_OPEN: false,
+  APPLICATIONS_OPEN_DATE: "2026-05-01",
+  HANDOFF_URL_QUALIFIED: "",
+  HANDOFF_URL_FLAGGED: "",
 } as const;
 
 export function computeAnnualPayment(principal: number, rate: number, termYears: number): number {

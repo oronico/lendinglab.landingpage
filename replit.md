@@ -1,80 +1,95 @@
 # The Lending Lab — Building Hope Impact Fund
 
 ## Overview
-Multi-page marketing website for Building Hope Impact Fund's "Lending Lab" business loan program for microschool founders nationwide. Two products: Term Loans ($10K–$50K, 4–6yr, Prime–1%) and Revolving Lines of Credit (up to $100K). Features an eligibility checker, streamlined 6–10 question pre-qualification wizard with DSR-based ability-to-repay calculations, and database-backed lead management. Designed for a one-person operator (Allison Serafin).
+Multi-page marketing and lead generation website for Building Hope Impact Fund's "Lending Lab" business loan program for microschool founders. Two products: Term Loans ($10K–$50K, 4–6yr, Prime–1%) and Revolving Lines of Credit (up to $100K). Features an eligibility checker, streamlined pre-qualification wizard with DSR-based ability-to-repay calculations, admin dashboard for lead management, webhook notifications, waitlist capture, and configurable handoff to the separate LoanOS backend. Designed for a one-person operator (Allison Serafin).
 
 ## Architecture
 - **Frontend**: React + Vite, TailwindCSS, shadcn/ui, wouter routing, TanStack Query
 - **Backend**: Express.js with TypeScript
 - **Database**: PostgreSQL with Drizzle ORM
 - **Fonts**: Outfit (display) + Plus Jakarta Sans (body)
-- **Palette**: Navy/teal finance-forward (no warm cream/orange)
+- **Palette**: Navy/teal finance-forward
+- **LoanOS Integration**: Leads hand off to separate LoanOS backend via webhook + API
 
 ## Two Loan Products
 
 ### Term Loan
-- $10K–$50K in $10K increments
-- 4–6 year terms, quarterly payments
-- Rate: Prime – 1% (currently 5.75%)
-- 2% origination fee (added to principal), no prepayment penalty
-- FICO 650+ preferred (575 min for Year 0)
-- Year 0 requires personal guarantee
-- UCC-1 on revenues & assets
+- $10K–$50K in $10K increments, 4–6 year terms, quarterly payments
+- Rate: Prime – 1% (currently 5.75%), 2% origination fee, no prepayment penalty
+- FICO 650+ preferred (575 min for Year 0), Year 0 requires personal guarantee
 
 ### Revolving Line of Credit
-- Up to $100K commitment
-- 12-month draw period, monthly interest-only payments
-- Rate: Prime – 1% on drawn balance
-- Requires 12+ months operating, $100K+ annual revenue, FICO 650+
-- QBO + reconciled books + tuition contracts required
+- Up to $100K, 12-month draw period, monthly interest-only payments
+- Rate: Prime – 1% on drawn balance, requires 12+ months operating, $100K+ revenue, FICO 650+
 
 ## Page Structure
 - `/` — Homepage: Hero, Products, Who This Is For, Hard Gates, How It Works, FAQ, CTA
 - `/eligibility` — 4-step eligibility checker with hard gates / flags / qualified outcomes
-- `/prequal` — 5-step pre-qualification wizard (under 3 min) with DSR check
-- `/outcome/qualified` — Apply now + document checklist
+- `/prequal` — 5-step pre-qualification wizard (under 3 min) with DSR check; shows waitlist when APPLICATIONS_OPEN=false
+- `/outcome/qualified` — Apply now (or "coming soon" with date) + document checklist
 - `/outcome/flagged` — Apply with additional info + flag details
 - `/outcome/ineligible` — What needs to change + SchoolStack.ai link
+- `/admin` — Password-gated admin dashboard (uses ADMIN_KEY)
 - `/privacy` — Privacy policy
 - `/terms` — Terms of use
 
+## Lead Handoff Architecture
+1. **Pre-Qual Wizard** → captures lead, evaluates eligibility, stores in DB
+2. **Webhook** → fires POST to WEBHOOK_URL on lead creation (configurable, HMAC-signed)
+3. **Outcome Pages** → redirects to HANDOFF_URL_QUALIFIED/FLAGGED if set, otherwise shows "coming soon"
+4. **Admin Dashboard** → Allison reviews leads, marks as handed off, exports CSV
+5. **LoanOS API** → GET /api/leads/qualified, POST /api/leads/:id/claim for external pull
+
 ## Centralized Configuration
-- `shared/rules.ts` — All thresholds (FICO, DSR caps, loan amounts, rates, etc.) + DSR calculation functions
-- `shared/content.ts` — All UI copy (hero, products, FAQ, attestation labels, disclaimers)
+- `shared/rules.ts` — All thresholds + handoff config:
+  - APPLICATIONS_OPEN (boolean gate for wizard vs waitlist)
+  - APPLICATIONS_OPEN_DATE (display string)
+  - HANDOFF_URL_QUALIFIED / HANDOFF_URL_FLAGGED (redirect targets)
+- `shared/content.ts` — All UI copy
 
 ## Security
-- Rate limiting on POST /api/leads (5 per IP per hour)
-- Basic Auth / admin key on GET /api/leads endpoints
+- Rate limiting on POST endpoints (5 per IP per hour)
+- Admin auth: Bearer token or Basic Auth or X-Admin-Key header or ?key= param (ADMIN_KEY env var)
 - Honeypot field for spam protection
-- No PII in server logs (method/path/status only)
-- Duplicate detection on email + school name
+- No PII in server logs
+- Webhook HMAC-SHA256 signature (WEBHOOK_SECRET env var)
+
+## Environment Variables
+- `ADMIN_KEY` — Required for admin dashboard and API access
+- `WEBHOOK_URL` — Optional, external endpoint for lead notifications
+- `WEBHOOK_SECRET` — Optional, HMAC secret for webhook signatures
+- `DATABASE_URL` — PostgreSQL connection string
 
 ## Data Model
-- `leads` table: school info, product type, amount, attestations (8 booleans), revenue range, credit range, contact info, honeypot, flags, hard stops, status, risk score, DSR result, suggested amount, timestamps
+- `leads` table: school info, product type, amount, attestations (8 booleans), revenue/credit range, contact, flags, hard stops, status, risk score, DSR result, suggested amount, handoffStatus (pending/handed_off/waitlisted), claimedAt, claimedBy, timestamps
+- `waitlist` table: email, school name, product interest, honeypot, timestamps
+
+## API Endpoints
+- `POST /api/leads` — Submit lead (public, rate-limited, honeypot-checked)
+- `GET /api/leads` — List leads (admin, filterable by status/handoffStatus)
+- `GET /api/leads/stats` — Summary counts (admin)
+- `GET /api/leads/qualified` — Unclaimed qualified leads (for LoanOS)
+- `GET /api/leads/flagged` — Unclaimed flagged leads (for LoanOS)
+- `GET /api/leads/export` — CSV download (admin)
+- `GET /api/leads/:id` — Lead detail (admin)
+- `GET /api/leads/:id/export` — Lead data for LoanOS import (admin)
+- `POST /api/leads/:id/claim` — Mark lead as handed off (admin/LoanOS)
+- `POST /api/leads/:id/handoff` — Update handoff status (admin)
+- `POST /api/waitlist` — Join waitlist (public, rate-limited)
+- `GET /api/waitlist` — List waitlist entries (admin)
+- `POST /api/admin/verify` — Verify admin key (admin)
 
 ## Key Files
-- `shared/rules.ts` — Eligibility thresholds & DSR functions
+- `shared/rules.ts` — Eligibility thresholds, DSR functions, handoff config
 - `shared/content.ts` — All UI copy
-- `shared/schema.ts` — Drizzle schema
-- `server/routes.ts` — API with security hardening
-- `server/storage.ts` — Database storage
-- `client/src/pages/Home.tsx` — Homepage
-- `client/src/pages/Eligibility.tsx` — Eligibility checker
-- `client/src/pages/PreQual.tsx` — Pre-qualification wizard
-- `client/src/pages/OutcomeQualified.tsx` — Qualified result
-- `client/src/pages/OutcomeFlagged.tsx` — Flagged result
-- `client/src/pages/OutcomeIneligible.tsx` — Ineligible result
-- `client/src/components/layout/Header.tsx` — Sticky nav
-- `client/src/components/layout/Footer.tsx` — Footer with links
-- `client/src/components/sections/Hero.tsx` — Hero section
-- `client/src/components/sections/LoanDetails.tsx` — Product cards
-- `client/src/components/sections/HowItWorks.tsx` — 5-step process
-- `client/src/components/sections/FAQ.tsx` — Key questions
-
-## Philanthropy
-- Fund: Building Hope Impact Fund
-- Partners: Stand Together Trust & The Beth & Ravenel Curry Foundation
-- Cycle 2: $450K deploying (Cycle 1: $410K, 11 schools, 8 states, 100% on-time)
+- `shared/schema.ts` — Drizzle schema (leads + waitlist tables)
+- `server/routes.ts` — All API routes with auth
+- `server/storage.ts` — Database storage layer
+- `server/services/webhook.ts` — Webhook delivery service
+- `client/src/pages/Admin.tsx` — Admin dashboard
+- `client/src/pages/PreQual.tsx` — Pre-qual wizard + waitlist gate
+- `client/src/pages/OutcomeQualified.tsx` — Qualified outcome with handoff
+- `client/src/pages/OutcomeFlagged.tsx` — Flagged outcome with handoff
 
 ## Contact
 - Allison Serafin: aserafin@bhope.org, (702) 539-9230 (Program Director)

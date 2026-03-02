@@ -42,14 +42,36 @@ export const leads = pgTable("leads", {
   dsrResult: text("dsr_result"),
   suggestedAmount: integer("suggested_amount"),
 
+  handoffStatus: text("handoff_status").notNull().default("pending"),
+  claimedAt: timestamp("claimed_at"),
+  claimedBy: text("claimed_by"),
+
   applicationStartedAt: timestamp("application_started_at"),
   submittedAt: timestamp("submitted_at").defaultNow().notNull(),
+});
+
+export const waitlist = pgTable("waitlist", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: text("email").notNull(),
+  schoolName: text("school_name").notNull(),
+  productInterest: text("product_interest"),
+  honeypot: text("honeypot"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export const insertLeadSchema = createInsertSchema(leads).omit({
   id: true,
   submittedAt: true,
+  claimedAt: true,
+  claimedBy: true,
+});
+
+export const insertWaitlistSchema = createInsertSchema(waitlist).omit({
+  id: true,
+  createdAt: true,
 });
 
 export type InsertLead = z.infer<typeof insertLeadSchema>;
 export type Lead = typeof leads.$inferSelect;
+export type InsertWaitlistEntry = z.infer<typeof insertWaitlistSchema>;
+export type WaitlistEntry = typeof waitlist.$inferSelect;

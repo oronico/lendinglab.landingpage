@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowRight, ArrowLeft, Loader2, CalendarClock, CheckCircle2 } from "lucide-react";
 import { RULES, checkDSR } from "@shared/rules";
 import { CONTENT } from "@shared/content";
 
@@ -335,8 +335,10 @@ export default function PreQual() {
       applicationStartedAt: startedAt,
     };
 
+    let leadId = "";
     try {
-      await submitLead.mutateAsync(payload);
+      const result = await submitLead.mutateAsync(payload);
+      leadId = result.id || "";
     } catch {
       // submission may fail but still route to outcome
     }
@@ -344,15 +346,115 @@ export default function PreQual() {
     if (status === "ineligible") {
       navigate(`/outcome/ineligible?reasons=${encodeURIComponent(hardStops.join("|"))}`);
     } else if (status === "flagged") {
-      navigate(`/outcome/flagged?flags=${encodeURIComponent(flags.join("|"))}`);
+      navigate(`/outcome/flagged?flags=${encodeURIComponent(flags.join("|"))}&leadId=${leadId}`);
     } else {
-      navigate(`/outcome/qualified?product=${form.productType}`);
+      navigate(`/outcome/qualified?product=${form.productType}&leadId=${leadId}`);
     }
   }
 
   const progress = (step / TOTAL_STEPS) * 100;
   const isTermOrYear0 = form.productType === "term_loan" || form.productType === "year0";
   const amounts = form.productType === "loc" ? LOC_AMOUNTS : TERM_AMOUNTS;
+
+  const [waitlistEmail, setWaitlistEmail] = useState("");
+  const [waitlistSchool, setWaitlistSchool] = useState("");
+  const [waitlistProduct, setWaitlistProduct] = useState("");
+  const [waitlistHoneypot, setWaitlistHoneypot] = useState("");
+  const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
+  const [waitlistError, setWaitlistError] = useState("");
+
+  const submitWaitlist = useMutation({
+    mutationFn: async (payload: Record<string, unknown>) => {
+      const res = await apiRequest("POST", "/api/waitlist", payload);
+      return res.json();
+    },
+  });
+
+  async function handleWaitlistSubmit() {
+    setWaitlistError("");
+    if (!waitlistEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(waitlistEmail)) {
+      setWaitlistError("Please enter a valid email address");
+      return;
+    }
+    if (!waitlistSchool.trim()) {
+      setWaitlistError("Please enter your school name");
+      return;
+    }
+    try {
+      await submitWaitlist.mutateAsync({
+        email: waitlistEmail,
+        schoolName: waitlistSchool,
+        productInterest: waitlistProduct || null,
+        honeypot: waitlistHoneypot,
+      });
+      setWaitlistSubmitted(true);
+    } catch {
+      setWaitlistError("Something went wrong. Please try again.");
+    }
+  }
+
+  if (!RULES.APPLICATIONS_OPEN) {
+    return (
+      <div className="min-h-screen flex flex-col font-sans">
+        <Header />
+        <main className="flex-1 py-20">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-lg">
+            <Card className="shadow-lg border-0" data-testid="screen-waitlist">
+              <CardContent className="pt-12 pb-12 text-center space-y-6">
+                <div className="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mx-auto">
+                  <CalendarClock className="w-8 h-8 text-secondary" />
+                </div>
+                <h1 className="text-2xl font-display font-bold text-primary">Applications Open {RULES.APPLICATIONS_OPEN_DATE}</h1>
+                <p className="text-muted-foreground">
+                  Cycle {RULES.CYCLE} applications are not yet open. Join the waitlist and we'll notify you when you can apply.
+                </p>
+
+                {waitlistSubmitted ? (
+                  <div className="flex items-center justify-center gap-2 text-emerald-700 bg-emerald-50 p-4 rounded-lg">
+                    <CheckCircle2 className="w-5 h-5" />
+                    <span className="font-semibold">You're on the list. We'll be in touch.</span>
+                  </div>
+                ) : (
+                  <div className="space-y-4 text-left">
+                    <div>
+                      <Label htmlFor="wl-school">School name *</Label>
+                      <Input id="wl-school" data-testid="input-waitlist-school" value={waitlistSchool} onChange={e => setWaitlistSchool(e.target.value)} placeholder="Your school's name" />
+                    </div>
+                    <div>
+                      <Label htmlFor="wl-email">Email *</Label>
+                      <Input id="wl-email" data-testid="input-waitlist-email" type="email" value={waitlistEmail} onChange={e => setWaitlistEmail(e.target.value)} placeholder="you@school.org" />
+                    </div>
+                    <div>
+                      <Label htmlFor="wl-product">Interested in</Label>
+                      <Select value={waitlistProduct} onValueChange={setWaitlistProduct}>
+                        <SelectTrigger data-testid="select-waitlist-product"><SelectValue placeholder="Select product" /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="term_loan">Term Loan</SelectItem>
+                          <SelectItem value="loc">Line of Credit</SelectItem>
+                          <SelectItem value="year0">Year 0 Term Loan</SelectItem>
+                          <SelectItem value="unsure">Not sure yet</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="sr-only" aria-hidden="true">
+                      <Label htmlFor="wl-hp">Leave blank</Label>
+                      <Input id="wl-hp" value={waitlistHoneypot} onChange={e => setWaitlistHoneypot(e.target.value)} tabIndex={-1} autoComplete="off" />
+                    </div>
+                    {waitlistError && <p className="text-xs text-destructive">{waitlistError}</p>}
+                    <Button className="w-full bg-secondary hover:bg-secondary/90 text-white font-bold rounded-full h-12" data-testid="button-join-waitlist" onClick={handleWaitlistSubmit} disabled={submitWaitlist.isPending}>
+                      {submitWaitlist.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                      Join Waitlist
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col font-sans">

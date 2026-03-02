@@ -1,13 +1,27 @@
+import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircle2, ArrowRight, FileText, Mail, Phone } from "lucide-react";
+import { CheckCircle2, ArrowRight, FileText, Mail, Phone, CalendarClock } from "lucide-react";
 import { RULES } from "@shared/rules";
 
 export default function OutcomeQualified() {
   const params = new URLSearchParams(window.location.search);
   const product = params.get("product") || "term_loan";
+  const leadId = params.get("leadId") || "";
+
+  const hasHandoffUrl = RULES.HANDOFF_URL_QUALIFIED.length > 0;
+  const applicationsOpen = RULES.APPLICATIONS_OPEN;
+
+  function handleApply() {
+    if (hasHandoffUrl) {
+      const url = new URL(RULES.HANDOFF_URL_QUALIFIED);
+      if (leadId) url.searchParams.set("leadId", leadId);
+      url.searchParams.set("product", product);
+      window.location.href = url.toString();
+    }
+  }
 
   return (
     <div className="min-h-screen flex flex-col font-sans">
@@ -42,9 +56,19 @@ export default function OutcomeQualified() {
               </div>
 
               <div className="pt-4">
-                <Button size="lg" className="bg-secondary hover:bg-secondary/90 text-white rounded-full px-8 h-14 text-lg font-bold shadow-lg" data-testid="button-apply-now" onClick={() => alert("JotForm URL will be configured — contact aserafin@bhope.org")}>
-                  Proceed to Full Application <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
+                {applicationsOpen && hasHandoffUrl ? (
+                  <Button size="lg" className="bg-secondary hover:bg-secondary/90 text-white rounded-full px-8 h-14 text-lg font-bold shadow-lg" data-testid="button-apply-now" onClick={handleApply}>
+                    Proceed to Full Application <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-secondary/10 text-secondary font-semibold">
+                      <CalendarClock className="w-5 h-5" />
+                      Applications open {RULES.APPLICATIONS_OPEN_DATE}
+                    </div>
+                    <p className="text-sm text-muted-foreground">Your pre-qualification has been saved. We'll notify you when applications open.</p>
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground pt-2">

@@ -11,6 +11,7 @@ import Terms from "@/pages/Terms";
 import OutcomeQualified from "@/pages/OutcomeQualified";
 import OutcomeFlagged from "@/pages/OutcomeFlagged";
 import OutcomeIneligible from "@/pages/OutcomeIneligible";
+import Admin from "@/pages/Admin";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -24,6 +25,7 @@ function Router() {
       <Route path="/outcome/qualified" component={OutcomeQualified} />
       <Route path="/outcome/flagged" component={OutcomeFlagged} />
       <Route path="/outcome/ineligible" component={OutcomeIneligible} />
+      <Route path="/admin" component={Admin} />
       <Route component={NotFound} />
     </Switch>
   );
