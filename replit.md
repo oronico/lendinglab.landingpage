@@ -87,6 +87,7 @@ Multi-page marketing and lead generation website for Building Hope Impact Fund's
 - `waitlist` table: email, school name, product interest, honeypot, timestamps
 
 ## API Endpoints
+- `GET /api/health` — Health check (public, returns `{ status, timestamp }`)
 - `POST /api/leads` — Submit lead (public, rate-limited, honeypot-checked)
 - `GET /api/leads` — List leads (admin, filterable by status/handoffStatus)
 - `GET /api/leads/stats` — Summary counts (admin)
@@ -116,10 +117,20 @@ Multi-page marketing and lead generation website for Building Hope Impact Fund's
 - Set DATABASE_URL, ADMIN_KEY in Netlify dashboard environment variables
 - Replit-specific Vite plugins (cartographer, dev-banner, runtime-error-modal) are gated behind `REPL_ID` env var — automatically excluded on Netlify
 
+## LoanOS Integration Contract
+- `shared/loanos-contract.ts` — TypeScript types for LoanOS integration:
+  - `WebhookPayload` — shape POSTed to `WEBHOOK_URL` on lead creation
+  - `PublicLead` — Lead minus honeypot/ipAddress (pull-API response)
+  - `ClaimRequest` / `ClaimResponse` — for `POST /api/leads/:id/claim`
+  - `WebhookHeaders` — includes HMAC-SHA256 signature header
+- Three handoff channels: push (webhook), pull (API), redirect (outcome pages)
+- `HANDOFF_URL_QUALIFIED` / `HANDOFF_URL_FLAGGED` in `rules.ts` — set when LoanOS is ready
+
 ## Key Files
 - `shared/rules.ts` — Eligibility thresholds, DSR functions, handoff config
 - `shared/content.ts` — All UI copy
 - `shared/schema.ts` — Drizzle schema (leads + waitlist tables)
+- `shared/loanos-contract.ts` — LoanOS integration types
 - `server/routes.ts` — All API routes with auth (Express)
 - `netlify/functions/api.ts` — All API routes (Netlify Functions)
 - `server/storage.ts` — Database storage layer

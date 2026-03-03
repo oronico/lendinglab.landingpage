@@ -56,6 +56,23 @@ export const RULES = {
   APPLICATIONS_OPEN_DATE: "May 6, 2026",
   APPLICATIONS_CLOSE_DATE: "November 6, 2026",
   APPLICATIONS_CLOSE_NOTE: "or until Cycle 2 is 100% deployed",
+  // ── LoanOS Handoff URLs ──────────────────────────────────────────────
+  // When LoanOS is ready, set these to the LoanOS application intake URLs.
+  // Expected format:
+  //   HANDOFF_URL_QUALIFIED: "https://loanos.example.com/intake/qualified"
+  //   HANDOFF_URL_FLAGGED:   "https://loanos.example.com/intake/flagged"
+  //
+  // The outcome pages (OutcomeQualified / OutcomeFlagged) will redirect to
+  // these URLs with the following query parameters appended:
+  //   ?leadId={leadId}&product={productType}
+  //
+  // Example full redirect URL:
+  //   https://loanos.example.com/intake/qualified?leadId=abc123&product=term_loan
+  //
+  // While these remain empty strings, the outcome pages display a
+  // "coming soon" message instead of redirecting — this is the correct
+  // pre-launch behavior.
+  // ─────────────────────────────────────────────────────────────────────
   HANDOFF_URL_QUALIFIED: "",
   HANDOFF_URL_FLAGGED: "",
 } as const;

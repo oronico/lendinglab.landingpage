@@ -43,6 +43,10 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
 
+  app.get("/api/health", (_req, res) => {
+    return res.json({ status: "ok", timestamp: new Date().toISOString() });
+  });
+
   app.post("/api/leads", async (req, res) => {
     const ip = req.ip || req.socket.remoteAddress || "unknown";
     if (!(await checkRateLimit(ip))) {

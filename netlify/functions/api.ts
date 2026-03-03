@@ -107,6 +107,10 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
   try {
     const database = getDb();
 
+    if (method === "GET" && path === "/health") {
+      return json(200, { status: "ok", timestamp: new Date().toISOString() });
+    }
+
     if (method === "POST" && path === "/waitlist") {
       const ip = getClientIp(event);
       if (!(await checkRateLimit(database, ip))) {
@@ -299,7 +303,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
       return json(200, entries);
     }
 
-    if ((method === "POST" || method === "GET") && path === "/admin/verify") {
+    if (method === "POST" && path === "/admin/verify") {
       if (!checkAuth(event)) return json(401, { message: "Unauthorized" });
       return json(200, { authorized: true });
     }
