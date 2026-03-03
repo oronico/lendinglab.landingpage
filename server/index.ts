@@ -1,10 +1,21 @@
 import express, { type Request, Response, NextFunction } from "express";
+import helmet from "helmet";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
 
 const app = express();
 const httpServer = createServer(app);
+
+app.set("trust proxy", 1);
+
+const isDev = process.env.NODE_ENV !== "production";
+app.use(
+  helmet({
+    contentSecurityPolicy: isDev ? false : undefined,
+    crossOriginEmbedderPolicy: isDev ? false : undefined,
+  })
+);
 
 declare module "http" {
   interface IncomingMessage {

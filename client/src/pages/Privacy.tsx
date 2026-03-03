@@ -22,7 +22,10 @@ export default function Privacy() {
             <p>Your information is used solely to evaluate your pre-qualification for a Lending Lab loan and to contact you about your application. We store submissions in a secure database with timestamps.</p>
 
             <h2 className="text-lg font-bold text-primary mt-8">Data Sharing</h2>
-            <p>We do not sell or share your personal information with third parties. Your data is accessible only to {RULES.PHILANTHROPY.fund} program staff for underwriting purposes.</p>
+            <p>We do not sell your personal information. Your application data is accessible only to {RULES.PHILANTHROPY.fund} program staff for underwriting purposes.</p>
+
+            <h2 className="text-lg font-bold text-primary mt-8">Analytics</h2>
+            <p>We use PostHog, a product analytics service, to understand how visitors interact with our site. This helps us improve the application process. Analytics data includes page views, funnel step completion, and submission outcomes. We do not track personally identifiable information through analytics. You can block analytics using standard browser privacy tools or ad blockers.</p>
 
             <h2 className="text-lg font-bold text-primary mt-8">Data Security</h2>
             <p>All data is transmitted over encrypted connections. Database access is restricted to authorized personnel. We do not log personally identifiable information in application logs.</p>

@@ -1,7 +1,8 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { track } from "@/lib/analytics";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -144,6 +145,8 @@ export default function PreQual() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [startedAt] = useState(() => new Date().toISOString());
 
+  useEffect(() => { track("prequal_started"); }, []);
+
   const submitLead = useMutation({
     mutationFn: async (payload: Record<string, unknown>) => {
       const res = await apiRequest("POST", "/api/leads", payload);
@@ -189,6 +192,7 @@ export default function PreQual() {
 
   function next() {
     if (validateStep(step)) {
+      track("prequal_step_completed", { step });
       setStep(prev => Math.min(prev + 1, TOTAL_STEPS));
     }
   }
@@ -351,12 +355,15 @@ export default function PreQual() {
       applicationStartedAt: startedAt,
     };
 
+    const amountBucket = form.amountRequested <= 15000 ? "10-15K" : form.amountRequested <= 30000 ? "15-30K" : form.amountRequested <= 50000 ? "30-50K" : "50K+";
+    track("prequal_submitted", { status, productType: form.productType, amountBucket });
+
     let leadId = "";
     try {
       const result = await submitLead.mutateAsync(payload);
       leadId = result.id || "";
     } catch {
-      // submission may fail but still route to outcome
+      track("prequal_error", { reason: "submission_failed" });
     }
 
     if (status === "ineligible") {

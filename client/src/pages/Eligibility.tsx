@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
+import { track } from "@/lib/analytics";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -205,6 +206,8 @@ export default function Eligibility() {
   const [answers, setAnswers] = useState<EligibilityAnswers>(initialAnswers);
   const [currentStep, setCurrentStep] = useState(0);
   const [result, setResult] = useState<EligibilityResult | null>(null);
+
+  useEffect(() => { track("eligibility_started"); }, []);
 
   function update<K extends keyof EligibilityAnswers>(key: K, value: EligibilityAnswers[K]) {
     setAnswers((prev) => ({ ...prev, [key]: value }));
@@ -633,6 +636,7 @@ export default function Eligibility() {
     if (isLastStep) {
       const eligResult = evaluateEligibility(answers);
       setResult(eligResult);
+      track("eligibility_completed", { outcome: eligResult.outcome });
     } else {
       setCurrentStep((s) => s + 1);
     }

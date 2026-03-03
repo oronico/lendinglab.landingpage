@@ -1,9 +1,11 @@
+import { useEffect } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertTriangle, ArrowRight, AlertCircle, Mail, CalendarClock, ExternalLink } from "lucide-react";
 import { RULES } from "@shared/rules";
+import { track } from "@/lib/analytics";
 
 export default function OutcomeFlagged() {
   const params = new URLSearchParams(window.location.search);
@@ -14,7 +16,10 @@ export default function OutcomeFlagged() {
   const hasHandoffUrl = RULES.HANDOFF_URL_FLAGGED.length > 0;
   const applicationsOpen = RULES.APPLICATIONS_OPEN;
 
+  useEffect(() => { track("outcome_viewed", { outcome: "flagged", flagCount: flags.length }); }, []);
+
   function handleApply() {
+    track("apply_clicked", { outcome: "flagged" });
     if (hasHandoffUrl) {
       const url = new URL(RULES.HANDOFF_URL_FLAGGED);
       if (leadId) url.searchParams.set("leadId", leadId);

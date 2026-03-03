@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle2, ArrowRight, FileText, Mail, CalendarClock, ExternalLink } from "lucide-react";
 import { RULES } from "@shared/rules";
+import { track } from "@/lib/analytics";
 
 export default function OutcomeQualified() {
   const params = new URLSearchParams(window.location.search);
@@ -14,7 +15,10 @@ export default function OutcomeQualified() {
   const hasHandoffUrl = RULES.HANDOFF_URL_QUALIFIED.length > 0;
   const applicationsOpen = RULES.APPLICATIONS_OPEN;
 
+  useEffect(() => { track("outcome_viewed", { outcome: "qualified", product }); }, []);
+
   function handleApply() {
+    track("apply_clicked", { outcome: "qualified", product });
     if (hasHandoffUrl) {
       const url = new URL(RULES.HANDOFF_URL_QUALIFIED);
       if (leadId) url.searchParams.set("leadId", leadId);

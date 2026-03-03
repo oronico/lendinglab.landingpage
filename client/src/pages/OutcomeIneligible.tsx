@@ -1,14 +1,18 @@
+import { useEffect } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { XCircle, ExternalLink, Mail } from "lucide-react";
 import { RULES } from "@shared/rules";
+import { track } from "@/lib/analytics";
 
 export default function OutcomeIneligible() {
   const params = new URLSearchParams(window.location.search);
   const reasonsParam = params.get("reasons");
   const reasons = reasonsParam ? reasonsParam.split("|") : [];
+
+  useEffect(() => { track("outcome_viewed", { outcome: "ineligible", reasonCount: reasons.length }); }, []);
 
   return (
     <div className="min-h-screen flex flex-col font-sans">

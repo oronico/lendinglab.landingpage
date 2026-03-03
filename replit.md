@@ -57,18 +57,29 @@ Multi-page marketing and lead generation website for Building Hope Impact Fund's
 - `shared/content.ts` — All UI copy, nonprofit requirements, nonprofit attestation labels
 
 ## Security
-- Rate limiting on POST endpoints (3 per IP per hour)
+- Helmet security headers (X-Frame-Options, CSP, etc.)
+- Trust proxy enabled for correct IP detection behind reverse proxies
+- Database-backed rate limiting on POST endpoints (3 per IP per hour, survives restarts)
 - IP-based duplicate detection: IP stored with lead, repeat submissions from same IP flagged
 - Admin auth: Bearer token or Basic Auth or X-Admin-Key header or ?key= param (ADMIN_KEY env var)
 - Honeypot field for spam protection
 - No PII in server logs; IP stripped from export endpoints
 - Webhook HMAC-SHA256 signature (WEBHOOK_SECRET env var)
 
+## Analytics
+- PostHog integration via `client/src/lib/analytics.ts` (thin wrapper)
+- Opt-in: only active when `VITE_POSTHOG_KEY` is set; graceful no-op otherwise
+- Events tracked: `prequal_started`, `prequal_step_completed`, `prequal_submitted`, `prequal_error`, `eligibility_started`, `eligibility_completed`, `outcome_viewed`, `apply_clicked`
+- No PII sent to analytics; uses amount buckets and outcome types only
+- Disclosed in Privacy Policy
+
 ## Environment Variables
 - `ADMIN_KEY` — Required for admin dashboard and API access
 - `WEBHOOK_URL` — Optional, external endpoint for lead notifications
 - `WEBHOOK_SECRET` — Optional, HMAC secret for webhook signatures
 - `DATABASE_URL` — PostgreSQL connection string
+- `VITE_POSTHOG_KEY` — Optional, PostHog project API key for analytics
+- `VITE_POSTHOG_HOST` — Optional, custom PostHog host (defaults to us.i.posthog.com)
 
 ## Data Model
 - `leads` table: school info, product type, amount, attestations (8 booleans), revenue/credit range, contact, ipAddress, flags, hard stops, status, risk score, DSR result, suggested amount, handoffStatus (pending/handed_off/waitlisted), claimedAt, claimedBy, timestamps

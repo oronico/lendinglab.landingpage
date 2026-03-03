@@ -12,6 +12,7 @@ export interface IStorage {
   claimLead(id: string, claimedBy: string): Promise<Lead | undefined>;
   updateLeadHandoffStatus(id: string, handoffStatus: string): Promise<Lead | undefined>;
   getLeadStats(): Promise<{ total: number; qualified: number; flagged: number; ineligible: number; handedOff: number; waitlisted: number }>;
+  getRecentSubmissionCount(ip: string, windowMs: number): Promise<number>;
 
   createWaitlistEntry(entry: InsertWaitlistEntry): Promise<WaitlistEntry>;
   getWaitlistEntries(): Promise<WaitlistEntry[]>;
@@ -92,6 +93,14 @@ export class DatabaseStorage implements IStorage {
 
   async getWaitlistCount(): Promise<number> {
     const result = await db.select({ count: sql<number>`count(*)` }).from(waitlist);
+    return Number(result[0]?.count ?? 0);
+  }
+
+  async getRecentSubmissionCount(ip: string, windowMs: number): Promise<number> {
+    const windowStart = new Date(Date.now() - windowMs);
+    const result = await db.select({ count: sql<number>`count(*)` })
+      .from(leads)
+      .where(and(eq(leads.ipAddress, ip), sql`${leads.submittedAt} >= ${windowStart}`));
     return Number(result[0]?.count ?? 0);
   }
 }
