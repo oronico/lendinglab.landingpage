@@ -1,6 +1,6 @@
 export const RULES = {
   CURRENT_RATE: 0.05,
-  RATE_DISPLAY: "5–6%",
+  RATE_DISPLAY: "5-6%",
   ORIGINATION_FEE: 0.02,
 
   TERM_LOAN_MIN: 10000,
