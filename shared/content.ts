@@ -16,8 +16,8 @@ export const CONTENT = {
     termLoan: {
       title: "Term Loan",
       specs: [
-        ["Amount", "$10,000 -- $50,000"],
-        ["Term", "4 -- 6 years"],
+        ["Amount", "$10,000 – $50,000"],
+        ["Term", "4 – 6 years"],
         ["Rate", RULES.RATE_DISPLAY],
         ["Payments", "Quarterly"],
       ],
