@@ -36,7 +36,7 @@ const YEARS_OPTIONS = [
 
 const PRODUCT_OPTIONS = [
   { value: "term_loan", label: "Term Loan ($10K–$50K)" },
-  { value: "loc", label: "Line of Credit (up to $100K)" },
+  { value: "loc", label: "Line of Credit (up to $50K)" },
   { value: "year0", label: "Year 0 Term Loan (pre-launch)" },
 ];
 
@@ -58,7 +58,7 @@ const CREDIT_RANGES = [
 ];
 
 const TERM_AMOUNTS = [10000, 20000, 30000, 40000, 50000];
-const LOC_AMOUNTS = [10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000];
+const LOC_AMOUNTS = [10000, 20000, 30000, 40000, 50000];
 
 const TOTAL_STEPS = 5;
 

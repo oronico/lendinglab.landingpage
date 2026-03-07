@@ -16,26 +16,20 @@ export const CONTENT = {
     termLoan: {
       title: "Term Loan",
       specs: [
-        ["Amount", "$10,000 – $50,000"],
-        ["Term", "4 – 6 years"],
-        ["Rate", `${(RULES.CURRENT_RATE * 100).toFixed(0)}%`],
+        ["Amount", "$10,000 -- $50,000"],
+        ["Term", "4 -- 6 years"],
+        ["Rate", RULES.RATE_DISPLAY],
         ["Payments", "Quarterly"],
-        ["Origination", "2% (added to principal)"],
-        ["Security", "UCC-1 on revenues & assets"],
-        ["Credit", "FICO 650+ preferred"],
       ],
       typicalUse: "Facility build-out, furniture, curriculum, marketing, licensing",
     },
     loc: {
       title: "Line of Credit",
       specs: [
-        ["Commitment", "Up to $100,000"],
+        ["Amount", "Up to $50,000"],
         ["Draw period", "12 months"],
         ["Payments", "Monthly interest-only"],
-        ["Rate", `Prime – 1% on drawn balance`],
-        ["Origination", "2%"],
-        ["Security", "UCC-1 on revenues & assets"],
-        ["Credit", "FICO 650+ preferred"],
+        ["Rate", "Variable, based on Prime"],
         ["Requires", "12+ months operating, $100K+ revenue"],
       ],
       typicalUse: "Seasonal cash flow gaps, bridge timing between tuition collections",
@@ -115,7 +109,7 @@ export const CONTENT = {
     },
     {
       q: "How does philanthropic support make this possible?",
-      a: `Donor capital is what allows us to offer loans at below-market rates (currently ${(RULES.CURRENT_RATE * 100).toFixed(2)}%) that traditional lenders would never offer to early-stage schools. Without philanthropy, these schools would have nowhere to turn. Every dollar invested recycles as loans are repaid, multiplying its impact over time.`,
+      a: `Donor capital is what allows us to offer loans at below-market rates (currently ${RULES.RATE_DISPLAY}) that traditional lenders would never offer to early-stage schools. Without philanthropy, these schools would have nowhere to turn. Every dollar invested recycles as loans are repaid, multiplying its impact over time.`,
     },
     {
       q: "What happened in Cycle 1?",

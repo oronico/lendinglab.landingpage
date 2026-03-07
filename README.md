@@ -6,8 +6,8 @@ A lead-generation and pre-qualification website for **Building Hope Impact Fund'
 
 | Product | Amount | Term | Rate |
 |---------|--------|------|------|
-| Term Loan | $10K – $50K | 4–6 years, quarterly payments | 5% flat |
-| Revolving Line of Credit | Up to $100K | Annual renewal | Prime – 1% on drawn balance |
+| Term Loan | $10K -- $50K | 4 -- 6 years, quarterly payments | 5 -- 6% |
+| Revolving Line of Credit | Up to $50K | 12-month draw period | Variable, based on Prime |
 
 **Application window:** May 6 – November 6, 2026 (or until 100% deployed).
 
@@ -113,7 +113,8 @@ npm start        # Runs production server
 Central configuration for loan parameters:
 
 - `APPLICATIONS_OPEN` — set to `true` to enable applications (May 6, 2026)
-- `CURRENT_RATE` — term loan interest rate (0.05 = 5%)
+- `CURRENT_RATE` — term loan interest rate for DSR math (0.05 = 5%, conservative bound)
+- `RATE_DISPLAY` — user-facing rate range string (e.g. "5 -- 6%")
 - `FUND_TARGET` — total fund size ($1M)
 - Fund deployment and fundraising targets
 - Eligibility rules (entity types, FICO thresholds, operating years)
