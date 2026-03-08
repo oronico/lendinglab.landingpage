@@ -77,7 +77,7 @@ function evaluateEligibility(answers: EligibilityAnswers): EligibilityResult {
   const flags: string[] = [];
 
   if (answers.state && (RULES.EXCLUDED_STATES as readonly string[]).includes(answers.state)) {
-    hardStops.push(`The Lending Lab is not currently available in ${RULES.EXCLUDED_STATES_DISPLAY[answers.state]} due to regulatory requirements.`);
+    hardStops.push(`Unfortunately, the Lending Lab is not able to lend to schools in ${RULES.EXCLUDED_STATES_DISPLAY[answers.state]} at this time. Lending regulations in your state make this nonprofit program cost prohibitive. We hope this changes in the future.`);
   }
 
   if (answers.businessBankAccount === "no") {
@@ -226,6 +226,14 @@ export default function Eligibility() {
                 {US_STATES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
               </SelectContent>
             </Select>
+            {answers.state && (RULES.EXCLUDED_STATES as readonly string[]).includes(answers.state) && (
+              <div className="mt-3 flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-lg p-4" data-testid="warning-excluded-state">
+                <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+                <p className="text-sm text-amber-800">
+                  Unfortunately, the Lending Lab is not able to lend to schools in {RULES.EXCLUDED_STATES_DISPLAY[answers.state]} at this time. Lending regulations in your state make this nonprofit program cost prohibitive. We hope this changes in the future.
+                </p>
+              </div>
+            )}
           </Question>
 
           <Question question="What stage is your school in?">
