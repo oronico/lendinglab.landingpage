@@ -12,7 +12,7 @@ export function LoanDetails() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          <div className="rounded-2xl border border-border/60 bg-white shadow-sm p-8 flex flex-col" data-testid="card-term-loan">
+          <div className="rounded-2xl border border-border/60 bg-white shadow-sm p-8" data-testid="card-term-loan">
             <h3 className="text-2xl font-display font-bold text-primary mb-6">{CONTENT.products.termLoan.title}</h3>
             <dl className="space-y-3">
               {CONTENT.products.termLoan.specs.map(([label, value]) => (
@@ -22,12 +22,12 @@ export function LoanDetails() {
                 </div>
               ))}
             </dl>
-            <p className="mt-auto text-sm text-muted-foreground border-t border-border/40 pt-4">
+            <p className="mt-6 text-sm text-muted-foreground border-t border-border/40 pt-4">
               <span className="font-medium text-primary">Typical use:</span> {CONTENT.products.termLoan.typicalUse}
             </p>
           </div>
 
-          <div className="rounded-2xl border border-border/60 bg-white shadow-sm p-8 flex flex-col" data-testid="card-loc">
+          <div className="rounded-2xl border border-border/60 bg-white shadow-sm p-8" data-testid="card-loc">
             <h3 className="text-2xl font-display font-bold text-primary mb-6">{CONTENT.products.loc.title}</h3>
             <dl className="space-y-3">
               {CONTENT.products.loc.specs.map(([label, value]) => (
@@ -37,7 +37,7 @@ export function LoanDetails() {
                 </div>
               ))}
             </dl>
-            <p className="mt-auto text-sm text-muted-foreground border-t border-border/40 pt-4">
+            <p className="mt-6 text-sm text-muted-foreground border-t border-border/40 pt-4">
               <span className="font-medium text-primary">Typical use:</span> {CONTENT.products.loc.typicalUse}
             </p>
           </div>

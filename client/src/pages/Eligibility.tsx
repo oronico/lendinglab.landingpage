@@ -280,7 +280,7 @@ export default function Eligibility() {
               }`} htmlFor="product-loc">
                 <RadioGroupItem value="loc" id="product-loc" data-testid="radio-product-loc" disabled={answers.schoolStage === "year0"} />
                 <div>
-                  <span className="font-medium">Line of Credit (up to $50K)</span>
+                  <span className="font-medium">Line of Credit (up to $100K)</span>
                   <p className="text-xs text-muted-foreground">
                     {answers.schoolStage === "year0"
                       ? "Requires 12+ months operating history"
