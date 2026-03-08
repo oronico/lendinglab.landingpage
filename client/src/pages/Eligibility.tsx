@@ -25,8 +25,13 @@ type YesNo = "yes" | "no" | null;
 interface EligibilityAnswers {
   state: string | null;
   businessBankAccount: YesNo;
+  bankAccountLength: string | null;
+  bankAccountSolePurpose: YesNo;
+  bankAccountBalance: string;
+  hasSavingsAccount: YesNo;
+  savingsAccountBalance: string;
   noCommingling: YesNo;
-  legalRegistration: YesNo;
+  hasEIN: YesNo;
   payrollFormal: YesNo;
   tuitionContracts: YesNo;
   schoolStage: "year0" | "operating" | null;
@@ -36,7 +41,7 @@ interface EligibilityAnswers {
   ficoRange: "above650" | "below650" | null;
   monthsOperating: "less12" | "12plus" | null;
   annualRevenue: "below100k" | "100kplus" | null;
-  entityType: "llc" | "corp" | "501c3" | null;
+  entityType: "llc" | "corp" | "501c3" | "dba" | null;
   boardIndependence: "yes" | "unclear" | "no" | null;
   boardSize: "4plus" | "less4" | null;
   boardResolution: YesNo;
@@ -53,8 +58,13 @@ const US_STATES = [
 const initialAnswers: EligibilityAnswers = {
   state: null,
   businessBankAccount: null,
+  bankAccountLength: null,
+  bankAccountSolePurpose: null,
+  bankAccountBalance: "",
+  hasSavingsAccount: null,
+  savingsAccountBalance: "",
   noCommingling: null,
-  legalRegistration: null,
+  hasEIN: null,
   payrollFormal: null,
   tuitionContracts: null,
   schoolStage: null,
@@ -88,8 +98,12 @@ function evaluateEligibility(answers: EligibilityAnswers): EligibilityResult {
     hardStops.push("Personal and business funds cannot be commingled.");
   }
 
-  if (answers.legalRegistration === "no") {
-    hardStops.push("A legal business registration is required.");
+  if (answers.hasEIN === "no") {
+    hardStops.push("An EIN (Employer Identification Number) is required to be eligible.");
+  }
+
+  if (answers.entityType === "dba") {
+    hardStops.push("The Lending Lab does not lend to DBAs or sole proprietorships. You must be registered as an LLC, Corporation, or 501(c)(3) to be eligible.");
   }
 
   if (answers.payrollFormal === "no") {
@@ -294,7 +308,7 @@ export default function Eligibility() {
               }`} htmlFor="product-loc">
                 <RadioGroupItem value="loc" id="product-loc" data-testid="radio-product-loc" disabled={answers.schoolStage === "year0"} />
                 <div>
-                  <span className="font-medium">Line of Credit (up to $100K)</span>
+                  <span className="font-medium">Line of Credit (up to $50K)</span>
                   <p className="text-xs text-muted-foreground">
                     {answers.schoolStage === "year0"
                       ? "Requires 12+ months operating history"
@@ -327,17 +341,35 @@ export default function Eligibility() {
     },
     {
       title: "Financial Infrastructure",
-      isComplete: () =>
-        answers.businessBankAccount !== null &&
-        answers.noCommingling !== null &&
-        answers.payrollFormal !== null &&
-        answers.qbo !== null &&
-        answers.legalRegistration !== null &&
-        (answers.legalRegistration !== "yes" || answers.entityType !== null),
+      isComplete: () => {
+        const bankComplete = answers.businessBankAccount !== null &&
+          (answers.businessBankAccount !== "yes" || (
+            answers.bankAccountLength !== null &&
+            answers.bankAccountSolePurpose !== null &&
+            answers.bankAccountBalance.trim() !== "" &&
+            answers.hasSavingsAccount !== null &&
+            (answers.hasSavingsAccount !== "yes" || answers.savingsAccountBalance.trim() !== "")
+          ));
+        return bankComplete &&
+          answers.noCommingling !== null &&
+          answers.payrollFormal !== null &&
+          answers.qbo !== null &&
+          answers.hasEIN !== null &&
+          (answers.hasEIN !== "yes" || answers.entityType !== null);
+      },
       content: (
         <div className="space-y-6">
           <Question question="Do you have a dedicated business bank account?">
-            <RadioGroup value={answers.businessBankAccount ?? ""} onValueChange={(v) => update("businessBankAccount", v as YesNo)} className="flex gap-3" data-testid="radio-bank-account">
+            <RadioGroup value={answers.businessBankAccount ?? ""} onValueChange={(v) => {
+              update("businessBankAccount", v as YesNo);
+              if (v !== "yes") {
+                update("bankAccountLength", null);
+                update("bankAccountSolePurpose", null);
+                update("bankAccountBalance", "");
+                update("hasSavingsAccount", null);
+                update("savingsAccountBalance", "");
+              }
+            }} className="flex gap-3" data-testid="radio-bank-account">
               <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.businessBankAccount === "yes" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="bank-yes">
                 <RadioGroupItem value="yes" id="bank-yes" data-testid="radio-bank-yes" />
                 <span className="font-medium">Yes</span>
@@ -348,6 +380,92 @@ export default function Eligibility() {
               </Label>
             </RadioGroup>
           </Question>
+
+          {answers.businessBankAccount === "yes" && (
+            <>
+              <Question question="How long have you had your business bank account?">
+                <div className="relative">
+                  <select
+                    data-testid="select-bank-account-length"
+                    value={answers.bankAccountLength ?? ""}
+                    onChange={(e) => update("bankAccountLength", e.target.value || null)}
+                    className="flex h-9 w-full appearance-none items-center rounded-md border border-input bg-transparent px-3 py-2 pr-8 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <option value="" disabled>Select duration</option>
+                    <option value="less1">Less than 1 year</option>
+                    <option value="1_2">1-2 years</option>
+                    <option value="2_3">2-3 years</option>
+                    <option value="3_5">3-5 years</option>
+                    <option value="5plus">5+ years</option>
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
+                </div>
+              </Question>
+
+              <Question question="Has this business bank account been used during that time for the singular purpose of managing receivables and payables for your school?">
+                <RadioGroup value={answers.bankAccountSolePurpose ?? ""} onValueChange={(v) => update("bankAccountSolePurpose", v as YesNo)} className="flex gap-3" data-testid="radio-bank-sole-purpose">
+                  <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.bankAccountSolePurpose === "yes" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="bank-purpose-yes">
+                    <RadioGroupItem value="yes" id="bank-purpose-yes" data-testid="radio-bank-purpose-yes" />
+                    <span className="font-medium">Yes</span>
+                  </Label>
+                  <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.bankAccountSolePurpose === "no" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="bank-purpose-no">
+                    <RadioGroupItem value="no" id="bank-purpose-no" data-testid="radio-bank-purpose-no" />
+                    <span className="font-medium">No</span>
+                  </Label>
+                </RadioGroup>
+              </Question>
+
+              <Question question="What is the current balance?">
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">$</span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    data-testid="input-bank-balance"
+                    value={answers.bankAccountBalance}
+                    onChange={(e) => update("bankAccountBalance", e.target.value.replace(/[^0-9.,]/g, ""))}
+                    placeholder="0.00"
+                    className="flex h-9 w-full rounded-md border border-input bg-transparent pl-7 pr-3 py-2 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                  />
+                </div>
+              </Question>
+
+              <Question question="Do you have a business savings account?">
+                <RadioGroup value={answers.hasSavingsAccount ?? ""} onValueChange={(v) => {
+                  update("hasSavingsAccount", v as YesNo);
+                  if (v !== "yes") {
+                    update("savingsAccountBalance", "");
+                  }
+                }} className="flex gap-3" data-testid="radio-savings-account">
+                  <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.hasSavingsAccount === "yes" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="savings-yes">
+                    <RadioGroupItem value="yes" id="savings-yes" data-testid="radio-savings-yes" />
+                    <span className="font-medium">Yes</span>
+                  </Label>
+                  <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.hasSavingsAccount === "no" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="savings-no">
+                    <RadioGroupItem value="no" id="savings-no" data-testid="radio-savings-no" />
+                    <span className="font-medium">No</span>
+                  </Label>
+                </RadioGroup>
+              </Question>
+
+              {answers.hasSavingsAccount === "yes" && (
+                <Question question="What is the balance?">
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">$</span>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      data-testid="input-savings-balance"
+                      value={answers.savingsAccountBalance}
+                      onChange={(e) => update("savingsAccountBalance", e.target.value.replace(/[^0-9.,]/g, ""))}
+                      placeholder="0.00"
+                      className="flex h-9 w-full rounded-md border border-input bg-transparent pl-7 pr-3 py-2 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                    />
+                  </div>
+                </Question>
+              )}
+            </>
+          )}
 
           <Question question="Are personal and business funds completely separate (no commingling)?">
             <RadioGroup value={answers.noCommingling ?? ""} onValueChange={(v) => update("noCommingling", v as YesNo)} className="flex gap-3" data-testid="radio-commingling">
@@ -388,26 +506,26 @@ export default function Eligibility() {
             </RadioGroup>
           </Question>
 
-          <Question question="Is your school legally registered?">
-            <RadioGroup value={answers.legalRegistration ?? ""} onValueChange={(v) => {
-              update("legalRegistration", v as YesNo);
+          <Question question="Do you have an EIN (Employer Identification Number)?">
+            <RadioGroup value={answers.hasEIN ?? ""} onValueChange={(v) => {
+              update("hasEIN", v as YesNo);
               if (v !== "yes") {
                 update("entityType", null);
               }
-            }} className="flex gap-3" data-testid="radio-legal">
-              <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.legalRegistration === "yes" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="legal-yes">
-                <RadioGroupItem value="yes" id="legal-yes" data-testid="radio-legal-yes" />
+            }} className="flex gap-3" data-testid="radio-ein">
+              <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.hasEIN === "yes" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="ein-yes">
+                <RadioGroupItem value="yes" id="ein-yes" data-testid="radio-ein-yes" />
                 <span className="font-medium">Yes</span>
               </Label>
-              <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.legalRegistration === "no" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="legal-no">
-                <RadioGroupItem value="no" id="legal-no" data-testid="radio-legal-no" />
+              <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.hasEIN === "no" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="ein-no">
+                <RadioGroupItem value="no" id="ein-no" data-testid="radio-ein-no" />
                 <span className="font-medium">No</span>
               </Label>
             </RadioGroup>
-            {answers.legalRegistration === "yes" && (
+            {answers.hasEIN === "yes" && (
               <div className="mt-3">
-                <p className="text-sm text-muted-foreground mb-2">Entity type:</p>
-                <RadioGroup value={answers.entityType ?? ""} onValueChange={(v) => update("entityType", v as "llc" | "corp" | "501c3")} className="flex flex-col gap-2" data-testid="radio-entity-type">
+                <p className="text-sm text-muted-foreground mb-2">What entity type is your business registered as with the IRS (as of today)?</p>
+                <RadioGroup value={answers.entityType ?? ""} onValueChange={(v) => update("entityType", v as "llc" | "corp" | "501c3" | "dba")} className="flex flex-col gap-2" data-testid="radio-entity-type">
                   <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.entityType === "llc" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="entity-llc">
                     <RadioGroupItem value="llc" id="entity-llc" data-testid="radio-entity-llc" />
                     <span className="font-medium">LLC</span>
@@ -420,7 +538,19 @@ export default function Eligibility() {
                     <RadioGroupItem value="501c3" id="entity-501c3" data-testid="radio-entity-501c3" />
                     <span className="font-medium">501(c)(3) Nonprofit</span>
                   </Label>
+                  <Label className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition-colors ${answers.entityType === "dba" ? "border-secondary bg-secondary/5" : "border-border hover:bg-muted/50"}`} htmlFor="entity-dba">
+                    <RadioGroupItem value="dba" id="entity-dba" data-testid="radio-entity-dba" />
+                    <span className="font-medium">DBA / Sole Proprietorship</span>
+                  </Label>
                 </RadioGroup>
+                {answers.entityType === "dba" && (
+                  <div className="mt-3 flex items-start gap-3 bg-red-50 border border-red-200 rounded-lg p-4" data-testid="warning-dba">
+                    <XCircle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
+                    <p className="text-sm text-red-800">
+                      The Lending Lab does not lend to DBAs or sole proprietorships. You must be registered as an LLC, Corporation, or 501(c)(3) to be eligible.
+                    </p>
+                  </div>
+                )}
               </div>
             )}
           </Question>
