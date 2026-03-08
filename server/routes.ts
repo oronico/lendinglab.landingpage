@@ -217,8 +217,8 @@ export async function registerRoutes(
   });
 
   app.post("/api/waitlist", async (req, res) => {
-    const ip = req.ip || req.socket.remoteAddress || "unknown";
-    if (!(await checkRateLimit(ip))) {
+    const recentWaitlist = await storage.getRecentWaitlistCount(RATE_LIMIT_WINDOW_MS);
+    if (recentWaitlist >= RATE_LIMIT_MAX) {
       return res.status(429).json({ message: "Too many submissions. Please try again later." });
     }
 

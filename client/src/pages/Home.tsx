@@ -158,8 +158,13 @@ function PreLaunchLanding() {
         honeypot,
       });
       setSubmitted(true);
-    } catch {
-      setError("Something went wrong. Please try again.");
+    } catch (err: any) {
+      const msg = err?.message || "";
+      if (msg.includes("429")) {
+        setError("Too many submissions. Please try again later.");
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
     }
   }
 

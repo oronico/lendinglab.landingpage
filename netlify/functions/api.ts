@@ -39,6 +39,15 @@ async function checkRateLimit(database: ReturnType<typeof drizzle>, ip: string):
   return Number(recentLeads[0]?.count ?? 0) < RATE_LIMIT_MAX;
 }
 
+async function checkWaitlistRateLimit(database: ReturnType<typeof drizzle>, ip: string): Promise<boolean> {
+  if (ip === "unknown") return true;
+  const windowStart = new Date(Date.now() - RATE_LIMIT_WINDOW_MS);
+  const recent = await database.select({ count: sql<number>`count(*)` })
+    .from(waitlist)
+    .where(gte(waitlist.createdAt, windowStart));
+  return Number(recent[0]?.count ?? 0) < RATE_LIMIT_MAX;
+}
+
 function json(statusCode: number, body: unknown, headers?: Record<string, string>) {
   return {
     statusCode,
@@ -113,7 +122,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
 
     if (method === "POST" && path === "/waitlist") {
       const ip = getClientIp(event);
-      if (!(await checkRateLimit(database, ip))) {
+      if (!(await checkWaitlistRateLimit(database, ip))) {
         return json(429, { message: "Too many submissions. Please try again later." });
       }
       const body = JSON.parse(event.body || "{}");

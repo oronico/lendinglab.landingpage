@@ -103,6 +103,14 @@ export class DatabaseStorage implements IStorage {
       .where(and(eq(leads.ipAddress, ip), sql`${leads.submittedAt} >= ${windowStart}`));
     return Number(result[0]?.count ?? 0);
   }
+
+  async getRecentWaitlistCount(windowMs: number): Promise<number> {
+    const windowStart = new Date(Date.now() - windowMs);
+    const result = await db.select({ count: sql<number>`count(*)` })
+      .from(waitlist)
+      .where(sql`${waitlist.createdAt} >= ${windowStart}`);
+    return Number(result[0]?.count ?? 0);
+  }
 }
 
 export const storage = new DatabaseStorage();
