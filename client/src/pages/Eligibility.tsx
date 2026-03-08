@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ChevronDown } from "lucide-react";
 import { RULES, type EligibilityResult } from "@shared/rules";
 import { CONTENT } from "@shared/content";
 import {
@@ -220,12 +220,18 @@ export default function Eligibility() {
       content: (
         <div className="space-y-6">
           <Question question="What state is your school located in?">
-            <Select value={answers.state ?? ""} onValueChange={(v) => update("state", v)}>
-              <SelectTrigger data-testid="select-eligibility-state"><SelectValue placeholder="Select state" /></SelectTrigger>
-              <SelectContent>
-                {US_STATES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-              </SelectContent>
-            </Select>
+            <div className="relative">
+              <select
+                data-testid="select-eligibility-state"
+                value={answers.state ?? ""}
+                onChange={(e) => update("state", e.target.value || null)}
+                className="flex h-9 w-full appearance-none items-center rounded-md border border-input bg-transparent px-3 py-2 pr-8 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <option value="" disabled>Select state</option>
+                {US_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
+            </div>
             {answers.state && (RULES.EXCLUDED_STATES as readonly string[]).includes(answers.state) && (
               <div className="mt-3 flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-lg p-4" data-testid="warning-excluded-state">
                 <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />

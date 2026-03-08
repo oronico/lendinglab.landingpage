@@ -11,7 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowRight, ArrowLeft, Loader2, CalendarClock, CheckCircle2 } from "lucide-react";
+import { ArrowRight, ArrowLeft, Loader2, CalendarClock, CheckCircle2, ChevronDown } from "lucide-react";
 import { RULES, checkDSR } from "@shared/rules";
 import { CONTENT } from "@shared/content";
 
@@ -522,12 +522,18 @@ export default function PreQual() {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="state">State *</Label>
-                        <Select value={form.state} onValueChange={v => update("state", v)}>
-                          <SelectTrigger data-testid="select-state"><SelectValue placeholder="Select state" /></SelectTrigger>
-                          <SelectContent>
-                            {US_STATES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
+                        <div className="relative">
+                          <select
+                            data-testid="select-state"
+                            value={form.state}
+                            onChange={(e) => update("state", e.target.value)}
+                            className="flex h-9 w-full appearance-none items-center rounded-md border border-input bg-transparent px-3 py-2 pr-8 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            <option value="" disabled>Select state</option>
+                            {US_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                          </select>
+                          <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
+                        </div>
                         {errors.state && <p className="text-xs text-destructive mt-1">{errors.state}</p>}
                       </div>
                       <div>
