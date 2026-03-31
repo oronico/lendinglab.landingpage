@@ -8,6 +8,7 @@ import crypto from "crypto";
 
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 const RATE_LIMIT_MAX = 3;
+const WAITLIST_RATE_LIMIT_MAX = 50;
 
 let db: ReturnType<typeof drizzle>;
 let pool: pg.Pool;
@@ -45,7 +46,7 @@ async function checkWaitlistRateLimit(database: ReturnType<typeof drizzle>, ip: 
   const recent = await database.select({ count: sql<number>`count(*)` })
     .from(waitlist)
     .where(gte(waitlist.createdAt, windowStart));
-  return Number(recent[0]?.count ?? 0) < RATE_LIMIT_MAX;
+  return Number(recent[0]?.count ?? 0) < WAITLIST_RATE_LIMIT_MAX;
 }
 
 function json(statusCode: number, body: unknown, headers?: Record<string, string>) {

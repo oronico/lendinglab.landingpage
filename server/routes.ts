@@ -6,6 +6,7 @@ import { fireWebhook } from "./services/webhook";
 
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 const RATE_LIMIT_MAX = 3;
+const WAITLIST_RATE_LIMIT_MAX = 50;
 
 async function checkRateLimit(ip: string): Promise<boolean> {
   if (ip === "unknown") return true;
@@ -218,7 +219,7 @@ export async function registerRoutes(
 
   app.post("/api/waitlist", async (req, res) => {
     const recentWaitlist = await storage.getRecentWaitlistCount(RATE_LIMIT_WINDOW_MS);
-    if (recentWaitlist >= RATE_LIMIT_MAX) {
+    if (recentWaitlist >= WAITLIST_RATE_LIMIT_MAX) {
       return res.status(429).json({ message: "Too many submissions. Please try again later." });
     }
 
