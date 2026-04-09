@@ -18,6 +18,7 @@ import {
   XCircle,
   CheckCircle2,
   ExternalLink,
+  FileText,
 } from "lucide-react";
 
 type YesNo = "yes" | "no" | null;
@@ -892,6 +893,26 @@ export default function Eligibility() {
                         <p className="text-sm text-green-700 mb-4">
                           Based on your responses, your school meets our basic eligibility requirements. The next step is to complete a short pre-qualification questionnaire.
                         </p>
+
+                        <div className="bg-white/80 border border-green-200 rounded-lg p-4 mb-4" data-testid="checklist-documents">
+                          <div className="flex items-center gap-2 mb-3">
+                            <FileText className="h-5 w-5 text-green-700" />
+                            <h3 className="font-display font-bold text-green-800 text-sm">Use this time wisely — Documents to prepare:</h3>
+                          </div>
+                          <ul className="space-y-1.5 text-sm text-green-700">
+                            <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0 text-green-500" />2026-27 pro forma budget</li>
+                            <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0 text-green-500" />5-year financial model</li>
+                            <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0 text-green-500" />Signed tuition contracts</li>
+                            <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0 text-green-500" />Certificate of insurance ($2M/$1M GL)</li>
+                            <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0 text-green-500" />Signed lease or facility agreement</li>
+                            <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0 text-green-500" />Articles of incorporation / operating agreement</li>
+                            <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0 text-green-500" />Reconciled QuickBooks Online</li>
+                            {answers.entityType === "501c3" && (
+                              <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0 text-green-500" />Board resolution authorizing loan (nonprofits)</li>
+                            )}
+                          </ul>
+                        </div>
+
                         <Button
                           onClick={() => navigate("/prequal")}
                           className="bg-green-600 hover:bg-green-700 text-white font-bold"
