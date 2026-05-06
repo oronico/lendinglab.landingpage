@@ -104,12 +104,12 @@ function FinalCTA() {
           Ready to Get Started?
         </h2>
         <p className="text-primary-foreground/80 text-lg mb-8">
-          Check your eligibility in 2 minutes. No commitment, no credit check.
+          Pre-qualify in under 3 minutes. No commitment, no credit check.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
           <Button size="lg" className="bg-secondary hover:bg-secondary/90 text-white h-14 px-8 text-base font-bold rounded-full shadow-lg" asChild data-testid="button-final-cta">
-            <Link href="/eligibility">
-              Check Eligibility
+            <Link href="/prequal">
+              Pre-qualify Now
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>
@@ -282,7 +282,7 @@ function PreLaunchLanding() {
                   </div>
                   <h2 className="text-xl font-display font-bold text-primary">For Schools</h2>
                   <p className="text-muted-foreground text-sm leading-relaxed">
-                    Opening or growing a small school? We're building a loan fund designed for you. Join the waitlist and we'll let you know when applications open.
+                    The Lab opens <strong className="text-primary">{RULES.APPLICATIONS_OPEN_DATE}</strong>. Capital is limited and not every school on the waitlist will receive an application — we'll prioritize based on fit and readiness. Add your school below so we know you're interested.
                   </p>
 
                   {submitted ? (

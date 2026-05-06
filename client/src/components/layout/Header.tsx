@@ -29,15 +29,18 @@ export function Header() {
               </>
             )
           ) : (
-            <>
-              <Link href="/" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Home</Link>
-              <Link href="/eligibility" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Eligibility</Link>
-            </>
+            <Link href="/" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Home</Link>
           )}
         </nav>
-        <Button asChild className="bg-secondary hover:bg-secondary/90 text-white font-bold shadow-sm rounded-full px-5 h-10 text-sm" data-testid="button-get-started">
-          <Link href="/eligibility">Check Eligibility</Link>
-        </Button>
+        {RULES.APPLICATIONS_OPEN ? (
+          <Button asChild className="bg-secondary hover:bg-secondary/90 text-white font-bold shadow-sm rounded-full px-5 h-10 text-sm" data-testid="button-get-started">
+            <Link href="/prequal">Pre-qualify</Link>
+          </Button>
+        ) : (
+          <a href="/#get-involved" className="bg-secondary hover:bg-secondary/90 text-white font-bold shadow-sm rounded-full px-5 h-10 text-sm inline-flex items-center" data-testid="button-join-waitlist">
+            Join Waitlist
+          </a>
+        )}
       </div>
     </header>
   );

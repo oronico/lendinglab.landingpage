@@ -26,15 +26,10 @@ export function Hero() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <Button size="lg" className="bg-secondary hover:bg-secondary/90 text-white h-14 px-8 text-base font-bold rounded-full shadow-lg transition-transform hover:-translate-y-0.5" asChild data-testid="button-check-eligibility">
-              <Link href="/eligibility">
-                {CONTENT.hero.cta1}
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" className="h-14 px-8 text-base font-bold border-border/80 bg-white hover:bg-muted/50 rounded-full" asChild data-testid="button-prequal">
+            <Button size="lg" className="bg-secondary hover:bg-secondary/90 text-white h-14 px-8 text-base font-bold rounded-full shadow-lg transition-transform hover:-translate-y-0.5" asChild data-testid="button-prequal">
               <Link href="/prequal">
                 {CONTENT.hero.cta2}
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
           </div>

@@ -53,7 +53,7 @@ export const RULES = {
   US_ONLY: true,
 
   APPLICATIONS_OPEN: false,
-  APPLICATIONS_OPEN_DATE: "May 6, 2026",
+  APPLICATIONS_OPEN_DATE: "May 11, 2026",
   APPLICATIONS_CLOSE_DATE: "November 6, 2026",
   APPLICATIONS_CLOSE_NOTE: "or until Cycle 2 is 100% deployed",
   // ── LoanOS Handoff URLs ──────────────────────────────────────────────
