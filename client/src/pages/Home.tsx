@@ -445,6 +445,30 @@ function PreLaunchLanding() {
               </ul>
             </div>
 
+            <div className="max-w-md mx-auto rounded-xl border border-orange-500/30 bg-orange-500/5 p-5 text-left" data-testid="callout-budget-tool">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 bg-orange-500/15 rounded-full flex items-center justify-center shrink-0">
+                  <TrendingUp className="w-5 h-5 text-orange-600" />
+                </div>
+                <div className="space-y-2">
+                  <h4 className="font-display font-bold text-primary text-sm">Need help with your 5-year model?</h4>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Use <a href="https://budget.schoolstack.ai" target="_blank" rel="noreferrer" className="text-orange-600 font-semibold hover:underline">budget.schoolstack.ai</a> — a free financial modeling tool built by Building Hope Impact Fund, made possible by The Beth & Ravenel Curry Foundation.
+                  </p>
+                  <a
+                    href="https://budget.schoolstack.ai"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-orange-600 hover:text-orange-700"
+                    data-testid="link-budget-tool"
+                  >
+                    Start your model
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+              </div>
+            </div>
+
             <div className="pt-4">
               <div className="inline-flex flex-col items-center gap-1 px-6 py-3 rounded-full bg-primary text-white font-display font-bold text-lg" data-testid="badge-launch-date">
                 <div className="flex items-center gap-2">
