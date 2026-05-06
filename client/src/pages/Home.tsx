@@ -445,21 +445,22 @@ function PreLaunchLanding() {
               </ul>
             </div>
 
-            <div className="max-w-md mx-auto rounded-xl border border-orange-500/30 bg-orange-500/5 p-5 text-left" data-testid="callout-budget-tool">
+            <div className="max-w-md mx-auto rounded-xl border p-5 text-left" style={{ borderColor: "rgba(5, 70, 54, 0.25)", backgroundColor: "rgba(5, 70, 54, 0.04)" }} data-testid="callout-budget-tool">
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 bg-orange-500/15 rounded-full flex items-center justify-center shrink-0">
-                  <TrendingUp className="w-5 h-5 text-orange-600" />
+                <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: "rgba(5, 70, 54, 0.12)" }}>
+                  <TrendingUp className="w-5 h-5" style={{ color: "#054636" }} />
                 </div>
                 <div className="space-y-2">
                   <h4 className="font-display font-bold text-primary text-sm">Need help with your 5-year model?</h4>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    Use <a href="https://budget.schoolstack.ai" target="_blank" rel="noreferrer" className="text-orange-600 font-semibold hover:underline">budget.schoolstack.ai</a> — a free financial modeling tool built by Building Hope Impact Fund, made possible by The Beth & Ravenel Curry Foundation.
+                    Use <a href="https://budget.schoolstack.ai" target="_blank" rel="noreferrer" className="font-semibold hover:underline" style={{ color: "#054636" }}>budget.schoolstack.ai</a> — a free financial modeling tool built by Building Hope Impact Fund, made possible by The Beth & Ravenel Curry Foundation.
                   </p>
                   <a
                     href="https://budget.schoolstack.ai"
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-orange-600 hover:text-orange-700"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold hover:opacity-80"
+                    style={{ color: "#054636" }}
                     data-testid="link-budget-tool"
                   >
                     Start your model
