@@ -18,8 +18,14 @@ export function Footer() {
           <div>
             <h4 className="font-bold text-sm text-primary mb-3">Links</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/eligibility" className="hover:text-secondary transition-colors">Eligibility</Link></li>
-              <li><Link href="/prequal" className="hover:text-secondary transition-colors">Pre-Qualify</Link></li>
+              {RULES.APPLICATIONS_OPEN ? (
+                <>
+                  <li><Link href="/eligibility" className="hover:text-secondary transition-colors">Eligibility</Link></li>
+                  <li><Link href="/prequal" className="hover:text-secondary transition-colors">Pre-Qualify</Link></li>
+                </>
+              ) : (
+                <li><a href="/#get-involved" className="hover:text-secondary transition-colors">Join Waitlist</a></li>
+              )}
               <li><Link href="/privacy" className="hover:text-secondary transition-colors">Privacy</Link></li>
               <li><Link href="/terms" className="hover:text-secondary transition-colors">Terms</Link></li>
               <li><Link href="/accessibility" className="hover:text-secondary transition-colors">Accessibility</Link></li>
