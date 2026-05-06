@@ -184,9 +184,21 @@ function PreLaunchLanding() {
             <p className="text-xl md:text-2xl text-white mb-3 font-display drop-shadow-md">
               Loan capital for the schools banks overlook.
             </p>
-            <p className="text-base md:text-lg text-white/80 max-w-xl mx-auto mb-10 drop-shadow-sm">
+            <p className="text-base md:text-lg text-white/80 max-w-xl mx-auto mb-8 drop-shadow-sm">
               Philanthropically fueled term loans and lines of credit for small schools across the United States enrolling 10–100 pK-12 students.
             </p>
+
+            <div className="flex justify-center mb-10">
+              <a
+                href="#get-involved"
+                className="inline-flex items-center gap-2 bg-secondary hover:bg-secondary/90 text-white font-bold rounded-full h-14 px-8 text-base shadow-lg transition-transform hover:-translate-y-0.5"
+                data-testid="button-hero-lab-opens"
+              >
+                <CalendarClock className="w-5 h-5" />
+                Lab opens {RULES.APPLICATIONS_OPEN_DATE}
+                <ArrowRight className="w-5 h-5" />
+              </a>
+            </div>
 
             <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto mb-10">
               <div data-testid="stat-fund-target">
