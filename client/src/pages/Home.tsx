@@ -346,6 +346,38 @@ function PreLaunchLanding() {
           </div>
         </section>
 
+        <section className="py-16 md:py-20" style={{ background: "linear-gradient(135deg, #054636 0%, #0a6b52 100%)" }} data-testid="section-budget-tool">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+            <div className="grid md:grid-cols-[auto_1fr_auto] gap-6 md:gap-8 items-center">
+              <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center shrink-0 mx-auto md:mx-0" style={{ backgroundColor: "rgba(255, 255, 255, 0.15)" }}>
+                <TrendingUp className="w-8 h-8 md:w-10 md:h-10 text-white" />
+              </div>
+              <div className="text-center md:text-left text-white space-y-2">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-xs font-bold tracking-widest uppercase">
+                  Free Tool
+                </div>
+                <h2 className="text-2xl md:text-3xl font-display font-bold" data-testid="text-budget-tool-title">
+                  Start your 5-year financial model today
+                </h2>
+                <p className="text-white/85 leading-relaxed text-sm md:text-base">
+                  <a href="https://budget.schoolstack.ai" target="_blank" rel="noreferrer" className="font-bold underline decoration-2 underline-offset-2 hover:text-white">budget.schoolstack.ai</a> is a free financial modeling tool from Building Hope Impact Fund — made possible by The Beth & Ravenel Curry Foundation.
+                </p>
+              </div>
+              <a
+                href="https://budget.schoolstack.ai"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 bg-white text-primary font-bold rounded-full h-14 px-8 text-base shadow-xl hover:shadow-2xl transition-transform hover:-translate-y-0.5 whitespace-nowrap mx-auto md:mx-0"
+                style={{ color: "#054636" }}
+                data-testid="link-budget-tool"
+              >
+                Start your model
+                <ArrowRight className="w-5 h-5" />
+              </a>
+            </div>
+          </div>
+        </section>
+
         <section className="py-12 bg-muted/20 overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
             <div className="grid grid-cols-3 gap-3">
@@ -443,31 +475,6 @@ function PreLaunchLanding() {
                 <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />Reconciled QuickBooks Online</li>
                 <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />Board resolution authorizing loan <span className="text-xs italic">(nonprofits)</span></li>
               </ul>
-            </div>
-
-            <div className="max-w-md mx-auto rounded-xl border p-5 text-left" style={{ borderColor: "rgba(5, 70, 54, 0.25)", backgroundColor: "rgba(5, 70, 54, 0.04)" }} data-testid="callout-budget-tool">
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: "rgba(5, 70, 54, 0.12)" }}>
-                  <TrendingUp className="w-5 h-5" style={{ color: "#054636" }} />
-                </div>
-                <div className="space-y-2">
-                  <h4 className="font-display font-bold text-primary text-sm">Need help with your 5-year model?</h4>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    Use <a href="https://budget.schoolstack.ai" target="_blank" rel="noreferrer" className="font-semibold hover:underline" style={{ color: "#054636" }}>budget.schoolstack.ai</a> — a free financial modeling tool built by Building Hope Impact Fund, made possible by The Beth & Ravenel Curry Foundation.
-                  </p>
-                  <a
-                    href="https://budget.schoolstack.ai"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold hover:opacity-80"
-                    style={{ color: "#054636" }}
-                    data-testid="link-budget-tool"
-                  >
-                    Start your model
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                </div>
-              </div>
             </div>
 
             <div className="pt-4">
