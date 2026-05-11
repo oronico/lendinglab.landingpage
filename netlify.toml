@@ -10,6 +10,14 @@
   node_bundler = "esbuild"
   included_files = ["shared/**"]
 
+# Emergency apex redirect: Netlify owns lendinglab.org, Railway owns www.lendinglab.org.
+# This MUST stay before the SPA fallback so the old landing page is never served from the apex.
+[[redirects]]
+  from = "/*"
+  to = "https://www.lendinglab.org/:splat"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api/:splat"
@@ -19,9 +27,3 @@
   from = "/*"
   to = "/index.html"
   status = 200
-
-[[redirects]]
-  from = "/*"
-  to = "https://www.lendinglab.org/:splat"
-  status = 301
-  force = true
